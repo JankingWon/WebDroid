@@ -11,9 +11,6 @@ import cn.janking.webDroid.model.Config
 import kotlinx.android.synthetic.main.activity_web.*
 
 class WebActivity : AppCompatActivity() {
-    companion object{
-        val TAG = "WebActivity";
-    }
 
     private var configHomeUrl : String? = null
 

@@ -299,11 +299,9 @@ public final class Utils {
             float sDurationScale = (Float) sDurationScaleField.get(null);
             if (sDurationScale == 0f) {
                 sDurationScaleField.set(null, 1f);
-                Log.i("Utils", "setAnimatorsEnabled: Animators are enabled now!");
+                LogUtils.i( "setAnimatorsEnabled: Animators are enabled now!");
             }
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
     }

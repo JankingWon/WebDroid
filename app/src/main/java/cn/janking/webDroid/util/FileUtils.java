@@ -1,13 +1,9 @@
 package cn.janking.webDroid.util;
 
-import android.content.Context;
-import android.util.Log;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -16,7 +12,6 @@ import java.io.OutputStream;
 
 
 public class FileUtils {
-    static private String TAG = "FileUtils";
     /**
      * 复制目录到目录
      * @param fromDir 源目录

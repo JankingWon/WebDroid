@@ -23,12 +23,12 @@ class MyApplication : Application() {
             }
 
             override fun onFail(t: Throwable?) {
-                Log.w(MainActivity.TAG, "config读取出错")
+                LogUtils.w( "config读取出错")
                 t?.printStackTrace()
             }
 
             override fun onSuccess(result: Unit) {
-                Log.i(MainActivity.TAG, "config读取成功")
+                LogUtils.w( "config读取成功")
             }
         })
 
@@ -40,11 +40,11 @@ class MyApplication : Application() {
             }
 
             override fun onSuccess(result: Unit) {
-                Log.i(MainActivity.TAG, "asset复制成功")
+                LogUtils.i("asset复制成功")
             }
 
             override fun onFail(t: Throwable?) {
-                Log.w(MainActivity.TAG, "asset复制出错")
+                LogUtils.w("asset复制出错")
                 t?.printStackTrace()
             }
         })
@@ -65,12 +65,12 @@ class MyApplication : Application() {
             }
 
             override fun onFail(t: Throwable?) {
-                Log.w(MainActivity.TAG, "apk解压出错")
+                LogUtils.w("apk解压出错")
                 t?.printStackTrace()
             }
 
             override fun onSuccess(result: Unit) {
-                Log.i(MainActivity.TAG, "apk解压成功")
+                LogUtils.i( "apk解压成功")
             }
         })
     }
