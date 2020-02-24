@@ -9,7 +9,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Config {
-    static private String TAG = "Config";
     static private Gson gson = new Gson();
     /**
      * 单例
