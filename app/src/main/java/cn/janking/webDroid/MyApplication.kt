@@ -7,6 +7,7 @@ import android.util.Log
 import cn.janking.webDroid.model.Config
 import cn.janking.webDroid.util.*
 import java.io.File
+import java.io.FileFilter
 
 /**
  * 自定义应用
@@ -49,7 +50,18 @@ class MyApplication : Application() {
         })
         ThreadUtils.executeByCached(object : ThreadUtils.SimpleTask<Unit>(){
             override fun doInBackground(): Unit {
+                //解压apk
                 ZipUtils.unzipFile(File(packageResourcePath), FileUtils.getExistDir(EnvironmentUtils.getDirUnzippedApk()))
+                //删除原有签名
+                FileUtils.deleteFilesInDirWithFilter(EnvironmentUtils.getDirUnzippedApkMetaINF()
+                ) { pathname -> FileUtils.getFileExtension(pathname).run {
+                        equals("MF") || equals("SF") || equals("RSA")
+                } }
+                //删除原有asset
+                FileUtils.deleteFilesInDirWithFilter(EnvironmentUtils.getDirUnzippedApkAssets()
+                ) { pathname -> pathname.name.run {
+                    !equals(EnvironmentUtils.DEFAULT_CONFIG_FILE)
+                } }
             }
 
             override fun onFail(t: Throwable?) {

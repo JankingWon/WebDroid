@@ -70,7 +70,7 @@ import sun.security.x509.X500Name;
  * Command line tool to sign JAR files (including APKs and OTA updates) in a way
  * compatible with the mincrypt verifier, using SHA1 and RSA keys.
  */
-class SignApkUtils
+public class SignApkUtils
 {
     private static final String CERT_SF_NAME = "META-INF/CERT.SF";
     private static final String CERT_RSA_NAME = "META-INF/CERT.RSA";

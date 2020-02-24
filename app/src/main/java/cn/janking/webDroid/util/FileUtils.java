@@ -5,6 +5,7 @@ import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -13,9 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-/**
- * @todo 添加文件权限
- */
+
 public class FileUtils {
     static private String TAG = "FileUtils";
     /**
@@ -128,10 +127,30 @@ public class FileUtils {
         toFile.flush();
     }
 
+    private static boolean isSpace(final String s) {
+        if (s == null) return true;
+        for (int i = 0, len = s.length(); i < len; ++i) {
+            if (!Character.isWhitespace(s.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Return the file by path.
+     *
+     * @param filePath The path of file.
+     * @return the file
+     */
+    public static File getFileByPath(final String filePath) {
+        return isSpace(filePath) ? null : new File(filePath);
+    }
+
     /**
      * 获取一个File类型的文件，如果不存在，尝试创建
      */
-    private static File getExistFile(String filePath) throws IOException {
+    public static File getExistFile(String filePath) throws IOException {
         return getExistFile(new File(filePath));
     }
 
@@ -179,10 +198,35 @@ public class FileUtils {
     /**
      * 获取文件的名称，去除路径
      */
-    public static String getFileName(String filePath){
-        int index = filePath.lastIndexOf(File.separator);
-        if (index < 0) return filePath;
-        return filePath.substring(index + 1);
+    public static String getFileName(final String filePath) {
+        if (isSpace(filePath)) return "";
+        int lastSep = filePath.lastIndexOf(File.separator);
+        return lastSep == -1 ? filePath : filePath.substring(lastSep + 1);
+    }
+
+    /**
+     * Return the extension of file.
+     *
+     * @param file The file.
+     * @return the extension of file
+     */
+    public static String getFileExtension(final File file) {
+        if (file == null) return "";
+        return getFileExtension(file.getPath());
+    }
+
+    /**
+     * Return the extension of file.
+     *
+     * @param filePath The path of file.
+     * @return the extension of file
+     */
+    public static String getFileExtension(final String filePath) {
+        if (isSpace(filePath)) return "";
+        int lastPoi = filePath.lastIndexOf('.');
+        int lastSep = filePath.lastIndexOf(File.separator);
+        if (lastPoi == -1 || lastSep >= lastPoi) return "";
+        return filePath.substring(lastPoi + 1);
     }
 
     /**
@@ -222,6 +266,155 @@ public class FileUtils {
             return null;
         }
         return stringBuilder.toString();
+    }
+
+    /**
+     * Delete the directory.
+     *
+     * @param filePath The path of file.
+     * @return {@code true}: success<br>{@code false}: fail
+     */
+    public static boolean delete(final String filePath) {
+        return delete(getFileByPath(filePath));
+    }
+
+    /**
+     * Delete the directory.
+     *
+     * @param file The file.
+     * @return {@code true}: success<br>{@code false}: fail
+     */
+    public static boolean delete(final File file) {
+        if (file == null) return false;
+        if (file.isDirectory()) {
+            return deleteDir(file);
+        }
+        return deleteFile(file);
+    }
+
+    /**
+     * Delete the directory.
+     *
+     * @param dir The directory.
+     * @return {@code true}: success<br>{@code false}: fail
+     */
+    private static boolean deleteDir(final File dir) {
+        if (dir == null) return false;
+        // dir doesn't exist then return true
+        if (!dir.exists()) return true;
+        // dir isn't a directory then return false
+        if (!dir.isDirectory()) return false;
+        File[] files = dir.listFiles();
+        if (files != null && files.length != 0) {
+            for (File file : files) {
+                if (file.isFile()) {
+                    if (!file.delete()) return false;
+                } else if (file.isDirectory()) {
+                    if (!deleteDir(file)) return false;
+                }
+            }
+        }
+        return dir.delete();
+    }
+
+    /**
+     * Delete the file.
+     *
+     * @param file The file.
+     * @return {@code true}: success<br>{@code false}: fail
+     */
+    private static boolean deleteFile(final File file) {
+        return file != null && (!file.exists() || file.isFile() && file.delete());
+    }
+
+    /**
+     * Delete the all in directory.
+     *
+     * @param dirPath The path of directory.
+     * @return {@code true}: success<br>{@code false}: fail
+     */
+    public static boolean deleteAllInDir(final String dirPath) {
+        return deleteAllInDir(getFileByPath(dirPath));
+    }
+
+    /**
+     * Delete the all in directory.
+     *
+     * @param dir The directory.
+     * @return {@code true}: success<br>{@code false}: fail
+     */
+    public static boolean deleteAllInDir(final File dir) {
+        return deleteFilesInDirWithFilter(dir, new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                return true;
+            }
+        });
+    }
+
+    /**
+     * Delete all files in directory.
+     *
+     * @param dirPath The path of directory.
+     * @return {@code true}: success<br>{@code false}: fail
+     */
+    public static boolean deleteFilesInDir(final String dirPath) {
+        return deleteFilesInDir(getFileByPath(dirPath));
+    }
+
+    /**
+     * Delete all files in directory.
+     *
+     * @param dir The directory.
+     * @return {@code true}: success<br>{@code false}: fail
+     */
+    public static boolean deleteFilesInDir(final File dir) {
+        return deleteFilesInDirWithFilter(dir, new FileFilter() {
+            @Override
+            public boolean accept(File pathname) {
+                return pathname.isFile();
+            }
+        });
+    }
+
+    /**
+     * Delete all files that satisfy the filter in directory.
+     *
+     * @param dirPath The path of directory.
+     * @param filter  The filter.
+     * @return {@code true}: success<br>{@code false}: fail
+     */
+    public static boolean deleteFilesInDirWithFilter(final String dirPath,
+                                                     final FileFilter filter) {
+        return deleteFilesInDirWithFilter(getFileByPath(dirPath), filter);
+    }
+
+    /**
+     * Delete all files that satisfy the filter in directory.
+     *
+     * @param dir    The directory.
+     * @param filter The filter.
+     * @return {@code true}: success<br>{@code false}: fail
+     */
+    public static boolean deleteFilesInDirWithFilter(final File dir, final FileFilter filter) {
+        if (dir == null || filter == null) return false;
+        // dir doesn't exist then return true
+        if (!dir.exists()) return true;
+        // dir isn't a directory then return false
+        if (!dir.isDirectory()) return false;
+        File[] files = dir.listFiles();
+        if (files != null && files.length != 0) {
+            for (File file : files) {
+                if (filter.accept(file)) {
+                    if (file.isFile()) {
+                        if (!file.delete()) return false;
+                    } else if (file.isDirectory()) {
+                        if (!deleteDir(file)) return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
 }
