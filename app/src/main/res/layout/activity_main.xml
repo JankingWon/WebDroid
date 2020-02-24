@@ -7,20 +7,21 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/build"
-        android:text="Build"
+        android:id="@+id/preview"
+        android:text="Preview"
         android:onClick="onClick"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <WebView
-        android:id="@+id/webView"
+    <Button
+        android:id="@+id/build"
+        android:text="Build"
+        android:onClick="onClick"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/build"
-        android:onClick="onClick"/>
+        app:layout_constraintTop_toBottomOf="@id/preview" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
