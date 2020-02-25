@@ -36,13 +36,13 @@ public class BaseDialogFragment extends DialogFragment {
     protected FragmentActivity mActivity;
     protected View             mContentView;
 
-    public BaseDialogFragment init(FragmentActivity activity, DialogLayoutCallback listener) {
+    BaseDialogFragment init(FragmentActivity activity, DialogLayoutCallback listener) {
         mActivity = activity;
         mDialogLayoutCallback = listener;
         return this;
     }
 
-    public BaseDialogFragment init(FragmentActivity activity, DialogCallback dialogCallback) {
+    BaseDialogFragment init(FragmentActivity activity, DialogCallback dialogCallback) {
         mActivity = activity;
         mDialogCallback = dialogCallback;
         return this;

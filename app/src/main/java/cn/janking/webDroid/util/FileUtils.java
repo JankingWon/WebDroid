@@ -1,9 +1,15 @@
 package cn.janking.webDroid.util;
 
+import android.content.ContentResolver;
+import android.content.res.AssetFileDescriptor;
+import android.net.Uri;
+import android.os.Build;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -12,6 +18,42 @@ import java.io.OutputStream;
 
 
 public class FileUtils {
+
+    /**
+     * Return whether the file exists.
+     *
+     * @param filePath The path of file.
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isFileExists(final String filePath) {
+        if (Build.VERSION.SDK_INT < 29) {
+            return isFileExists(getFileByPath(filePath));
+        } else {
+            try {
+                Uri uri = Uri.parse(filePath);
+                ContentResolver cr = Utils.getApp().getContentResolver();
+                AssetFileDescriptor afd = cr.openAssetFileDescriptor(uri, "r");
+                if (afd == null) return false;
+                try {
+                    afd.close();
+                } catch (IOException ignore) {
+                }
+            } catch (FileNotFoundException e) {
+                return false;
+            }
+            return true;
+        }
+    }
+
+    /**
+     * Return whether the file exists.
+     *
+     * @param file The file.
+     * @return {@code true}: yes<br>{@code false}: no
+     */
+    public static boolean isFileExists(final File file) {
+        return file != null && file.exists();
+    }
     /**
      * 复制目录到目录
      * @param fromDir 源目录
@@ -182,7 +224,7 @@ public class FileUtils {
             fileParent.mkdirs();// 能创建多级目录
         }
         if (!file.exists()) {
-            file.createNewFile();//有路径才能创建文件
+            file.mkdir();//有路径才能创建目录
         } else if(file.isFile()){
             file.delete();
             file.mkdir();

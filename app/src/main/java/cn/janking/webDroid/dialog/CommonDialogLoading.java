@@ -3,6 +3,7 @@ package cn.janking.webDroid.dialog;
 import android.view.View;
 import android.view.Window;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 
 
@@ -18,7 +19,7 @@ import cn.janking.webDroid.R;
  */
 public class CommonDialogLoading extends BaseDialogFragment {
 
-    public CommonDialogLoading init(FragmentActivity activity, final Runnable onCancelListener) {
+    public CommonDialogLoading init(FragmentActivity activity, @Nullable Runnable onCancelListener) {
         super.init(activity, new DialogLayoutCallback() {
             @Override
             public int bindTheme() {

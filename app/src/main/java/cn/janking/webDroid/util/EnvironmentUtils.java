@@ -9,7 +9,7 @@ import java.io.File;
  */
 public class EnvironmentUtils {
     public static final String DEFAULT_CONFIG_FILE = "config.json";
-
+    public static final String DEFAULT_MANIFEST_FILE = "AndroidManifest.xml";
     /**
      * 存储数据的主路径
      */
@@ -25,9 +25,9 @@ public class EnvironmentUtils {
     };
 
     /**
-     * 获取模板目录
-     */
-    static public String getDirTemplateSub(String sub){
+     * 获取模板目录下的文件
+     * */
+    static public String getFileTemplateSub(String sub){
         return getDirTemplate() + File.separator + sub;
     }
 
