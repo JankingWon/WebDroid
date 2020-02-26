@@ -1,11 +1,10 @@
 package cn.janking.webDroid.util
 
+import android.graphics.Color
 import android.widget.TextView
 import android.widget.Toast
-import cn.janking.webDroid.R
 import cn.janking.webDroid.constant.PermissionConstants
 import cn.janking.webDroid.helper.DialogHelper
-import cn.janking.webDroid.model.Config
 import java.io.File
 import java.lang.RuntimeException
 
@@ -31,10 +30,10 @@ class BuildUtils{
                     ) {
                         LogUtils.i("请求权限失败！")
                         //如果选择了“拒绝后不再询问”，则引导打开权限设置页面
-                        if (permissionsDeniedForever.isNotEmpty()) {
-                            DialogHelper.showOpenAppSettingDialog()
-                            return
-                        }
+//                        if (permissionsDeniedForever.isNotEmpty()) {
+//                            DialogHelper.showOpenAppSettingDialog()
+//                            return
+//                        }
                     }
                 })
                 .request()
@@ -105,7 +104,7 @@ class BuildUtils{
                 SpanUtils.with(console)
                     .append(console.text)
                     .appendLine("数据未初始化...")
-                    .setForegroundColor(ColorUtils.getColor(R.color.rainbow_red))
+                    .setForegroundColor(Color.parseColor("#bf0c43"))
                     .create()
                 //重新请求权限，尝试初始化
                 requestStoragePermission()
@@ -127,15 +126,15 @@ class BuildUtils{
                         .append(console.text)
                         .appendLine("正在压缩...")
                         .create()
-                        ZipUtils.zipFiles(
-                            File(EnvironmentUtils.getDirUnzippedApk()).listFiles().toList(),
-                            FileUtils.getExistFile(EnvironmentUtils.getFileApkUnsigned())
-                        )
-                        SpanUtils.with(console)
-                            .append(console.text)
-                            .appendLine("正在签名...")
-                            .create()
-                        if(!FileUtils.isFileExists(EnvironmentUtils.getKeyPem())
+                    ZipUtils.zipFiles(
+                        File(EnvironmentUtils.getDirUnzippedApk()).listFiles().toList(),
+                        FileUtils.getExistFile(EnvironmentUtils.getFileApkUnsigned())
+                    )
+                    SpanUtils.with(console)
+                        .append(console.text)
+                        .appendLine("正在签名...")
+                        .create()
+                    if(!FileUtils.isFileExists(EnvironmentUtils.getKeyPem())
                             || !FileUtils.isFileExists(EnvironmentUtils.getKeyPk8()) ){
                             throw RuntimeException("key is null")
                     }
@@ -154,7 +153,7 @@ class BuildUtils{
                     SpanUtils.with(console)
                         .append(console.text)
                         .appendLine("打包取消！")
-                        .setForegroundColor(ColorUtils.getColor(R.color.rainbow_yellow))
+                        .setForegroundColor(Color.parseColor("#f9ba15"))
                         .create()
                 }
 
@@ -162,7 +161,7 @@ class BuildUtils{
                     SpanUtils.with(console)
                         .append(console.text)
                         .appendLine(String.format("打包失败！(%s)", t?.message))
-                        .setForegroundColor(ColorUtils.getColor(R.color.rainbow_red))
+                        .setForegroundColor(Color.parseColor("#bf0c43"))
                         .create()
                     t?.printStackTrace()
                 }
@@ -171,7 +170,7 @@ class BuildUtils{
                     SpanUtils.with(console)
                         .append(console.text)
                         .appendLine("打包完成！")
-                        .setForegroundColor(ColorUtils.getColor(R.color.loveGreen))
+                        .setForegroundColor(Color.parseColor("#62C554"))
                         .create()
                 }
             })

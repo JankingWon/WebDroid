@@ -1,2 +1,2 @@
-include ':app'
+include ':app', ':mln', ':mlncore', ':mlnservics', ':annotation', ':processor', ':HotReload'
 rootProject.name='WebDroid'

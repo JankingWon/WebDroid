@@ -791,7 +791,7 @@ public final class SpanUtils {
     public SpannableStringBuilder create() {
         applyLast();
         if (mTextView != null) {
-            mTextView.setText(mBuilder);
+            Utils.runOnUiThread(() -> mTextView.setText(mBuilder));
         }
         return mBuilder;
     }

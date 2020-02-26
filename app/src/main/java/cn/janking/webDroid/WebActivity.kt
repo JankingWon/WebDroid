@@ -1,55 +1,75 @@
 package cn.janking.webDroid
 
 import android.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.webkit.JsResult
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.LinearLayout
+import androidx.appcompat.app.AppCompatActivity
 import cn.janking.webDroid.model.Config
-import kotlinx.android.synthetic.main.activity_web.*
+import cn.janking.webDroid.util.AppUtils
 
 class WebActivity : AppCompatActivity() {
-
+    /**
+     * 真正的主页
+     */
     private var configHomeUrl : String? = null
+    /**
+     * 真正的主页
+     */
+    private var webView : WebView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_web)
-        //初始化webView
-        webView.webViewClient = object : WebViewClient(){
-            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                if(configHomeUrl == null){
-                    configHomeUrl = url
-                }
-                view!!.loadUrl(url)
-                return true
-            }
-        }
-        webView.settings.javaScriptEnabled = true
-        webView.settings.allowFileAccess = true
-        webView.settings.allowFileAccessFromFileURLs = true
-        webView.settings.allowContentAccess = true
-        webView.settings.domStorageEnabled = true
-        webView.webChromeClient = object : WebChromeClient(){
-            override fun onJsAlert(
-                view: WebView?,
-                url: String?,
-                message: String?,
-                result: JsResult?
-            ): Boolean {
-                AlertDialog.Builder(this@WebActivity)
-                    .setMessage(message)
-                    .setPositiveButton("确定"
-                    ) { dialog, _ -> dialog.dismiss() }
-                    .create().show()
-                result?.confirm()
-                return true
-            }
-        }
+        setContentView(createContentView())
+    }
 
-        webView.loadUrl(Config.getInstance().url)
+    private fun createContentView(): View {
+        val contentView = LinearLayout(this).apply{
+            orientation = LinearLayout.VERTICAL
+        }
+        //初始化webView
+        webView = WebView(this).apply {
+            webViewClient = object : WebViewClient(){
+                override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+                    if(configHomeUrl == null){
+                        configHomeUrl = url
+                    }
+                    view!!.loadUrl(url)
+                    return true
+                }
+            }
+            settings.run {
+                javaScriptEnabled = true
+                allowFileAccess = true
+                allowFileAccessFromFileURLs = true
+                allowContentAccess = true
+                domStorageEnabled = true
+            }
+            webChromeClient = object : WebChromeClient(){
+                override fun onJsAlert(
+                    view: WebView?,
+                    url: String?,
+                    message: String?,
+                    result: JsResult?
+                ): Boolean {
+                    AlertDialog.Builder(this@WebActivity)
+                        .setMessage(message)
+                        .setPositiveButton("确定"
+                        ) { dialog, _ -> dialog.dismiss() }
+                        .create().show()
+                    result?.confirm()
+                    return true
+                }
+            }
+            loadUrl(Config.getInstance().url)
+        }
+        return contentView.apply {
+            addView(webView)
+        }
     }
 
     /**
@@ -60,11 +80,10 @@ class WebActivity : AppCompatActivity() {
             super.onBackPressed()
             return
         }
-        if(webView.url != configHomeUrl && webView.canGoBack()){
-            webView.goBack()
-        }else{
-            moveTaskToBack(false);
-        }
+        webView?.run {
+            if(url != configHomeUrl && canGoBack()){
+                goBack()
+            }
+        }?: moveTaskToBack(false);
     }
-
 }

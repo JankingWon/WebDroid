@@ -1,18 +1,46 @@
 package cn.janking.webDroid
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import cn.janking.webDroid.helper.DialogHelper
-import cn.janking.webDroid.util.*
-import kotlinx.android.synthetic.main.activity_main.*
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.marginBottom
+import cn.janking.webDroid.util.BuildUtils
 
 class MainActivity : AppCompatActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(createContentView())
+    }
+
+    private fun createContentView():View{
+        val contentView = LinearLayout(this).apply{
+            orientation = LinearLayout.VERTICAL
+        }
+        val console = TextView(this).apply {
+            width = LinearLayout.LayoutParams.MATCH_PARENT
+            height = 300
+        }
+        val preview = Button(this).apply {
+            text = "Preview"
+            setOnClickListener {
+                startActivity(Intent(this@MainActivity, WebActivity::class.java))
+            }
+        }
+        val build = Button(this).apply {
+            text = "Build"
+            setOnClickListener{
+                BuildUtils.build(console)
+            }
+        }
+        return contentView.apply {
+            addView(preview)
+            addView(build)
+            addView(console)
+        }
     }
 
     /**
@@ -21,19 +49,5 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         BuildUtils.requestStoragePermission()
-    }
-
-    fun onClick(view: View) {
-        when (view.id) {
-            R.id.preview -> preview()
-            R.id.build -> BuildUtils.build(console)
-        }
-    }
-
-    /**
-     * 预览生成的app
-     */
-    fun preview() {
-        startActivity(Intent(this, WebActivity::class.java))
     }
 }
