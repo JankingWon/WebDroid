@@ -322,7 +322,7 @@ public class X509CRLEntryImpl extends X509CRLEntry implements Comparable<X509CRL
       return (CertificateIssuerExtension)this.getExtension(PKIXExtensions.CertificateIssuer_Id);
    }
 
-   public Map<String, java.security.cert.Extension> getExtensions() {
+   public Map<String, Extension> getExtensions() {
       if (this.extensions == null) {
          return Collections.emptyMap();
       } else {

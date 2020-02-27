@@ -1,4 +1,4 @@
-package cn.janking.webDroid.util;
+package com.android.signapk;
 /*
  * Copyright (C) 2008 The Android Open Source Project
  *
@@ -70,7 +70,7 @@ import sun.security.x509.X500Name;
  * Command line tool to sign JAR files (including APKs and OTA updates) in a way
  * compatible with the mincrypt verifier, using SHA1 and RSA keys.
  */
-public class SignApkUtils
+public class SignApk
 {
     private static final String CERT_SF_NAME = "META-INF/CERT.SF";
     private static final String CERT_RSA_NAME = "META-INF/CERT.RSA";
@@ -192,7 +192,7 @@ public class SignApkUtils
         else
         {
             main.putValue("Manifest-Version", "1.0");
-            main.putValue("Created-By", "1.0 (Android SignApkUtils)");
+            main.putValue("Created-By", "1.0 (Android SignApk)");
         }
         BASE64Encoder base64 = new BASE64Encoder();
         MessageDigest md = MessageDigest.getInstance("SHA1");
@@ -285,7 +285,7 @@ public class SignApkUtils
         Manifest sf = new Manifest();
         Attributes main = sf.getMainAttributes();
         main.putValue("Signature-Version", "1.0");
-        main.putValue("Created-By", "1.0 (Android SignApkUtils)");
+        main.putValue("Created-By", "1.0 (Android SignApk)");
         BASE64Encoder base64 = new BASE64Encoder();
         MessageDigest md = MessageDigest.getInstance("SHA1");
         PrintStream print = new PrintStream(new DigestOutputStream(
@@ -360,7 +360,7 @@ public class SignApkUtils
         // archive comment, so that tools that display the comment
         // (hopefully) show something sensible.
         // TODO: anything more useful we can put in this message?
-        byte[] message = "signed by SignApkUtils".getBytes(StandardCharsets.UTF_8);
+        byte[] message = "signed by SignApk".getBytes(StandardCharsets.UTF_8);
         temp.write(message);
         temp.write(0);
         writeSignatureBlock(signature, publicKey, temp);

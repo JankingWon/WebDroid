@@ -5,6 +5,7 @@ import android.widget.TextView
 import android.widget.Toast
 import cn.janking.webDroid.constant.PermissionConstants
 import cn.janking.webDroid.helper.DialogHelper
+import com.android.signapk.SignApk
 import java.io.File
 import java.lang.RuntimeException
 
@@ -139,7 +140,7 @@ class BuildUtils{
                             throw RuntimeException("key is null")
                     }
                     //签名
-                    SignApkUtils.main(
+                    SignApk.main(
                         arrayOf(
                             EnvironmentUtils.getKeyPem(),
                             EnvironmentUtils.getKeyPk8(),
