@@ -1,2 +1,2 @@
-include ':app', ':signapk'
+include ':app', ':signapk',':xmleditor'
 rootProject.name='WebDroid'

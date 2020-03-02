@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../WebDroid.iml" filepath="$PROJECT_DIR$/../WebDroid.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../app/app.iml" filepath="$PROJECT_DIR$/../app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/signapk.iml" filepath="$PROJECT_DIR$/signapk.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../xmleditor/xmleditor.iml" filepath="$PROJECT_DIR$/../xmleditor/xmleditor.iml" />
+    </modules>
+  </component>
+</project>

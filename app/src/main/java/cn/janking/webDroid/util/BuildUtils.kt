@@ -61,11 +61,6 @@ class BuildUtils{
                     ) { pathname -> pathname.name.run {
                         !equals(EnvironmentUtils.DEFAULT_CONFIG_FILE)
                     } }
-                    //复制Manifests
-                    /*  FileUtils.copyFileToDir(
-                        EnvironmentUtils.getFileTemplateSub(EnvironmentUtils.DEFAULT_MANIFEST_FILE),
-                        EnvironmentUtils.getDirUnzippedApk()
-                    )*/
                 }
 
                 override fun onFail(t: Throwable?) {
@@ -122,6 +117,33 @@ class BuildUtils{
                         EnvironmentUtils.getFileTemplateSub(EnvironmentUtils.DEFAULT_CONFIG_FILE),
                         EnvironmentUtils.getDirUnzippedApkAssets()
                     )
+                    //修改manifest
+//                    FileUtils.copyFileToDir(
+//                        EnvironmentUtils.getFileTemplateSub(EnvironmentUtils.DEFAULT_MANIFEST_FILE),
+//                        EnvironmentUtils.getDirUnzippedApk()
+//                    )
+                    //修改包名
+                    cn.wjdiankong.main.Main.main(arrayOf(
+                        //属性
+                        "-attr",
+                        //修改
+                        "-m",
+                        //标签
+                        "manifest",
+                        //标签标识
+                        "",
+                        //属性名
+                        "package",
+                        //属性值
+                        "cn.janking.weiboboo",
+                        EnvironmentUtils.getDirUnzippedApkSub(EnvironmentUtils.DEFAULT_MANIFEST_FILE),
+                        EnvironmentUtils.getDirUnzippedApkSub(EnvironmentUtils.DEFAULT_MANIFEST_FILE + "_1")
+                    ))
+                    FileUtils.copyFileToFile(
+                        EnvironmentUtils.getDirUnzippedApkSub(EnvironmentUtils.DEFAULT_MANIFEST_FILE + "_1"),
+                        EnvironmentUtils.getDirUnzippedApkSub(EnvironmentUtils.DEFAULT_MANIFEST_FILE)
+                    )
+                    FileUtils.delete(EnvironmentUtils.getDirUnzippedApkSub(EnvironmentUtils.DEFAULT_MANIFEST_FILE + "_1"))
                     //压缩
                     SpanUtils.with(console)
                         .append(console.text)

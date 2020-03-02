@@ -1,0 +1,14 @@
+apply plugin: 'java-library'
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation files('libs/xmlpull_1_1_3_4c.jar')
+}
+
+sourceCompatibility = "8"
+targetCompatibility = "8"
+
+//解决java输出中文乱码
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
