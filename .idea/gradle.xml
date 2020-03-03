@@ -13,6 +13,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/signapk" />
             <option value="$PROJECT_DIR$/xmleditor" />
+            <option value="$PROJECT_DIR$/xmlparser" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

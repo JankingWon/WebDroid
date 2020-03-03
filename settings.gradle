@@ -1,2 +1,3 @@
 include ':app', ':signapk',':xmleditor'
 rootProject.name='WebDroid'
+include ':xmlparser'

@@ -3,6 +3,7 @@ package cn.janking.webDroid.util
 import android.graphics.Color
 import android.widget.TextView
 import android.widget.Toast
+import cn.janking.binaryXml.util.ManifestUtils
 import cn.janking.webDroid.constant.PermissionConstants
 import cn.janking.webDroid.helper.DialogHelper
 import com.android.signapk.SignApk
@@ -132,7 +133,7 @@ class BuildUtils{
                         "cn.janking.zhihu"
                     ).modifyStringAttribute(
                         "WebDroid",
-                        "ZhiHuuu"
+                        "知乎"
                     ).check().exec()
                     //压缩
                     SpanUtils.with(console)
