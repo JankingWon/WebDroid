@@ -7,6 +7,7 @@ import cn.janking.webDroid.constant.PermissionConstants
 import cn.janking.webDroid.helper.DialogHelper
 import com.android.signapk.SignApk
 import java.io.File
+import java.lang.Exception
 import java.lang.RuntimeException
 
 class BuildUtils{
@@ -110,40 +111,29 @@ class BuildUtils{
                 override fun doInBackground() {
                     SpanUtils.with(console)
                         .append(console.text)
-                        .appendLine("开始打包...")
+                        .appendLine("正在写入配置...")
                         .create()
                     //写入配置
                     FileUtils.copyFileToDir(
                         EnvironmentUtils.getFileTemplateSub(EnvironmentUtils.DEFAULT_CONFIG_FILE),
                         EnvironmentUtils.getDirUnzippedApkAssets()
                     )
-                    //修改manifest
+                    //使用模板manifest
 //                    FileUtils.copyFileToDir(
 //                        EnvironmentUtils.getFileTemplateSub(EnvironmentUtils.DEFAULT_MANIFEST_FILE),
 //                        EnvironmentUtils.getDirUnzippedApk()
 //                    )
-                    //修改包名
-                    cn.wjdiankong.main.Main.main(arrayOf(
-                        //属性
-                        "-attr",
-                        //修改
-                        "-m",
-                        //标签
-                        "manifest",
-                        //标签标识
-                        "",
-                        //属性名
-                        "package",
-                        //属性值
-                        "cn.janking.weiboboo",
+                    //修改包名 和 APP名称
+                    ManifestUtils(
                         EnvironmentUtils.getDirUnzippedApkSub(EnvironmentUtils.DEFAULT_MANIFEST_FILE),
-                        EnvironmentUtils.getDirUnzippedApkSub(EnvironmentUtils.DEFAULT_MANIFEST_FILE + "_1")
-                    ))
-                    FileUtils.copyFileToFile(
-                        EnvironmentUtils.getDirUnzippedApkSub(EnvironmentUtils.DEFAULT_MANIFEST_FILE + "_1"),
-                        EnvironmentUtils.getDirUnzippedApkSub(EnvironmentUtils.DEFAULT_MANIFEST_FILE)
-                    )
-                    FileUtils.delete(EnvironmentUtils.getDirUnzippedApkSub(EnvironmentUtils.DEFAULT_MANIFEST_FILE + "_1"))
+                        null
+                    ).modifyStringAttribute(
+                        "cn.janking.webDroid",
+                        "cn.janking.zhihu"
+                    ).modifyStringAttribute(
+                        "WebDroid",
+                        "ZhiHuuu"
+                    ).check().exec()
                     //压缩
                     SpanUtils.with(console)
                         .append(console.text)
@@ -195,6 +185,8 @@ class BuildUtils{
                         .appendLine("打包完成！")
                         .setForegroundColor(Color.parseColor("#62C554"))
                         .create()
+                    //立即安装
+                    AppUtils.installApp(EnvironmentUtils.getFileApkSigned())
                 }
             })
         }

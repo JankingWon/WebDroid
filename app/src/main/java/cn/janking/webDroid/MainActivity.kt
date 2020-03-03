@@ -8,7 +8,9 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.marginBottom
+import androidx.core.view.marginStart
 import cn.janking.webDroid.util.BuildUtils
+import cn.janking.webDroid.util.SizeUtils
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,7 +24,8 @@ class MainActivity : AppCompatActivity() {
         }
         val console = TextView(this).apply {
             width = LinearLayout.LayoutParams.MATCH_PARENT
-            height = 300
+            height = 0
+            isVerticalScrollBarEnabled = true
         }
         val preview = Button(this).apply {
             text = "Preview"
@@ -40,6 +43,10 @@ class MainActivity : AppCompatActivity() {
             addView(preview)
             addView(build)
             addView(console)
+            (console.layoutParams as LinearLayout.LayoutParams).run {
+                weight = 1f
+                marginStart = SizeUtils.dp2px(10f)
+            }
         }
     }
 

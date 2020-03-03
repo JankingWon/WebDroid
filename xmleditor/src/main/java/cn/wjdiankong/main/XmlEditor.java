@@ -239,12 +239,9 @@ public class XmlEditor {
 	 */
 	public static void modifyAttr(String tag, String tagName, String attrName, String attrValue)throws UnsupportedEncodingException{
 		ParserChunkUtils.parserXml();
-//		XmlEditor.removeAttr(tag, tagName, attrName);
-//		ParserChunkUtils.parserXml();
-//		XmlEditor.addAttr(tag, tagName, attrName, attrValue);
-		int index = ParserChunkUtils.xmlStruct.stringChunk.stringContentList.indexOf("cn.janking.webDroid");
-		ParserChunkUtils.xmlStruct.stringChunk.stringContentList.set(index, attrValue);
-		modifStringChunk();
+		XmlEditor.removeAttr(tag,	tagName, attrName);
+		ParserChunkUtils.parserXml();
+		XmlEditor.addAttr(tag, tagName, attrName, attrValue);
 	}
 	
 	/**

@@ -2,9 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="cn.janking.webDroid">
 
+    <!--网络-->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!--读写-->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!--安装app-->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <application
         android:name="cn.janking.webDroid.MyApplication"
@@ -39,6 +43,17 @@
         <meta-data
             android:name="android.webkit.WebView.EnableSafeBrowsing"
             android:value="true" />
+
+        <provider
+            android:name="cn.janking.webDroid.util.Utils$FileProvider4UtilCode"
+            android:authorities="${applicationId}.utilcode.provider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            android:multiprocess="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/util_code_provider_paths" />
+        </provider>
     </application>
 
 </manifest>
