@@ -52,7 +52,7 @@ public class ManifestUtils {
         xmlParser.parse();
         int attrValueIndex = xmlParser.stringChunkList.indexOf(oldAttr);
         if (attrValueIndex == -1) {
-            throw new RuntimeException("找不到该属性值");
+            throw new RuntimeException("找不到该属性值[old:" +oldAttr + "][new:" + newAttr + "]");
         }
         xmlParser.stringChunkList.set(attrValueIndex, newAttr);
         //如果字符串长度一样，只需要修改StringPool中的原来字符串即可

@@ -7,15 +7,14 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.marginBottom
-import androidx.core.view.marginStart
 import cn.janking.webDroid.util.BuildUtils
 import cn.janking.webDroid.util.SizeUtils
 
-class MainActivity : AppCompatActivity() {
+class CreatorActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(createContentView())
+        componentName
     }
 
     private fun createContentView():View{
@@ -30,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         val preview = Button(this).apply {
             text = "Preview"
             setOnClickListener {
-                startActivity(Intent(this@MainActivity, WebActivity::class.java))
+                startActivity(Intent(this@CreatorActivity, WebDroidActivity::class.java))
             }
         }
         val build = Button(this).apply {

@@ -1,4 +1,14 @@
 {
-  "url" : "https://weibo.com",
-  "debug" : true
+  "titles" : [
+    "微博",
+    "知乎",
+    "百度",
+    "QQ"
+  ],
+  "urls" : [
+    "https://weibo.com",
+    "https://zhihu.com",
+    "https://baidu.com",
+    "https://qq.com"
+  ]
 }

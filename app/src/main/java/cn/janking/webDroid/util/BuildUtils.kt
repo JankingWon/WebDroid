@@ -10,9 +10,17 @@ import com.android.signapk.SignApk
 import java.io.File
 import java.lang.Exception
 import java.lang.RuntimeException
+import java.util.*
+import kotlin.random.Random
 
+/**
+ * 用于打包apk的工具类
+ */
 class BuildUtils{
     companion object{
+        /**
+         * 是否已经准备好打包apk
+         */
         var hasInit : Boolean = false
         /**
          * 请求读写文件权限
@@ -33,10 +41,10 @@ class BuildUtils{
                     ) {
                         LogUtils.i("请求权限失败！")
                         //如果选择了“拒绝后不再询问”，则引导打开权限设置页面
-//                        if (permissionsDeniedForever.isNotEmpty()) {
-//                            DialogHelper.showOpenAppSettingDialog()
-//                            return
-//                        }
+                        if (permissionsDeniedForever.isNotEmpty()) {
+                            DialogHelper.showOpenAppSettingDialog()
+                            return
+                        }
                     }
                 })
                 .request()
@@ -48,10 +56,10 @@ class BuildUtils{
             if(hasInit) return
             ThreadUtils.executeByCached(object : ThreadUtils.SimpleTask<Unit>(){
                 override fun doInBackground() {
-                    //复制资源和
+                    //复制资源
                     copyAssets("template")
                     copyAssets("key")
-                    //解压apk
+                    //解压apk，此项如果在debug模式有问题
                     ZipUtils.unzipFile(File(Utils.getApp().packageResourcePath), FileUtils.getExistDir(EnvironmentUtils.getDirUnzippedApk()))
                     //删除原有签名
                     FileUtils.deleteFilesInDirWithFilter(EnvironmentUtils.getDirUnzippedApkMetaINF()
@@ -119,21 +127,21 @@ class BuildUtils{
                         EnvironmentUtils.getFileTemplateSub(EnvironmentUtils.DEFAULT_CONFIG_FILE),
                         EnvironmentUtils.getDirUnzippedApkAssets()
                     )
-                    //使用模板manifest
-//                    FileUtils.copyFileToDir(
-//                        EnvironmentUtils.getFileTemplateSub(EnvironmentUtils.DEFAULT_MANIFEST_FILE),
-//                        EnvironmentUtils.getDirUnzippedApk()
-//                    )
+                    //使用模板中的manifest，此项有问题
+                    FileUtils.copyFileToDir(
+                        EnvironmentUtils.getFileTemplateSub(EnvironmentUtils.DEFAULT_MANIFEST_FILE),
+                        EnvironmentUtils.getDirUnzippedApk()
+                    )
                     //修改包名 和 APP名称
                     ManifestUtils(
                         EnvironmentUtils.getDirUnzippedApkSub(EnvironmentUtils.DEFAULT_MANIFEST_FILE),
                         null
                     ).modifyStringAttribute(
-                        "cn.janking.webDroid",
-                        "cn.janking.zhihu"
+                        AppUtils.getAppPackageName(),
+                        "cn.janking.zhihu" + UUID.randomUUID().toString().substring(0,4)
                     ).modifyStringAttribute(
-                        "WebDroid",
-                        "知乎"
+                        AppUtils.getAppName(),
+                        "知乎" + UUID.randomUUID().toString().substring(0,4)
                     ).check().exec()
                     //压缩
                     SpanUtils.with(console)

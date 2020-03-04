@@ -19,14 +19,13 @@
         android:theme="@style/AppTheme"
         android:label="WebDroid">
         <activity
-            android:name="cn.janking.webDroid.WebActivity"
-            android:label="网页">
+            android:name="cn.janking.webDroid.WebDroidActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
-        <activity android:name="cn.janking.webDroid.MainActivity"
-            android:label="主页">
+        <activity android:name="cn.janking.webDroid.CreatorActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -44,6 +43,7 @@
             android:name="android.webkit.WebView.EnableSafeBrowsing"
             android:value="true" />
 
+        <!--重复的provider会导致安装失败-->
         <provider
             android:name="cn.janking.webDroid.util.Utils$FileProvider4UtilCode"
             android:authorities="${applicationId}.utilcode.provider"
