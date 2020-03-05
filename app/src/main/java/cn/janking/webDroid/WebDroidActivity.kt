@@ -1,26 +1,29 @@
 package cn.janking.webDroid
 
-import android.opengl.Visibility
 import android.os.Bundle
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.PagerAdapter
+import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import cn.janking.webDroid.model.Config
 import cn.janking.webDroid.widget.WebDroidView
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_webdroid.*
-import kotlinx.android.synthetic.main.fragment_webdroid.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import kotlin.collections.HashMap
 
-class WebDroidActivity : AppCompatActivity() {
+class WebDroidActivity : BaseActivity() {
     /**
-     * 防止重定向的问题，此处记录真正的主页，即不会再重定向
+     * 缓存页面
      */
-    private var configHomeUrl: String? = null
+    private val pageMap: MutableMap<Int, WebDroidView?> = HashMap()
 
-    private val mPageMap: MutableMap<Int, WebDroidView?> = HashMap()
-
+    /**
+     * 滑动页面的适配器
+     */
     private val mPagerAdapter: PagerAdapter = object : PagerAdapter() {
         override fun isViewFromObject(view: View, `object`: Any): Boolean {
             return view === `object`
@@ -41,14 +44,14 @@ class WebDroidActivity : AppCompatActivity() {
         }
 
         private fun getPageView(position: Int): View? {
-            var view = mPageMap[position]
+            var view = pageMap[position]
             if (view == null) {
                 view = WebDroidView.createView(
                     this@WebDroidActivity,
-                    view_pager,
+                    viewPager,
                     Config.instance.urls[position]
                 )
-                mPageMap[position] = view
+                pageMap[position] = view
             }
             return view.contentView
         }
@@ -66,46 +69,81 @@ class WebDroidActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * 底部的监听器
+     */
+    private val mOnNavigationItemSelectedListener =
+        BottomNavigationView.OnNavigationItemSelectedListener { item ->
+            viewPager.currentItem = item.itemId
+            return@OnNavigationItemSelectedListener true
+        }
+
+    /**
+     * 适用于底部导航栏的对viewPager的监听器
+     */
+    private val pageChangeListener: OnPageChangeListener = object : OnPageChangeListener {
+
+        override fun onPageSelected(position: Int) {
+            if (bottomNavigation.selectedItemId != position) {
+                bottomNavigation.selectedItemId = position
+            }
+        }
+
+        override fun onPageScrollStateChanged(state: Int) {}
+        override fun onPageScrolled(
+            position: Int,
+            positionOffset: Float,
+            positionOffsetPixels: Int
+        ) {}
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_webdroid)
-        initTitle()
+        initToolBar()
         initViews()
-        initListeners()
     }
 
-    private fun initTitle() {
-
+    private fun initToolBar() {
+        setStatusBarColor(getColor(R.color.colorPrimaryDark))
+        toolbar.title = Config.instance.appName
+        setSupportActionBar(toolbar)
     }
 
     private fun initViews() {
-        view_pager.adapter = mPagerAdapter
         if (Config.instance.tabCount == 0) {
-            tab_layout.visibility = View.GONE
+            topNavigation.visibility = View.GONE
+            bottomNavigation.visibility = View.GONE
         } else {
-            tab_layout.visibility = View.VISIBLE
-            tab_layout.setupWithViewPager(view_pager)
+            viewPager.adapter = mPagerAdapter
+            //如果是设置顶部tab
+            if (Config.instance.tabStyle == 0) {
+                topNavigation.visibility = View.VISIBLE
+                bottomNavigation.visibility = View.GONE
+                topNavigation.setupWithViewPager(viewPager)
+            } else {
+                //设置底部tab @todo 添加底部tab icon
+                topNavigation.visibility = View.GONE
+                bottomNavigation.visibility = View.VISIBLE
+                viewPager.addOnPageChangeListener(pageChangeListener)
+                for (i in 0 until Config.instance.tabCount) {
+                    bottomNavigation.menu.add(Menu.NONE, i, i, Config.instance.titles[i])
+                }
+                bottomNavigation.setOnNavigationItemSelectedListener(
+                    mOnNavigationItemSelectedListener
+                )
+            }
         }
     }
 
-    private fun initListeners() {
 
-    }
 
     /**
      * 监听返回键
      */
     override fun onBackPressed() {
-        webView?.run {
-            if (url != configHomeUrl && canGoBack()) {
-                goBack()
-                return
-            }
-        }
-        if (Config.instance.preview) {
+        if (!pageMap[viewPager.currentItem]!!.handleBack()) {
             super.onBackPressed()
-        } else {
-            moveTaskToBack(false);
         }
     }
 

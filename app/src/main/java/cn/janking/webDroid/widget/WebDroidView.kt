@@ -12,60 +12,85 @@ import android.webkit.WebViewClient
 import cn.janking.webDroid.R
 
 class WebDroidView constructor(
-    val contentView: View
+    val contentView: View,
+    private val configUrl: String
 ) {
     /**
      * 真正的主页
      */
-    public var configHomeUrl: String? = null
+    var configHomeUrl: String? = null
+
+    private var webView: WebView? = null
 
     companion object {
-        fun createView(context: Context, viewGroup: ViewGroup, url : String) : WebDroidView {
-            val webDroidView = WebDroidView(
+        fun createView(context: Context, viewGroup: ViewGroup, url: String): WebDroidView {
+            return WebDroidView(
                 LayoutInflater.from(context).inflate(
-                    R.layout.fragment_webdroid,
+                    R.layout.layout_webdroid,
                     viewGroup,
                     false
-                )
-            );
-            //初始化webView
-            webDroidView.contentView.findViewById<WebView>(R.id.webView).apply {
-                webViewClient = object : WebViewClient() {
-                    override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                        if (webDroidView.configHomeUrl == null) {
-                            webDroidView.configHomeUrl = url
-                        }
-                        loadUrl(url)
-                        return true
-                    }
-                }
-                settings.run {
-                    javaScriptEnabled = true
-                    allowFileAccess = true
-                    allowFileAccessFromFileURLs = true
-                    allowContentAccess = true
-                    domStorageEnabled = true
-                }
-                webChromeClient = object : WebChromeClient() {
-                    override fun onJsAlert(
-                        view: WebView?,
-                        url: String?,
-                        message: String?,
-                        result: JsResult?
-                    ): Boolean {
-                        AlertDialog.Builder(context)
-                            .setMessage(message)
-                            .setPositiveButton(
-                                "确定"
-                            ) { dialog, _ -> dialog.dismiss() }
-                            .create().show()
-                        result?.confirm()
-                        return true
-                    }
-                }
-                loadUrl(url)
+                ), url
+            ).apply {
+                init()
             }
-            return webDroidView
         }
     }
+
+    fun init() {
+        webView = contentView.findViewById(R.id.webView)
+        webView?.apply {
+            webViewClient = object : WebViewClient() {
+                override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+                    if (configHomeUrl == null) {
+                        configHomeUrl = url
+                    }
+                    loadUrl(url)
+                    return true
+                }
+            }
+            settings.run {
+                javaScriptEnabled = true
+                allowFileAccess = true
+                allowFileAccessFromFileURLs = true
+                allowContentAccess = true
+                domStorageEnabled = true
+            }
+            webChromeClient = object : WebChromeClient() {
+                override fun onJsAlert(
+                    view: WebView?,
+                    url: String?,
+                    message: String?,
+                    result: JsResult?
+                ): Boolean {
+                    AlertDialog.Builder(context)
+                        .setMessage(message)
+                        .setPositiveButton(
+                            "确定"
+                        ) { dialog, _ -> dialog.dismiss() }
+                        .create().show()
+                    result?.confirm()
+                    return true
+                }
+            }
+            loadUrl(configUrl)
+        }
+    }
+
+    fun getWebView(): WebView {
+        return webView!!
+    }
+
+    /**
+     * 是否处理返回按钮
+     */
+    fun handleBack(): Boolean {
+        webView!!.run {
+            if (url != configHomeUrl && canGoBack()) {
+                goBack()
+                return true
+            }
+        }
+        return false
+    }
+
 }

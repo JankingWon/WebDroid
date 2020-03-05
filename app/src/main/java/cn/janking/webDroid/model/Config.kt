@@ -12,10 +12,21 @@ class Config private constructor() {
      */
     @Transient
     var preview = false
+
     /**
-     * 是否全屏
+     * APP的名称
      */
-    var fullScreen = true
+    var appName = ""
+
+    /**
+     * APP包名
+     */
+    var appPackage = ""
+
+    /**
+     * 是否显示标题栏
+     */
+    var showActionBar = true
     /**
      * tab的标题集合
      */
@@ -29,6 +40,13 @@ class Config private constructor() {
      */
     @Transient
     var tabCount = 0
+    /**
+     * tab的风格
+     * 0 : top
+     * 1 : bottom
+     */
+    @Transient
+    var tabStyle = 0
 
     companion object {
         private val gson = Gson()
@@ -39,10 +57,10 @@ class Config private constructor() {
             private set
 
         /**
-         * 读取配置文件
+         * 读取json字符串
          */
         @Throws(JsonSyntaxException::class)
-        fun read(configString: String?) {
+        fun readFromString(configString: String?) {
             instance = gson.fromJson(
                 configString,
                 Config::class.java
@@ -51,6 +69,13 @@ class Config private constructor() {
                     if (it in 0..1) 0 else it
                 }
             }
+        }
+
+        /**
+         * 生成json配置文件
+         */
+        fun generateJson() : String {
+            return gson.toJson(instance)
         }
     }
 }

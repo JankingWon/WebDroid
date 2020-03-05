@@ -14,10 +14,10 @@
         android:name="cn.janking.webDroid.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
+        android:label="WebDroid"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:label="WebDroid">
+        android:theme="@style/AppTheme">
         <activity
             android:name="cn.janking.webDroid.WebDroidActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -25,7 +25,9 @@
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
-        <activity android:name="cn.janking.webDroid.CreatorActivity">
+        <activity
+            android:name="cn.janking.webDroid.CreatorActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

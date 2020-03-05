@@ -12,6 +12,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -454,4 +455,15 @@ public class FileUtils {
         return true;
     }
 
+    /**
+     * 把字符串写入文件
+     * @param string
+     * @param filePath
+     */
+    static public void writeToFile(String string, String filePath) throws IOException {
+        FileWriter writer = new FileWriter(getExistFile(filePath));
+        writer.write(string);
+        writer.flush();
+        writer.close();
+    }
 }
