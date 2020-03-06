@@ -22,22 +22,25 @@ public class ManifestUtils {
         } else {
             filePath = destFilePath;
         }
-        FileInputStream fileInputStream = new FileInputStream(new File(srcFilePath));
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1024];
-        int len = 0;
-        while ((len = fileInputStream.read(buffer)) != -1) {
-            byteArrayOutputStream.write(buffer, 0, len);
+        try (FileInputStream fileInputStream = new FileInputStream(new File(srcFilePath));
+             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream()) {
+            byte[] buffer = new byte[1024];
+            int len = 0;
+            while ((len = fileInputStream.read(buffer)) != -1) {
+                byteArrayOutputStream.write(buffer, 0, len);
+            }
+            xmlParser = new XmlParser(byteArrayOutputStream.toByteArray());
+        } finally {
+
         }
-        xmlParser = new XmlParser(byteArrayOutputStream.toByteArray());
-        fileInputStream.close();
-        byteArrayOutputStream.close();
     }
 
     public void exec() throws IOException {
-        FileOutputStream fileOutputStream = new FileOutputStream(new File(filePath));
-        fileOutputStream.write(xmlParser.reader.data);
-        fileOutputStream.close();
+        try (FileOutputStream fileOutputStream = new FileOutputStream(new File(filePath))) {
+            fileOutputStream.write(xmlParser.reader.data);
+        } finally {
+
+        }
     }
 
     public ManifestUtils check() throws UnsupportedEncodingException {
@@ -52,7 +55,7 @@ public class ManifestUtils {
         xmlParser.parse();
         int attrValueIndex = xmlParser.stringChunkList.indexOf(oldAttr);
         if (attrValueIndex == -1) {
-            throw new RuntimeException("找不到该属性值[old:" +oldAttr + "][new:" + newAttr + "]");
+            throw new RuntimeException("找不到该属性值[old:" + oldAttr + "][new:" + newAttr + "]");
         }
         xmlParser.stringChunkList.set(attrValueIndex, newAttr);
         //如果字符串长度一样，只需要修改StringPool中的原来字符串即可

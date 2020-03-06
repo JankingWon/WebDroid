@@ -1,11 +1,12 @@
 {
-  "titles" : [
+  "appName" : "baby",
+  "tabTitles" : [
     "微博",
     "知乎",
     "百度",
     "QQ"
   ],
-  "urls" : [
+  "tabUrls" : [
     "https://weibo.com",
     "https://zhihu.com",
     "https://baidu.com",

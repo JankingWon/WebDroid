@@ -30,11 +30,11 @@ class Config private constructor() {
     /**
      * tab的标题集合
      */
-    var titles: Array<String> = arrayOf("")
+    var tabTitles: List<String> = List(0) {""}
     /**
      * viewPager的url集合
      */
-    var urls: Array<String> = arrayOf("https://github.com/JankingWon/WebDroid")
+    var tabUrls: List<String> = List(0) {""}
     /**
      * tab的个数
      */
@@ -65,9 +65,7 @@ class Config private constructor() {
                 configString,
                 Config::class.java
             ).apply {
-                tabCount = titles.size.coerceAtMost(urls.size).let {
-                    if (it in 0..1) 0 else it
-                }
+                tabCount = tabTitles.size.coerceAtMost(tabUrls.size)
             }
         }
 

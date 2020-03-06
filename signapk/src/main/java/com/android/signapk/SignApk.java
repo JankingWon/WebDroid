@@ -443,7 +443,7 @@ public class SignApk
             out.flush();
         }
     }
-    public static void main(String[] args)
+    public static void main(String[] args) throws Exception
     {
         if (args.length != 4 && args.length != 5)
         {
@@ -515,23 +515,12 @@ public class SignApk
                         ((ByteArrayOutputStream) outputStream).toByteArray(),
                         outputFile, publicKey, privateKey);
             }
-        } catch (Exception e)
+        }finally
         {
-            e.printStackTrace();
-            System.exit(1);
-        } finally
-        {
-            try
-            {
-                if (inputJar != null)
-                    inputJar.close();
-                if (outputFile != null)
-                    outputFile.close();
-            } catch (IOException e)
-            {
-                e.printStackTrace();
-                System.exit(1);
-            }
+            if (inputJar != null)
+                inputJar.close();
+            if (outputFile != null)
+                outputFile.close();
         }
     }
 }

@@ -2,14 +2,18 @@ package cn.janking.webDroid.util
 
 import android.widget.TextView
 import cn.janking.binaryXml.util.ManifestUtils
-import cn.janking.webDroid.BuildFinishEvent
-import cn.janking.webDroid.InitFinish
 import cn.janking.webDroid.constant.PermissionConstants
+import cn.janking.webDroid.event.BuildFinishEvent
+import cn.janking.webDroid.event.CancelBuildEvent
+import cn.janking.webDroid.event.InitFinishEvent
 import cn.janking.webDroid.helper.DialogHelper
 import cn.janking.webDroid.model.Config
 import com.android.signapk.SignApk
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import java.io.File
+import java.lang.Exception
 
 /**
  * 用于打包apk的工具类
@@ -20,6 +24,11 @@ class BuildUtils {
          * 是否已经准备好打包apk
          */
         var hasInit: Boolean = false
+        /**
+         * 输出信息的控件
+         */
+        var console: TextView? = null
+
         /**
          * 请求读写文件权限
          */
@@ -83,14 +92,14 @@ class BuildUtils {
 
                 override fun onFail(t: Throwable?) {
                     LogUtils.w("初始化错误")
-                    EventBus.getDefault().post(InitFinish(false))
+                    EventBus.getDefault().post(InitFinishEvent(false))
                     t?.printStackTrace()
                 }
 
                 override fun onSuccess(result: Unit) {
                     hasInit = true
                     LogUtils.w("初始化完成")
-                    EventBus.getDefault().post(InitFinish(true))
+                    EventBus.getDefault().post(InitFinishEvent(true))
                 }
             })
         }
@@ -106,11 +115,12 @@ class BuildUtils {
                 )
             }
         }
+
         /**
          * 生成apk
          * @todo 字节对齐
          */
-        fun build(console: TextView) {
+        fun build(textView: TextView) {
             //如果没有初始化成功，则中断
             if (!hasInit) {
                 ConsoleUtils.warning(console, "数据未初始化...")
@@ -118,8 +128,14 @@ class BuildUtils {
                 requestStoragePermission()
                 return
             }
+            console = textView
             ThreadUtils.executeByCached(object : ThreadUtils.SimpleTask<Unit>() {
                 override fun doInBackground() {
+                    //设置超时
+                    setTimeout(60 * 1000) {
+                        onFail(Exception("打包超时"))
+                    }
+                    EventBus.getDefault().register(this)
                     ConsoleUtils.info(console, "正在写入配置...")
                     //写入配置
                     FileUtils.writeToFile(
@@ -154,7 +170,10 @@ class BuildUtils {
                     ) {
                         throw RuntimeException("key is null")
                     }
-                    //签名
+                    if(isCanceled){
+                        return
+                    }
+                    //签名，@todo 反复打包和取消此处会出现Android Fatal Signal 7 (SIGBUS)
                     SignApk.main(
                         arrayOf(
                             EnvironmentUtils.keyPem,
@@ -163,24 +182,35 @@ class BuildUtils {
                             EnvironmentUtils.fileApkSigned
                         )
                     )
+                    //删除未签名文件
+                    FileUtils.delete(EnvironmentUtils.fileApkUnsigned)
                 }
 
                 override fun onCancel() {
-                    ConsoleUtils.warning(console,"打包取消！")
-                    EventBus.getDefault().post(BuildFinishEvent())
+                    ConsoleUtils.warning(console, "打包取消！")
                 }
 
                 override fun onFail(t: Throwable?) {
                     ConsoleUtils.error(console, String.format("打包失败！(%s)", t?.message))
                     t?.printStackTrace()
-                    EventBus.getDefault().post(BuildFinishEvent())
                 }
 
                 override fun onSuccess(result: Unit?) {
-                    ConsoleUtils.success(console, "打包完成！")
-                    EventBus.getDefault().post(BuildFinishEvent())
+                    ConsoleUtils.success(console, "打包完成！(${EnvironmentUtils.fileApkSigned})")
                     //立即安装
-                    AppUtils.installApp(EnvironmentUtils.fileApkSigned)
+                    //AppUtils.installApp(EnvironmentUtils.fileApkSigned)
+                }
+
+                override fun onDone() {
+                    super.onDone()
+                    console = null
+                    EventBus.getDefault().post(BuildFinishEvent())
+                    EventBus.getDefault().unregister(this)
+                }
+
+                @Subscribe
+                fun onEvent(cancelBuildEvent: CancelBuildEvent) {
+                    cancel()
                 }
             })
         }

@@ -55,10 +55,12 @@ public class FileUtils {
     public static boolean isFileExists(final File file) {
         return file != null && file.exists();
     }
+
     /**
      * 复制目录到目录
+     *
      * @param fromDir 源目录
-     * @param toDir 目的目录，源目录下所有文件和目录将直接复制到此目录
+     * @param toDir   目的目录，源目录下所有文件和目录将直接复制到此目录
      */
     public static void copyDir(String fromDir, String toDir) throws IOException {
         //创建目录的File对象
@@ -100,41 +102,32 @@ public class FileUtils {
     /**
      * 复制文件到一个目录中
      */
-    public static boolean copyFileToDir(String fromFile, String toPath) {
+    public static boolean copyFileToDir(String fromFile, String toPath) throws IOException {
         return copyFileToFile(fromFile, toPath + File.separator + fromFile.substring(fromFile.lastIndexOf(File.separator)));
     }
 
     /**
      * 复制文件到另一个文件中
      */
-    public static boolean copyFileToFile(String fromFile, String toFile) {
-        try {
-            File existFile = getExistFile(toFile);
-            File file= new File(fromFile);
-            if(file.equals(getExistFile(toFile))){
-                return true;
-            }
-            copyFileToFile(file, existFile);
-        }catch (Exception e){
-            e.printStackTrace();
-            return false;
+    public static boolean copyFileToFile(String fromFile, String toFile) throws IOException {
+        File existFile = getExistFile(toFile);
+        File file = new File(fromFile);
+        if (file.equals(getExistFile(toFile))) {
+            return true;
         }
+        copyFileToFile(file, existFile);
         return true;
     }
 
     /**
      * 复制文件到文件
      */
-    public static boolean copyFileToFile(File fromFile, File toFile){
-        FileInputStream inputStream;
-        FileOutputStream outputStream;
-        try {
-            inputStream = new FileInputStream(fromFile);
-            outputStream = new FileOutputStream(getExistFile(toFile));
+    public static boolean copyFileToFile(File fromFile, File toFile) throws IOException {
+        try (FileInputStream inputStream = new FileInputStream(fromFile);
+             FileOutputStream outputStream = new FileOutputStream(getExistFile(toFile))) {
             copyFileToFile(inputStream, outputStream);
-        }catch (Exception e){
-            e.printStackTrace();
-            return false;
+        } finally {
+
         }
         return true;
     }
@@ -152,7 +145,7 @@ public class FileUtils {
      * 复制文件到文件
      * 内部具体实现
      */
-    private static void copyFileToFile(InputStream fromFile, OutputStream toFile) throws IOException{
+    private static void copyFileToFile(InputStream fromFile, OutputStream toFile) throws IOException {
         //把读取到的内容写入新文件
         //把字节数组设置大一些   1*1024*1024=1M
         byte[] bs = new byte[1 * 1024 * 1024];
@@ -202,7 +195,7 @@ public class FileUtils {
         }
         if (!file.exists()) {
             file.createNewFile();//有路径才能创建文件
-        } else if(file.isDirectory()){
+        } else if (file.isDirectory()) {
             file.delete();
             file.createNewFile();
         }
@@ -226,7 +219,7 @@ public class FileUtils {
         }
         if (!file.exists()) {
             file.mkdir();//有路径才能创建目录
-        } else if(file.isFile()){
+        } else if (file.isFile()) {
             file.delete();
             file.mkdir();
         }
@@ -270,7 +263,7 @@ public class FileUtils {
     /**
      * 获取文件内容
      */
-    public static String getFileContent(String filePath){
+    public static String getFileContent(String filePath) {
         StringBuilder stringBuilder = new StringBuilder();
         try {
             BufferedReader in = new BufferedReader(new FileReader(filePath));
@@ -288,18 +281,18 @@ public class FileUtils {
     /**
      * 获取文件内容
      */
-    public static String getFileContent(InputStream inputStream){
+    public static String getFileContent(InputStream inputStream) {
         StringBuilder stringBuilder = new StringBuilder();
         try {
             byte[] buf = new byte[1024];
             int length = 0;
             //循环读取文件内容，输入流中将最多buf.length个字节的数据读入一个buf数组中,返回类型是读取到的字节数。
             //当文件读取到结尾时返回 -1,循环结束。
-            while((length = inputStream.read(buf)) != -1){
-                stringBuilder.append(new String(buf,0,length));
+            while ((length = inputStream.read(buf)) != -1) {
+                stringBuilder.append(new String(buf, 0, length));
             }
             inputStream.close();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -457,13 +450,14 @@ public class FileUtils {
 
     /**
      * 把字符串写入文件
+     *
      * @param string
      * @param filePath
      */
     static public void writeToFile(String string, String filePath) throws IOException {
-        FileWriter writer = new FileWriter(getExistFile(filePath));
-        writer.write(string);
-        writer.flush();
-        writer.close();
+        try (FileWriter writer = new FileWriter(getExistFile(filePath))) {
+            writer.write(string);
+            writer.flush();
+        }
     }
 }

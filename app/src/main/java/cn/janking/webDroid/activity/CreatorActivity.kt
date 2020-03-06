@@ -1,13 +1,20 @@
-package cn.janking.webDroid
+package cn.janking.webDroid.activity
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.animation.AnimationUtils
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import cn.janking.webDroid.R
+import cn.janking.webDroid.adapter.ItemTouchHelperCallback
+import cn.janking.webDroid.adapter.TabListRVAdapter
+import cn.janking.webDroid.event.BuildFinishEvent
+import cn.janking.webDroid.event.CancelBuildEvent
+import cn.janking.webDroid.event.InitFinishEvent
 import cn.janking.webDroid.model.Config
 import cn.janking.webDroid.util.BuildUtils
 import cn.janking.webDroid.util.ConsoleUtils
-import cn.janking.webDroid.util.EnvironmentUtils
-import cn.janking.webDroid.util.FileUtils
 import kotlinx.android.synthetic.main.activity_creator.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -17,6 +24,12 @@ import java.util.regex.Pattern
 
 
 class CreatorActivity : BaseActivity() {
+    var tabListAdapter : TabListRVAdapter? = null
+    /**
+     * 是否正在build
+     */
+    var isBuilding : Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_creator)
@@ -30,8 +43,8 @@ class CreatorActivity : BaseActivity() {
     override fun onStart() {
         super.onStart()
         BuildUtils.requestStoragePermission()
-        if(BuildUtils.hasInit){
-            ConsoleUtils.success(console,"已就绪" )
+        if (BuildUtils.hasInit) {
+            ConsoleUtils.success(console, "已就绪")
         }
     }
 
@@ -42,18 +55,41 @@ class CreatorActivity : BaseActivity() {
 
     private fun initViews() {
         setSupportActionBar(toolbar)
+        //tab设置
+        tabListAdapter = TabListRVAdapter(this)
+        tabList.layoutManager = LinearLayoutManager(this)
+        tabList.adapter = tabListAdapter
+        //tab滑动删除和移动的手势操作
+        val callback: ItemTouchHelper.Callback = ItemTouchHelperCallback(tabListAdapter!!)
+        val mItemTouchHelper = ItemTouchHelper(callback)
+        mItemTouchHelper.attachToRecyclerView(tabList)
+        //添加tab按钮
+        addTab.setOnClickListener {
+            (tabList.adapter as TabListRVAdapter).addTabItem()
+        }
+        //预览按钮
         preview.setOnClickListener {
             if (generateProperty(true)) {
                 startActivity(Intent(this@CreatorActivity, WebDroidActivity::class.java))
             }
         }
+        //打包按钮
         build.setOnClickListener {
-            if (generateProperty(false)) {
-                showProgressBar(true)
-                BuildUtils.build(console)
+            if(isBuilding){
+                //取消打包任务
+                EventBus.getDefault().post(CancelBuildEvent())
+                build.text = "打包"
+                isBuilding = false
+            }else{
+                //开始打包任务
+                if (generateProperty(false)) {
+                    showProgressBar(true)
+                    BuildUtils.build(console)
+                    isBuilding = true
+                    build.text = "取消"
+                }
             }
         }
-
     }
 
     /**
@@ -65,16 +101,13 @@ class CreatorActivity : BaseActivity() {
                 preview = isPreview
                 appName = this@CreatorActivity.appName.text.toString()
                 appPackage = this@CreatorActivity.appPackage.text.toString()
-                titles = arrayOf(
-                    "微博",
-                    "知乎"
-                )
-                urls = arrayOf(
-                    "https://weibo.com",
-                    "https://zhihu.com"
-                )
-                tabCount = 2
-                tabStyle = 1
+                tabTitles = tabListAdapter?.tabTitleItems!!.map {
+                    it.toString()
+                }
+                tabUrls = tabListAdapter?.tabUrlItems!!.map {
+                    it.toString()
+                }
+                tabCount = tabTitles.size.coerceAtMost(tabUrls.size)
             }
             return true
         }
@@ -85,10 +118,10 @@ class CreatorActivity : BaseActivity() {
      * 检查app的名称
      */
     private fun checkAppName(): Boolean {
-        if(appName.text.isNullOrEmpty()){
+        if (appName.text.isNullOrEmpty()) {
             ConsoleUtils.warning(console, "APP名称必填！")
             return false
-        }else if(appName.text.toString().length >= 9){
+        } else if (appName.text.toString().length >= 9) {
             ConsoleUtils.warning(console, "APP名称最多为8个字符！")
         }
         return true
@@ -99,7 +132,7 @@ class CreatorActivity : BaseActivity() {
      * 检查app的包名
      */
     private fun checkAppPackage(): Boolean {
-        if(appPackage.text.isNullOrEmpty()){
+        if (appPackage.text.isNullOrEmpty()) {
             ConsoleUtils.warning(console, "APP包名必填！")
             return false
         }
@@ -108,7 +141,7 @@ class CreatorActivity : BaseActivity() {
         val pattern: Pattern =
             Pattern.compile("^([a-zA-Z_][a-zA-Z0-9_]*)+([.][a-zA-Z_][a-zA-Z0-9_]*)+([.][a-zA-Z_][a-zA-Z0-9_]*)")
         val matcher: Matcher = pattern.matcher(tempPackage)
-        if(!matcher.matches()){
+        if (!matcher.matches()) {
             ConsoleUtils.warning(
                 console,
                 "APP包名不合法！(示例: cn.janking.webDroid)"
@@ -119,16 +152,16 @@ class CreatorActivity : BaseActivity() {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onEvent(initFinish: InitFinish){
-        if(initFinish.success){
-            ConsoleUtils.success(console,"已就绪" )
-        }else{
-            ConsoleUtils.error(console,"初始化错误！" )
+    fun onEvent(initFinishEvent: InitFinishEvent) {
+        if (initFinishEvent.success) {
+            ConsoleUtils.success(console, "已就绪")
+        } else {
+            ConsoleUtils.error(console, "初始化错误！")
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onEvent(buildFinishEvent: BuildFinishEvent){
+    fun onEvent(buildFinishEvent: BuildFinishEvent) {
         showProgressBar(false)
     }
 
@@ -145,13 +178,3 @@ class CreatorActivity : BaseActivity() {
         }
     }
 }
-
-/**
- * 用于传递打包过程结束的信息
- */
-class BuildFinishEvent
-
-/**
- * 用于传达初始化完成的信息
- */
-class InitFinish(val success:Boolean)

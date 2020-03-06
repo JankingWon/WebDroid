@@ -1,4 +1,4 @@
-package cn.janking.webDroid
+package cn.janking.webDroid.activity
 
 import android.os.Bundle
 import android.view.Menu
@@ -6,20 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+import cn.janking.webDroid.R
 import cn.janking.webDroid.model.Config
 import cn.janking.webDroid.widget.WebDroidView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_webdroid.*
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import kotlin.collections.HashMap
 
 class WebDroidActivity : BaseActivity() {
     /**
      * 缓存页面
      */
-    private val pageMap: MutableMap<Int, WebDroidView?> = HashMap()
+    private val pageMap: MutableMap<Int, WebDroidView> = HashMap()
 
     /**
      * 滑动页面的适配器
@@ -49,7 +47,7 @@ class WebDroidActivity : BaseActivity() {
                 view = WebDroidView.createView(
                     this@WebDroidActivity,
                     viewPager,
-                    Config.instance.urls[position]
+                    Config.instance.tabUrls[position]
                 )
                 pageMap[position] = view
             }
@@ -65,7 +63,7 @@ class WebDroidActivity : BaseActivity() {
         }
 
         override fun getPageTitle(position: Int): CharSequence? {
-            return Config.instance.titles[position]
+            return Config.instance.tabTitles[position]
         }
     }
 
@@ -111,11 +109,11 @@ class WebDroidActivity : BaseActivity() {
     }
 
     private fun initViews() {
-        if (Config.instance.tabCount == 0) {
+        viewPager.adapter = mPagerAdapter
+        if (Config.instance.tabCount <= 1) {
             topNavigation.visibility = View.GONE
             bottomNavigation.visibility = View.GONE
         } else {
-            viewPager.adapter = mPagerAdapter
             //如果是设置顶部tab
             if (Config.instance.tabStyle == 0) {
                 topNavigation.visibility = View.VISIBLE
@@ -127,7 +125,7 @@ class WebDroidActivity : BaseActivity() {
                 bottomNavigation.visibility = View.VISIBLE
                 viewPager.addOnPageChangeListener(pageChangeListener)
                 for (i in 0 until Config.instance.tabCount) {
-                    bottomNavigation.menu.add(Menu.NONE, i, i, Config.instance.titles[i])
+                    bottomNavigation.menu.add(Menu.NONE, i, i, Config.instance.tabTitles[i])
                 }
                 bottomNavigation.setOnNavigationItemSelectedListener(
                     mOnNavigationItemSelectedListener

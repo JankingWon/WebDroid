@@ -1,4 +1,4 @@
-package cn.janking.webDroid;
+package cn.janking.webDroid.activity;
 
 import android.os.Bundle;
 import android.view.MenuItem;

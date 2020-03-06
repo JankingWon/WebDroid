@@ -38,10 +38,10 @@
                 android:textColor="?attr/colorPrimary" />
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp">
+                android:layout_marginTop="10dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/appName"
@@ -49,14 +49,15 @@
                     android:layout_height="wrap_content"
                     android:hint="APP名称"
                     android:maxLength="20"
-                    android:maxLines="1" />
+                    android:maxLines="1"
+                    android:singleLine="true" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp">
+                android:layout_marginTop="10dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/appPackage"
@@ -64,14 +65,44 @@
                     android:layout_height="wrap_content"
                     android:hint="APP包名"
                     android:maxLength="20"
-                    android:maxLines="1" />
+                    android:maxLines="1"
+                    android:singleLine="true" />
             </com.google.android.material.textfield.TextInputLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="TAB"
+                    android:textColor="?attr/colorPrimary" />
+
+                <ImageButton
+                    android:id="@+id/addTab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:background="@null"
+                    android:src="@drawable/ic_add_primary" />
+
+            </FrameLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/tabList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:paddingBottom="50dp" />
 
         </LinearLayout>
     </ScrollView>
 
 
-    <androidx.core.widget.ContentLoadingProgressBar
+    <ProgressBar
         android:id="@+id/progressBar"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="match_parent"

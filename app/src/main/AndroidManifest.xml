@@ -19,14 +19,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="cn.janking.webDroid.WebDroidActivity"
+            android:name="cn.janking.webDroid.activity.WebDroidActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
         <activity
-            android:name="cn.janking.webDroid.CreatorActivity"
+            android:name="cn.janking.webDroid.activity.CreatorActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
