@@ -3,7 +3,6 @@ package cn.janking.webDroid.activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import cn.janking.webDroid.R
@@ -24,11 +23,11 @@ import java.util.regex.Pattern
 
 
 class CreatorActivity : BaseActivity() {
-    var tabListAdapter : TabListRVAdapter? = null
+    var tabListAdapter: TabListRVAdapter? = null
     /**
      * 是否正在build
      */
-    var isBuilding : Boolean = false
+    var isBuilding: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,12 +74,12 @@ class CreatorActivity : BaseActivity() {
         }
         //打包按钮
         build.setOnClickListener {
-            if(isBuilding){
+            if (isBuilding) {
                 //取消打包任务
                 EventBus.getDefault().post(CancelBuildEvent())
                 build.text = "打包"
                 isBuilding = false
-            }else{
+            } else {
                 //开始打包任务
                 if (generateProperty(false)) {
                     showProgressBar(true)

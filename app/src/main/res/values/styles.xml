@@ -10,6 +10,7 @@
         <item name="colorOnSecondary">@color/white</item>
         <item name="android:colorBackground">@color/background_color</item>
         <item name="colorSurface">@color/white</item>
+        <item name="android:windowSoftInputMode">adjustPan</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -68,10 +69,10 @@
         <item name="tabPaddingEnd">12dp</item>
         <item name="tabTextAppearance">@style/TabText</item>
         <!--color-->
-        <item name="android:background">@android:color/white</item>
-        <item name="tabIndicatorColor">?attr/colorPrimary</item>
-        <item name="tabSelectedTextColor">?attr/colorPrimary</item>
-        <item name="tabTextColor">@color/gray_deep</item>
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="tabIndicatorColor">@android:color/white</item>
+        <item name="tabSelectedTextColor">@android:color/white</item>
+        <item name="tabTextColor">@android:color/primary_text_dark</item>
     </style>
 
 </resources>

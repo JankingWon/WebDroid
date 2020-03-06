@@ -1,14 +1,17 @@
 package cn.janking.webDroid.activity
 
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.contains
 import androidx.viewpager.widget.PagerAdapter
+import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import cn.janking.webDroid.R
 import cn.janking.webDroid.model.Config
-import cn.janking.webDroid.widget.WebDroidView
+import cn.janking.webDroid.widget.WebDroidItem
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_webdroid.*
 import kotlin.collections.HashMap
@@ -17,7 +20,7 @@ class WebDroidActivity : BaseActivity() {
     /**
      * 缓存页面
      */
-    private val pageMap: MutableMap<Int, WebDroidView> = HashMap()
+    private val pageMap: MutableMap<Int, WebDroidItem> = HashMap()
 
     /**
      * 滑动页面的适配器
@@ -32,26 +35,25 @@ class WebDroidActivity : BaseActivity() {
         }
 
         override fun instantiateItem(container: ViewGroup, position: Int): Any {
-            val view = getPageView(position)!!
-            val params = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
-            container.addView(view, params)
-            return view
-        }
-
-        private fun getPageView(position: Int): View? {
-            var view = pageMap[position]
-            if (view == null) {
-                view = WebDroidView.createView(
+            if (pageMap[position] == null) {
+                pageMap[position] = WebDroidItem(
                     this@WebDroidActivity,
                     viewPager,
                     Config.instance.tabUrls[position]
                 )
-                pageMap[position] = view
             }
-            return view.contentView
+            val view = pageMap[position]!!.agentWeb.webCreator.webParentLayout
+            //如果已经被回收了，需要手动添加进去
+            if (viewPager.indexOfChild(view) == -1) {
+                viewPager.addView(
+                    view,
+                    ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                    )
+                )
+            }
+            return view
         }
 
         override fun destroyItem(
@@ -92,7 +94,8 @@ class WebDroidActivity : BaseActivity() {
             position: Int,
             positionOffset: Float,
             positionOffsetPixels: Int
-        ) {}
+        ) {
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -103,7 +106,6 @@ class WebDroidActivity : BaseActivity() {
     }
 
     private fun initToolBar() {
-        setStatusBarColor(getColor(R.color.colorPrimaryDark))
         toolbar.title = Config.instance.appName
         setSupportActionBar(toolbar)
     }
@@ -134,15 +136,14 @@ class WebDroidActivity : BaseActivity() {
         }
     }
 
-
-
     /**
      * 监听返回键
      */
-    override fun onBackPressed() {
-        if (!pageMap[viewPager.currentItem]!!.handleBack()) {
-            super.onBackPressed()
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (pageMap[viewPager.currentItem]!!.handleKeyDown(keyCode, event)) {
+            return true
         }
+        return super.onKeyDown(keyCode, event)
     }
 
 }
