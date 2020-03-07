@@ -147,7 +147,7 @@ class BuildUtils {
                         EnvironmentUtils.getSubTemplate(EnvironmentUtils.DEFAULT_MANIFEST_FILE),
                         EnvironmentUtils.dirUnzippedApk
                     )
-                    //修改包名 和 APP名称
+                    //修改包名 和 APP名称 和 FileProvider
                     ManifestUtils(
                         EnvironmentUtils.getSubUnzippedApk(EnvironmentUtils.DEFAULT_MANIFEST_FILE),
                         null
@@ -157,6 +157,12 @@ class BuildUtils {
                     ).modifyStringAttribute(
                         AppUtils.getAppName(),
                         Config.instance.appName
+                    ).modifyStringAttribute(
+                        AppUtils.getAppPackageName() + ".DownloadFileProvider",
+                        Config.instance.appPackage + ".DownloadFileProvider"
+                    ).modifyStringAttribute(
+                        AppUtils.getAppPackageName() + ".AgentWebFileProvider",
+                        Config.instance.appPackage + ".AgentWebFileProvider"
                     ).check().exec()
                     //压缩
                     ConsoleUtils.info(console, "正在压缩...")
@@ -198,7 +204,7 @@ class BuildUtils {
                 override fun onSuccess(result: Unit?) {
                     ConsoleUtils.success(console, "打包完成！(${EnvironmentUtils.fileApkSigned})")
                     //立即安装
-                    //AppUtils.installApp(EnvironmentUtils.fileApkSigned)
+                    AppUtils.installApp(EnvironmentUtils.fileApkSigned)
                 }
 
                 override fun onDone() {
