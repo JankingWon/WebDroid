@@ -137,7 +137,7 @@ class BuildUtils {
                     ConsoleUtils.info(console, "正在写入配置...")
                     //写入配置
                     FileUtils.writeToFile(
-                        Config.generateJson(),
+                        Config.toJsonString(),
                         EnvironmentUtils.getSubUnzippedApkAssets(EnvironmentUtils.DEFAULT_CONFIG_FILE)
                     )
                     //使用模板中的manifest

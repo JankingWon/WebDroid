@@ -64,15 +64,17 @@ class Config private constructor() {
             instance = gson.fromJson(
                 configString,
                 Config::class.java
-            ).apply {
-                tabCount = tabTitles.size.coerceAtMost(tabUrls.size)
+            ).let {
+                it?.apply {
+                    tabCount = tabTitles.size.coerceAtMost(tabUrls.size)
+                } ?: Config()
             }
         }
 
         /**
          * 生成json配置文件
          */
-        fun generateJson() : String {
+        fun toJsonString() : String {
             return gson.toJson(instance)
         }
     }

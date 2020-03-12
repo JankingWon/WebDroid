@@ -36,6 +36,7 @@ class CreatorActivity : BaseActivity() {
         setContentView(R.layout.activity_creator)
         EventBus.getDefault().register(this)
         initViews()
+        loadLastConfig()
     }
 
     /**
@@ -46,9 +47,15 @@ class CreatorActivity : BaseActivity() {
         BuildUtils.requestStoragePermission()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        EventBus.getDefault().unregister(this)
+    /**
+     * 在此处保存不是绝对安全，应该在onPause
+     * 但是这个不是重要数据，同时为了避免躲避多次IO，就写在了onStop
+     */
+    override fun onStop() {
+        super.onStop()
+        //保存输入的配置
+        generateConfig(true)
+        SPUtils.getInstance().put(ConstUtils.SPKey.lastConfig, Config.toJsonString())
     }
 
     private fun initViews() {
@@ -67,7 +74,7 @@ class CreatorActivity : BaseActivity() {
         }
         //预览按钮
         preview.setOnClickListener {
-            if (generateProperty(true)) {
+            if (checkConfig(true)) {
                 startActivity(Intent(this@CreatorActivity, WebDroidActivity::class.java))
             }
         }
@@ -80,7 +87,7 @@ class CreatorActivity : BaseActivity() {
                 isBuilding = false
             } else {
                 //开始打包任务
-                if (generateProperty(false)) {
+                if (checkConfig(false)) {
                     showProgressBar(true)
                     BuildUtils.build(console)
                     isBuilding = true
@@ -91,25 +98,44 @@ class CreatorActivity : BaseActivity() {
     }
 
     /**
-     * 生成Config参数
+     * 加载上次输入的配置
      */
-    private fun generateProperty(isPreview: Boolean): Boolean {
+    fun loadLastConfig() {
+        Config.readFromString(SPUtils.getInstance().getString(ConstUtils.SPKey.lastConfig))
+        appName.setText(Config.instance.appName)
+        appPackage.setText(Config.instance.appPackage)
+        for (i in 0 until Config.instance.tabCount) {
+            tabListAdapter?.addTabItem(Config.instance.tabTitles[i], Config.instance.tabUrls[i])
+        }
+    }
+
+    /**
+     * 检查Config是否有效
+     */
+    private fun checkConfig(isPreview: Boolean): Boolean {
         if (checkAppName() && checkAppPackage()) {
-            Config.instance.run {
-                preview = isPreview
-                appName = this@CreatorActivity.appName.text.toString()
-                appPackage = this@CreatorActivity.appPackage.text.toString()
-                tabTitles = tabListAdapter?.tabTitleItems!!.map {
-                    it.toString()
-                }
-                tabUrls = tabListAdapter?.tabUrlItems!!.map {
-                    it.toString()
-                }
-                tabCount = tabTitles.size.coerceAtMost(tabUrls.size)
-            }
+            generateConfig(isPreview)
             return true
         }
         return false
+    }
+
+    /**
+     * 生成Config参数
+     */
+    private fun generateConfig(isPreview: Boolean){
+        Config.instance.run {
+            preview = isPreview
+            appName = this@CreatorActivity.appName.text.toString()
+            appPackage = this@CreatorActivity.appPackage.text.toString()
+            tabTitles = tabListAdapter?.tabTitleItems!!.map {
+                it.toString()
+            }
+            tabUrls = tabListAdapter?.tabUrlItems!!.map {
+                it.toString()
+            }
+            tabCount = tabTitles.size.coerceAtMost(tabUrls.size)
+        }
     }
 
     /**

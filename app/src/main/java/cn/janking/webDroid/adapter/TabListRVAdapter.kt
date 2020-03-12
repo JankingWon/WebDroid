@@ -32,12 +32,16 @@ class TabListRVAdapter(private val context: Context) :
     }
 
     fun addTabItem() {
-        if(tabTitleItems.size > 4){
+        addTabItem("", "")
+    }
+
+    fun addTabItem(title: String, url: String) {
+        if (tabTitleItems.size > 4) {
             Toast.makeText(Utils.getApp(), "最多只能添加5个tab", Toast.LENGTH_SHORT).show()
             return
         }
-        tabTitleItems.add(tabTitleItems.size, "")
-        tabUrlItems.add(tabUrlItems.size, "")
+        tabTitleItems.add(tabTitleItems.size, title)
+        tabUrlItems.add(tabUrlItems.size, url)
         notifyItemInserted(tabTitleItems.size - 1)
     }
 
