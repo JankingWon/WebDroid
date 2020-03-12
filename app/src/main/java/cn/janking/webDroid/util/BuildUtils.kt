@@ -19,10 +19,6 @@ import java.io.File
 class BuildUtils {
     companion object {
         /**
-         * 是否已经准备好打包apk
-         */
-        var hasInit: Boolean = false
-        /**
          * 输出信息的控件
          */
         var console: TextView? = null
@@ -59,7 +55,10 @@ class BuildUtils {
          * 初始化
          */
         fun init() {
-            if (hasInit) return
+            if (SPUtils.getInstance().getBoolean(ConstUtils.SPKey.hasInit)) {
+                EventBus.getDefault().post(InitFinishEvent(true))
+                return
+            }
             ThreadUtils.executeByCached(object : ThreadUtils.SimpleTask<Unit>() {
                 override fun doInBackground() {
                     //复制资源
@@ -95,7 +94,8 @@ class BuildUtils {
                 }
 
                 override fun onSuccess(result: Unit) {
-                    hasInit = true
+                    //写入SP中
+                    SPUtils.getInstance().put(ConstUtils.SPKey.hasInit, true)
                     LogUtils.w("初始化完成")
                     EventBus.getDefault().post(InitFinishEvent(true))
                 }
@@ -120,7 +120,7 @@ class BuildUtils {
          */
         fun build(textView: TextView) {
             //如果没有初始化成功，则中断
-            if (!hasInit) {
+            if (!SPUtils.getInstance().getBoolean(ConstUtils.SPKey.hasInit)) {
                 ConsoleUtils.warning(console, "数据未初始化...")
                 //重新请求权限，尝试初始化
                 requestStoragePermission()
@@ -130,7 +130,7 @@ class BuildUtils {
             ThreadUtils.executeByCached(object : ThreadUtils.SimpleTask<Unit>() {
                 override fun doInBackground() {
                     //设置超时
-                    setTimeout(60 * 1000) {
+                    setTimeout(ConstUtils.Build.timeout) {
                         onFail(Exception("打包超时"))
                     }
                     EventBus.getDefault().register(this)
@@ -176,15 +176,6 @@ class BuildUtils {
                     if (isCanceled) {
                         return
                     }
-                    //v2签名，@todo 反复打包和取消此处会出现Android Fatal Signal 7 (SIGBUS)
-/*                    SignApk.main(
-                        arrayOf(
-                            EnvironmentUtils.keyPem,
-                            EnvironmentUtils.keyPk8,
-                            EnvironmentUtils.fileApkUnsigned,
-                            EnvironmentUtils.fileApkSigned
-                        )
-                    )*/
                     //v1签名
                     Main.main(
                         arrayOf(

@@ -14,6 +14,8 @@ import cn.janking.webDroid.event.InitFinishEvent
 import cn.janking.webDroid.model.Config
 import cn.janking.webDroid.util.BuildUtils
 import cn.janking.webDroid.util.ConsoleUtils
+import cn.janking.webDroid.util.ConstUtils
+import cn.janking.webDroid.util.SPUtils
 import kotlinx.android.synthetic.main.activity_creator.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -42,9 +44,6 @@ class CreatorActivity : BaseActivity() {
     override fun onStart() {
         super.onStart()
         BuildUtils.requestStoragePermission()
-        if (BuildUtils.hasInit) {
-            ConsoleUtils.success(console, "已就绪")
-        }
     }
 
     override fun onDestroy() {
