@@ -16,7 +16,19 @@ object EnvironmentUtils {
      * 存储数据的主路径
      */
     private val dirRoot: String
-        get() = Environment.getExternalStorageDirectory().toString() + File.separator + "WebDroid"
+        get() = FileUtils.getExistDir(Utils.getApp().getExternalFilesDir(null)).absolutePath
+
+    /**
+     * 输出的路径
+     */
+    private val outRoot: String
+        get() = Environment.getExternalStorageDirectory().absolutePath + File.separator + "WebDroid"
+
+    /**
+     * 存放apk的路径
+     */
+    val dirApk: String
+        get() = outRoot + File.separator + "apk"
 
     /**
      * 获取某个存储目录下的子目录
@@ -51,22 +63,17 @@ object EnvironmentUtils {
         get() = dirKey + File.separator + "webdroid.jks"
 
     /**
-     * 获取生成的apk目录
-     */
-    val dirApk: String
-        get() = getSubRoot("apk")
-
-    /**
      * 获取临时的apk文件，即未签名的apk
      */
     val fileApkUnsigned: String
         get() = getSubRoot("apk" + File.separator + "unsigned.apk")
 
     /**
-     * 获取生成的apk文件，即签名的apk
+     * 获取生成的apk文件路径，即签名的apk
      */
-    val fileApkSigned: String
-        get() = getSubRoot("apk" + File.separator + "signed.apk")
+    fun getFileApkSigned(name: String): String {
+        return FileUtils.getExistFile(dirApk + File.separator + name + ".apk").absolutePath
+    }
 
     /**
      * 获取解压的apk目录

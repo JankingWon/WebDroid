@@ -212,7 +212,7 @@ public class FileUtils {
     /**
      * 获取一个File类型的目录，如果不存在，尝试创建
      */
-    private static File getExistDir(File file) throws IOException {
+    static File getExistDir(File file) {
         File fileParent = file.getParentFile();//返回的是File类型,可以调用exsit()等方法
         if (!fileParent.exists()) {
             fileParent.mkdirs();// 能创建多级目录

@@ -173,7 +173,7 @@ class BuildUtils {
                     ) {
                         throw RuntimeException("key is null")
                     }
-                    if(isCanceled){
+                    if (isCanceled) {
                         return
                     }
                     //v2签名，@todo 反复打包和取消此处会出现Android Fatal Signal 7 (SIGBUS)
@@ -193,7 +193,7 @@ class BuildUtils {
                             "-storepass", EnvironmentUtils.DEFAULT_STORE_PASSWORD,
                             "-keyPass", EnvironmentUtils.DEFAULT_KEY_PASSWORD,
                             "-signedjar",
-                            EnvironmentUtils.fileApkSigned,
+                            EnvironmentUtils.getFileApkSigned(Config.instance.appName),
                             EnvironmentUtils.fileApkUnsigned,
                             EnvironmentUtils.DEFAULT_KEY_ALIAS
                         )
@@ -212,9 +212,10 @@ class BuildUtils {
                 }
 
                 override fun onSuccess(result: Unit?) {
-                    ConsoleUtils.success(console, "打包完成！(${EnvironmentUtils.fileApkSigned})")
+                    val apkPath = EnvironmentUtils.getFileApkSigned(Config.instance.appName)
+                    ConsoleUtils.success(console, "打包完成！(${apkPath})")
                     //立即安装
-                    AppUtils.installApp(EnvironmentUtils.fileApkSigned)
+                    AppUtils.installApp(apkPath)
                 }
 
                 override fun onDone() {
