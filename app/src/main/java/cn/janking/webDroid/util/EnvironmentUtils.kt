@@ -9,11 +9,14 @@ import java.io.File
 object EnvironmentUtils {
     const val DEFAULT_CONFIG_FILE = "config.json"
     const val DEFAULT_MANIFEST_FILE = "AndroidManifest.xml"
+    const val DEFAULT_KEY_PASSWORD = "123456"
+    const val DEFAULT_STORE_PASSWORD = "123456"
+    const val DEFAULT_KEY_ALIAS = "webdroid"
     /**
      * 存储数据的主路径
      */
     private val dirRoot: String
-        get() = Environment.getExternalStorageDirectory().toString() + File.separator + "/WebDroid"
+        get() = Environment.getExternalStorageDirectory().toString() + File.separator + "WebDroid"
 
     /**
      * 获取某个存储目录下的子目录
@@ -42,16 +45,10 @@ object EnvironmentUtils {
         get() = getSubRoot("key")
 
     /**
-     * 获取pk密钥
+     * 获取jks密钥
      */
-    val keyPk8: String
-        get() = dirKey + File.separator + "platform.pk8"
-
-    /**
-     * 获取pem密钥
-     */
-    val keyPem: String
-        get() = dirKey + File.separator + "platform.x509.pem"
+    val jks: String
+        get() = dirKey + File.separator + "webdroid.jks"
 
     /**
      * 获取生成的apk目录

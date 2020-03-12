@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Gradle: xmlpull_1_1_3_4c">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../xmleditor/libs/xmlpull_1_1_3_4c.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

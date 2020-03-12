@@ -8,12 +8,10 @@ import cn.janking.webDroid.event.CancelBuildEvent
 import cn.janking.webDroid.event.InitFinishEvent
 import cn.janking.webDroid.helper.DialogHelper
 import cn.janking.webDroid.model.Config
-import com.android.signapk.SignApk
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
+import sun.security.tools.jarsigner.Main
 import java.io.File
-import java.lang.Exception
 
 /**
  * 用于打包apk的工具类
@@ -171,21 +169,33 @@ class BuildUtils {
                         FileUtils.getExistFile(EnvironmentUtils.fileApkUnsigned)
                     )
                     ConsoleUtils.info(console, "正在签名...")
-                    if (!FileUtils.isFileExists(EnvironmentUtils.keyPem)
-                        || !FileUtils.isFileExists(EnvironmentUtils.keyPk8)
+                    if (!FileUtils.isFileExists(EnvironmentUtils.jks)
                     ) {
                         throw RuntimeException("key is null")
                     }
                     if(isCanceled){
                         return
                     }
-                    //签名，@todo 反复打包和取消此处会出现Android Fatal Signal 7 (SIGBUS)
-                    SignApk.main(
+                    //v2签名，@todo 反复打包和取消此处会出现Android Fatal Signal 7 (SIGBUS)
+/*                    SignApk.main(
                         arrayOf(
                             EnvironmentUtils.keyPem,
                             EnvironmentUtils.keyPk8,
                             EnvironmentUtils.fileApkUnsigned,
                             EnvironmentUtils.fileApkSigned
+                        )
+                    )*/
+                    //v1签名
+                    Main.main(
+                        arrayOf(
+                            "-verbose",
+                            "-keystore", EnvironmentUtils.jks,
+                            "-storepass", EnvironmentUtils.DEFAULT_STORE_PASSWORD,
+                            "-keyPass", EnvironmentUtils.DEFAULT_KEY_PASSWORD,
+                            "-signedjar",
+                            EnvironmentUtils.fileApkSigned,
+                            EnvironmentUtils.fileApkUnsigned,
+                            EnvironmentUtils.DEFAULT_KEY_ALIAS
                         )
                     )
                     //删除未签名文件

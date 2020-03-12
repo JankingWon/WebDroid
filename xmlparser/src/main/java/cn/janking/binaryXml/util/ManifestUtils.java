@@ -78,12 +78,20 @@ public class ManifestUtils {
         int diffByteCount = (newAttr.length() - oldAttr.length()) * 2;
         if (diffByteCount == 0) {
             //修改String Pool中的字符串, 还有两个字节用来表示字符串的长度
-            ByteUtils.replaceBytes(xmlParser.reader.data, widthBeforeAttr + 2, ByteUtils.string2Byte(newAttr));
+            ByteUtils.replaceBytes(xmlParser.reader.data,
+                    widthBeforeAttr + 2,
+                    ByteUtils.string2Byte(newAttr));
         } else {
             //修改String Pool中的字符串, 还有两个字节用来表示字符串的长度
-            xmlParser.reader.data = ByteUtils.replaceBytes(xmlParser.reader.data, widthBeforeAttr + 2, oldAttr.length() * 2, ByteUtils.string2Byte(newAttr));
+            xmlParser.reader.data = ByteUtils.replaceBytes(
+                    xmlParser.reader.data,
+                    widthBeforeAttr + 2,
+                    oldAttr.length() * 2,
+                    ByteUtils.string2Byte(newAttr));
             //修改String Pool中的字符串长度
-            ByteUtils.replaceBytes(xmlParser.reader.data, widthBeforeAttr, ByteUtils.short2Byte((short) newAttr.length()));
+            ByteUtils.replaceBytes(xmlParser.reader.data,
+                    widthBeforeAttr,
+                    ByteUtils.short2Byte((short) newAttr.length()));
             //修改String Offsets
             for (int i = attrValueIndex + 1; i < xmlParser.stringChunkList.size(); i++) {
                 ByteUtils.replaceBytes(
@@ -99,7 +107,8 @@ public class ManifestUtils {
                 );
             }
             //判断【String Pool内的字符串字节数】（不是String Trunk的字节数）是否是4的倍数
-            int stringPoolSize = (xmlParser.stylePoolOffset == 0 ? xmlParser.stringTrunkSize : xmlParser.stylePoolOffset)
+            int stringPoolSize =
+                    (xmlParser.stylePoolOffset == 0 ? xmlParser.stringTrunkSize : xmlParser.stylePoolOffset)
                     - xmlParser.stringPoolOffset + diffByteCount;
             if (stringPoolSize % 4 != 0) {
                 diffByteCount += 2;
