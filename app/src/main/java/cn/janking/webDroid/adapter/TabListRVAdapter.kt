@@ -20,16 +20,9 @@ import java.util.*
  */
 class TabListRVAdapter(private val context: Context) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>(), OnMoveAndSwipedListener {
-    val tabTitleItems: MutableList<CharSequence>
-    val tabUrlItems: MutableList<CharSequence>
+    val tabTitleItems: MutableList<CharSequence> = ArrayList()
+    val tabUrlItems: MutableList<CharSequence> = ArrayList()
     private val typeNormal = 1
-
-    init {
-        tabTitleItems = ArrayList()
-        tabUrlItems = ArrayList()
-        tabTitleItems.add(0, "")
-        tabUrlItems.add(0, "")
-    }
 
     fun addTabItem() {
         addTabItem("", "")

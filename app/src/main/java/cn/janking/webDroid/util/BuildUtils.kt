@@ -27,6 +27,13 @@ class BuildUtils {
          * 请求读写文件权限
          */
         fun requestStoragePermission() {
+            //之所以要多多余这个判断是PermissionUtils会调用透明请求的Activity，导致屏幕闪烁
+            if(PermissionUtils.isGranted(PermissionConstants.STORAGE)){
+                //获取权限后才进行初始化
+                init()
+                LogUtils.i("请求权限成功！")
+                return
+            }
             PermissionUtils.permission(PermissionConstants.STORAGE)
                 .rationale { shouldRequest -> DialogHelper.showRationaleDialog(shouldRequest) }
                 .callback(object : PermissionUtils.FullCallback {
@@ -173,6 +180,9 @@ class BuildUtils {
                     ) {
                         throw RuntimeException("key is null")
                     }
+                    /**
+                     * 尽量拦截签名过程
+                     */
                     if (isCanceled) {
                         return
                     }
