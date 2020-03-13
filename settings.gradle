@@ -1,6 +1,4 @@
-include ':app', ':signapk'
+include ':app'
 rootProject.name='WebDroid'
 include ':xmlparser'
-include ':JarSigner'
-include ':JarSigner'
 include ':jarsigner'

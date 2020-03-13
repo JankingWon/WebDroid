@@ -19,9 +19,9 @@ class MyApplication : Application() {
 
     override fun attachBaseContext(base: Context) {
         super.attachBaseContext(base)
-        //Utils.init(this)
+        Utils.init(this)
         if (isPreview()){
-            //init()
+            init()
         }else{
             //读取配置
             Config.instance.preview = false
