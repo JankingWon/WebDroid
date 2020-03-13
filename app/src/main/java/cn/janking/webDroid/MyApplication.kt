@@ -42,7 +42,7 @@ class MyApplication : Application() {
      * 初始化
      */
     private fun init() {
-        if (SPUtils.getInstance().getBoolean(ConstUtils.SPKey.hasInit)) {
+        if (SPUtils.getInstance().getBoolean(getString(R.string.key_has_init))){
             EventBus.getDefault().post(InitFinishEvent(true))
             return
         }
@@ -82,7 +82,7 @@ class MyApplication : Application() {
 
             override fun onSuccess(result: Unit) {
                 //写入SP中
-                SPUtils.getInstance().put(ConstUtils.SPKey.hasInit, true)
+                SPUtils.getInstance().put(getString(R.string.key_has_init), true)
                 LogUtils.w("初始化完成")
                 EventBus.getDefault().post(InitFinishEvent(true))
             }

@@ -1,10 +1,9 @@
 package cn.janking.webDroid.activity
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.view.KeyEvent
-import android.view.Menu
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.LinearLayout
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
@@ -12,6 +11,7 @@ import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import cn.janking.webDroid.R
 import cn.janking.webDroid.model.Config
+import cn.janking.webDroid.util.Utils
 import cn.janking.webDroid.widget.WebDroidItem
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_webdroid.*
@@ -129,6 +129,44 @@ class WebDroidActivity : BaseActivity() {
             .setOnClickListener {
 
             }
+    }
+
+    /**
+     * toolbar右边的菜单
+     */
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    /**
+     * toolbar右边的菜单 点击事件
+     */
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            //调用浏览器
+            R.id.action_menu_browser -> {
+                startActivity(Intent().apply {
+                    action = "android.intent.action.VIEW"
+                    data =
+                        Uri.parse(pageMap[viewPager.currentItem]?.agentWeb?.webCreator?.webView?.url);
+                });
+            }
+            //分享
+            R.id.action_menu_share -> {
+                startActivity(
+                    Intent.createChooser(
+                        Intent().apply {
+                            action = Intent.ACTION_SEND
+                            putExtra(Intent.EXTRA_TEXT, Utils.getString(R.string.msg_share))
+                            type = "text/plain"
+                        },
+                        Utils.getString(R.string.msg_share_title)
+                    )
+                )
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun initViews() {

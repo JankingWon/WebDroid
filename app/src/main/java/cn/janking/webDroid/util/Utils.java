@@ -129,6 +129,13 @@ public final class Utils {
         return app;
     }
 
+    /**
+     * 获取字符串资源
+     */
+    public static String getString(int id) {
+        return sApplication.getString(id);
+    }
+
     static ActivityLifecycleImpl getActivityLifecycle() {
         return ACTIVITY_LIFECYCLE;
     }

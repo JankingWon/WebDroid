@@ -2,6 +2,7 @@ package cn.janking.webDroid.util
 
 import android.widget.TextView
 import cn.janking.binaryXml.util.ManifestUtils
+import cn.janking.webDroid.R
 import cn.janking.webDroid.constant.PermissionConstants
 import cn.janking.webDroid.event.BuildFinishEvent
 import cn.janking.webDroid.event.CancelBuildEvent
@@ -31,7 +32,7 @@ class BuildUtils {
          */
         fun build(textView: TextView) {
             //如果没有初始化成功，则中断
-            if (!SPUtils.getInstance().getBoolean(ConstUtils.SPKey.hasInit)) {
+            if (!SPUtils.getInstance().getBoolean(Utils.getString(R.string.key_has_init))) {
                 ConsoleUtils.warning(console, "数据未初始化...")
                 return
             }

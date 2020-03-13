@@ -55,7 +55,7 @@ class CreatorActivity : BaseActivity() {
         super.onStop()
         //保存输入的配置
         generateConfig(true)
-        SPUtils.getInstance().put(ConstUtils.SPKey.lastConfig, Config.toJsonString())
+        SPUtils.getInstance().put(Utils.getString(R.string.key_last_onfig), Config.toJsonString())
     }
 
     private fun initViews() {
@@ -98,7 +98,7 @@ class CreatorActivity : BaseActivity() {
         //未请求权限之前禁用
         build.isEnabled = false
         //初始化状态
-        if(SPUtils.getInstance().getBoolean(ConstUtils.SPKey.hasInit)){
+        if(SPUtils.getInstance().getBoolean(getString(R.string.key_has_init))){
             ConsoleUtils.success(console, "已就绪")
         }
     }
@@ -107,7 +107,7 @@ class CreatorActivity : BaseActivity() {
      * 加载上次输入的配置
      */
     private fun loadLastConfig() {
-        Config.readFromString(SPUtils.getInstance().getString(ConstUtils.SPKey.lastConfig))
+        Config.readFromString(SPUtils.getInstance().getString(Utils.getString(R.string.key_last_onfig)))
         appName.setText(Config.instance.appName)
         appPackage.setText(Config.instance.appPackage)
         for (i in 0 until Config.instance.tabCount) {

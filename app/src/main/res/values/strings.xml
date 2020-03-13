@@ -2,4 +2,12 @@
 
     <string name="navigation_drawer_open" translatable="false">Open navigation drawer</string>
     <string name="navigation_drawer_close" translatable="false">Close navigation drawer</string>
+
+    <!--SP Key-->
+    <string name="key_has_init">hasInit</string>
+    <string name="key_last_onfig">lastConfig</string>
+
+    <!--Message-->
+    <string name="msg_share">来跟我一起使用吧！</string>
+    <string name="msg_share_title">分享到</string>
 </resources>
