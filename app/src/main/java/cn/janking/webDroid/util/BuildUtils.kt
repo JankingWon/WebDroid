@@ -12,6 +12,8 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import sun.security.tools.jarsigner.Main
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * 用于打包apk的工具类
@@ -24,104 +26,6 @@ class BuildUtils {
         var console: TextView? = null
 
         /**
-         * 请求读写文件权限
-         */
-        fun requestStoragePermission() {
-            //之所以要多多余这个判断是PermissionUtils会调用透明请求的Activity，导致屏幕闪烁
-            if(PermissionUtils.isGranted(PermissionConstants.STORAGE)){
-                //获取权限后才进行初始化
-                init()
-                LogUtils.i("请求权限成功！")
-                return
-            }
-            PermissionUtils.permission(PermissionConstants.STORAGE)
-                .rationale { shouldRequest -> DialogHelper.showRationaleDialog(shouldRequest) }
-                .callback(object : PermissionUtils.FullCallback {
-                    override fun onGranted(permissionsGranted: List<String>) {
-                        //获取权限后才进行初始化
-                        init()
-                        LogUtils.i("请求权限成功！")
-                    }
-
-                    override fun onDenied(
-                        permissionsDeniedForever: List<String>,
-                        permissionsDenied: List<String>
-                    ) {
-                        LogUtils.i("请求权限失败！")
-                        //如果选择了“拒绝后不再询问”，则引导打开权限设置页面
-                        if (permissionsDeniedForever.isNotEmpty()) {
-                            DialogHelper.showOpenAppSettingDialog()
-                            return
-                        }
-                    }
-                })
-                .request()
-        }
-
-        /**
-         * 初始化
-         */
-        fun init() {
-            if (SPUtils.getInstance().getBoolean(ConstUtils.SPKey.hasInit)) {
-                EventBus.getDefault().post(InitFinishEvent(true))
-                return
-            }
-            ThreadUtils.executeByCached(object : ThreadUtils.SimpleTask<Unit>() {
-                override fun doInBackground() {
-                    //复制资源
-                    copyAssets("template")
-                    copyAssets("key")
-                    //解压apk，此项如果在debug模式有问题
-                    ZipUtils.unzipFile(
-                        File(Utils.getApp().packageResourcePath),
-                        FileUtils.getExistDir(EnvironmentUtils.dirUnzippedApk)
-                    )
-                    //删除原有签名
-                    FileUtils.deleteFilesInDirWithFilter(
-                        EnvironmentUtils.dirUnzippedApkMetaINF
-                    ) { pathname ->
-                        FileUtils.getFileExtension(pathname).run {
-                            equals("MF") || equals("SF") || equals("RSA")
-                        }
-                    }
-                    //删除原有asset
-                    FileUtils.deleteFilesInDirWithFilter(
-                        EnvironmentUtils.dirUnzippedApkAssets
-                    ) { pathname ->
-                        pathname.name.run {
-                            !equals(EnvironmentUtils.DEFAULT_CONFIG_FILE)
-                        }
-                    }
-                }
-
-                override fun onFail(t: Throwable?) {
-                    LogUtils.w("初始化错误")
-                    EventBus.getDefault().post(InitFinishEvent(false))
-                    t?.printStackTrace()
-                }
-
-                override fun onSuccess(result: Unit) {
-                    //写入SP中
-                    SPUtils.getInstance().put(ConstUtils.SPKey.hasInit, true)
-                    LogUtils.w("初始化完成")
-                    EventBus.getDefault().post(InitFinishEvent(true))
-                }
-            })
-        }
-
-        /**
-         * 复制资源
-         */
-        internal fun copyAssets(assetFolder: String) {
-            for (name in Utils.getApp().assets.list(assetFolder)!!) {
-                FileUtils.copyFileToFile(
-                    Utils.getApp().assets.open(assetFolder + File.separator + name),
-                    EnvironmentUtils.getSubRoot(assetFolder + File.separator + name)
-                )
-            }
-        }
-
-        /**
          * 生成apk
          * @todo 字节对齐
          */
@@ -129,17 +33,16 @@ class BuildUtils {
             //如果没有初始化成功，则中断
             if (!SPUtils.getInstance().getBoolean(ConstUtils.SPKey.hasInit)) {
                 ConsoleUtils.warning(console, "数据未初始化...")
-                //重新请求权限，尝试初始化
-                requestStoragePermission()
                 return
             }
             console = textView
             ThreadUtils.executeByCached(object : ThreadUtils.SimpleTask<Unit>() {
+                /**
+                 * 记录打包开始的时间
+                 */
+                val startTime = System.currentTimeMillis()
                 override fun doInBackground() {
                     //设置超时
-                    setTimeout(ConstUtils.Build.timeout) {
-                        onFail(Exception("打包超时"))
-                    }
                     EventBus.getDefault().register(this)
                     ConsoleUtils.info(console, "正在写入配置...")
                     //写入配置
@@ -186,7 +89,7 @@ class BuildUtils {
                     if (isCanceled) {
                         return
                     }
-                    //v1签名
+                    //v1签名  @todo 5.0签名会出现No Entry异常
                     Main.main(
                         arrayOf(
                             "-verbose",
@@ -209,7 +112,7 @@ class BuildUtils {
 
                 override fun onFail(t: Throwable?) {
                     ConsoleUtils.error(console, String.format("打包失败！(%s)", t?.message))
-                    t?.printStackTrace()
+                    LogUtils.e(t)
                 }
 
                 override fun onSuccess(result: Unit?) {
@@ -222,6 +125,7 @@ class BuildUtils {
                 override fun onDone() {
                     super.onDone()
                     console = null
+                    LogUtils.i("本次打包用时 ${SimpleDateFormat("ss", Locale.getDefault()).format(Date(System.currentTimeMillis() - startTime))}s")
                     EventBus.getDefault().post(BuildFinishEvent())
                     EventBus.getDefault().unregister(this)
                 }
