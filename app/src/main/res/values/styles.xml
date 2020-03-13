@@ -5,11 +5,11 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <item name="colorSecondary">@color/colorAccent</item>
-        <item name="colorOnSecondary">@color/white</item>
-        <item name="android:colorBackground">@color/background_color</item>
-        <item name="colorSurface">@color/white</item>
+        <item name="colorOnPrimary">@color/colorOnPrimary</item>
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorOnSecondary">@color/colorOnSecondary</item>
+        <item name="android:colorBackground">@color/colorBackground</item>
+        <item name="colorSurface">@color/colorSurface</item>
         <item name="android:windowSoftInputMode">adjustPan</item>
     </style>
 
@@ -57,22 +57,4 @@
         <item name="android:windowAnimationStyle">@null</item>
         <item name="android:windowDisablePreview">true</item>
     </style>
-
-    <!--TabLayout-->
-    <style name="TabText" parent="TextAppearance.Design.Tab">
-    </style>
-
-    <style name="TabLayoutStyle" parent="Base.Widget.Design.TabLayout">
-        <!--layout-->
-        <item name="tabIndicatorHeight">2dp</item>
-        <item name="tabPaddingStart">12dp</item>
-        <item name="tabPaddingEnd">12dp</item>
-        <item name="tabTextAppearance">@style/TabText</item>
-        <!--color-->
-        <item name="android:background">?attr/colorPrimary</item>
-        <item name="tabIndicatorColor">@android:color/white</item>
-        <item name="tabSelectedTextColor">@android:color/white</item>
-        <item name="tabTextColor">@android:color/primary_text_dark</item>
-    </style>
-
 </resources>

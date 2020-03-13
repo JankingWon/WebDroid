@@ -5,16 +5,16 @@ import android.view.KeyEvent
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.contains
+import android.widget.LinearLayout
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.core.view.GravityCompat
 import androidx.viewpager.widget.PagerAdapter
-import androidx.viewpager.widget.ViewPager
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import cn.janking.webDroid.R
 import cn.janking.webDroid.model.Config
 import cn.janking.webDroid.widget.WebDroidItem
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_webdroid.*
-import kotlin.collections.HashMap
 
 class WebDroidActivity : BaseActivity() {
     /**
@@ -108,6 +108,27 @@ class WebDroidActivity : BaseActivity() {
     private fun initToolBar() {
         toolbar.title = Config.instance.appName
         setSupportActionBar(toolbar)
+        val toggle = ActionBarDrawerToggle(
+            this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
+        )
+        drawer.addDrawerListener(toggle)
+        toggle.syncState()
+        drawerNavigation.setNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.nav_settings -> {
+
+                }
+                R.id.nav_about -> {
+
+                }
+            }
+            drawer.closeDrawer(GravityCompat.START)
+            true
+        }
+        drawerNavigation.getHeaderView(0).findViewById<LinearLayout>(R.id.navHeader)
+            .setOnClickListener {
+
+            }
     }
 
     private fun initViews() {
@@ -139,11 +160,13 @@ class WebDroidActivity : BaseActivity() {
     /**
      * 监听返回键
      */
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (pageMap[viewPager.currentItem]!!.handleKeyDown(keyCode, event)) {
-            return true
+    override fun onBackPressed() {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START)
+        } else if (pageMap[viewPager.currentItem]!!.handleKeyDown(KeyEvent.KEYCODE_BACK, null)) {
+        } else {
+            super.onBackPressed()
         }
-        return super.onKeyDown(keyCode, event)
     }
 
 }

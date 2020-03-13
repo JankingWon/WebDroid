@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimaryOrigin">#3F51B5</color>
-    <color name="colorPrimaryDarkOrigin">#303F9F</color>
-    <color name="colorAccentOrigin">#FF4081</color>
-
-    <color name="colorPrimary">#34A48E</color>
-    <color name="colorPrimaryHalfTrans">#8034A48E</color>
-    <color name="colorPrimaryDark">#245C50</color>
-    <color name="colorAccent">#FF73A3</color>
-    <color name="colorAccentHalfTrans">#80245C50</color>
+    <!--系统颜色-->
+    <color name="colorPrimary">#4285F4</color>
+    <color name="colorPrimaryDark">#3367D6</color>
+    <color name="colorAccent">#FFC400</color>
+    <color name="colorOnPrimary">#FFFFFF</color>
+    <color name="colorSecondary">#FFFFFF</color>
+    <color name="colorOnSecondary">#FF000000</color>
+    <color name="colorBackground">#FFFFFF</color>
+    <color name="colorSurface">#FFFFFF</color>
 
     <!-- common colors -->
     <color name="transparent">#00000000</color>
