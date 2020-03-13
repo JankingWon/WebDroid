@@ -13,7 +13,8 @@
         android:label="WebDroid"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
         <activity
             android:name="cn.janking.webDroid.activity.WebDroidActivity"
             android:theme="@style/AppTheme.NoActionBar">
