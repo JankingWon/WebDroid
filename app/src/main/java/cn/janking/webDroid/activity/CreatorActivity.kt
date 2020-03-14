@@ -2,21 +2,27 @@ package cn.janking.webDroid.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
+import android.widget.LinearLayout
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import cn.janking.webDroid.R
 import cn.janking.webDroid.adapter.ItemTouchHelperCallback
 import cn.janking.webDroid.adapter.TabListRVAdapter
-import cn.janking.webDroid.constant.PermissionConstants
 import cn.janking.webDroid.event.BuildFinishEvent
-import cn.janking.webDroid.event.CancelBuildEvent
 import cn.janking.webDroid.event.InitFinishEvent
-import cn.janking.webDroid.helper.DialogHelper
 import cn.janking.webDroid.helper.PermissionHelper
 import cn.janking.webDroid.model.Config
 import cn.janking.webDroid.util.*
 import kotlinx.android.synthetic.main.activity_creator.*
+import kotlinx.android.synthetic.main.activity_creator.drawer
+import kotlinx.android.synthetic.main.activity_creator.toolbar
+import kotlinx.android.synthetic.main.activity_webdroid.*
+import kotlinx.android.synthetic.main.layout_nav.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -24,9 +30,21 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 /**
+ * WebDroidCreator 的 主Activity
  * @author Janking
  */
-class CreatorActivity : BaseActivity() {
+open class CreatorActivity : BaseActivity() {
+    /**
+     * 布局Id
+     */
+    override val layoutId = R.layout.activity_creator
+    /**
+     * toolbar右边菜单id
+     */
+    override val toolBarMenuId: Int = R.menu.menu_creator
+    /**
+     * 配置tab列表的适配器
+     */
     var tabListAdapter: TabListRVAdapter? = null
     /**
      * 是否正在build
@@ -35,10 +53,13 @@ class CreatorActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_creator)
         EventBus.getDefault().register(this)
-        initViews()
         loadLastConfig()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this)
     }
 
     /**
@@ -52,8 +73,7 @@ class CreatorActivity : BaseActivity() {
         SPUtils.getInstance().put(Utils.getString(R.string.key_last_onfig), Config.toJsonString())
     }
 
-    private fun initViews() {
-        setSupportActionBar(toolbar)
+    override fun initViews() {
         //tab设置
         tabListAdapter = TabListRVAdapter(this)
         tabList.layoutManager = LinearLayoutManager(this)
@@ -62,30 +82,40 @@ class CreatorActivity : BaseActivity() {
         val callback: ItemTouchHelper.Callback = ItemTouchHelperCallback(tabListAdapter!!)
         val mItemTouchHelper = ItemTouchHelper(callback)
         mItemTouchHelper.attachToRecyclerView(tabList)
-        //添加tab按钮
-        addTab.setOnClickListener {
-            (tabList.adapter as TabListRVAdapter).addTabItem()
-        }
-        //预览按钮
-        preview.setOnClickListener {
-            if (checkConfig(true)) {
-                startActivity(Intent(this@CreatorActivity, WebDroidActivity::class.java))
-            }
-        }
-        //打包按钮
-        build.setOnClickListener {
-            //开始打包任务
-            PermissionHelper.checkStorage(fun (){
-                if (checkConfig(false)) {
-                    showProgressBar(true)
-                    BuildUtils.build(console)
-                    build.isEnabled = false
-                }
-            }){}
-        }
         //初始化状态
         if(SPUtils.getInstance().getBoolean(getString(R.string.key_has_init))){
             ConsoleUtils.success(console, "已就绪")
+        }
+    }
+
+    override fun onClickViewId(viewId: Int) {
+        super.onClickViewId(viewId)
+        when(viewId){
+            //关于
+            R.id.action_menu_about -> {
+                ShareUtils.openUrl("https://github.com/JankingWon/WebDroid")
+            }
+            //添加tab按钮
+            R.id.addTab -> {
+                (tabList.adapter as TabListRVAdapter).addTabItem()
+            }
+            //预览按钮
+            R.id.preview -> {
+                if (checkConfig(true)) {
+                    startActivity(Intent(this@CreatorActivity, WebDroidActivity::class.java))
+                }
+            }
+            //打包按钮
+            R.id.build -> {
+                //开始打包任务
+                PermissionHelper.checkStorage(fun (){
+                    if (checkConfig(false)) {
+                        showProgressBar(true)
+                        BuildUtils.build(console)
+                        build.isEnabled = false
+                    }
+                }){}
+            }
         }
     }
 
@@ -167,6 +197,19 @@ class CreatorActivity : BaseActivity() {
         return true
     }
 
+    /**
+     * 控制等待条的显隐
+     */
+    private fun showProgressBar(show: Boolean) {
+        if (show) {
+            spaceLine.visibility = View.INVISIBLE
+            progressBar.visibility = View.VISIBLE
+        } else {
+            spaceLine.visibility = View.VISIBLE
+            progressBar.visibility = View.INVISIBLE
+        }
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(initFinishEvent: InitFinishEvent) {
         if (initFinishEvent.success) {
@@ -181,18 +224,5 @@ class CreatorActivity : BaseActivity() {
         showProgressBar(false)
         //使按钮转为常规态
         build.isEnabled = true
-    }
-
-    /**
-     * 控制等待条的显隐
-     */
-    private fun showProgressBar(show: Boolean) {
-        if (show) {
-            spaceLine.visibility = View.INVISIBLE
-            progressBar.visibility = View.VISIBLE
-        } else {
-            spaceLine.visibility = View.VISIBLE
-            progressBar.visibility = View.INVISIBLE
-        }
     }
 }

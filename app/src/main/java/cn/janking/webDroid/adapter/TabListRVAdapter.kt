@@ -6,12 +6,10 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import android.widget.EditText
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import cn.janking.webDroid.R
-import cn.janking.webDroid.util.AppUtils
 import cn.janking.webDroid.util.Utils
 import java.util.*
 
@@ -43,7 +41,7 @@ class TabListRVAdapter(private val context: Context) :
         viewType: Int
     ): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_recycler_view, parent, false)
+            .inflate(R.layout.item_tab_list, parent, false)
         return TabItemViewHolder(view)
     }
 

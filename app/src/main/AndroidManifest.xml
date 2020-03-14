@@ -18,11 +18,10 @@
         android:label="WebDroid"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
+        android:theme="@style/AppTheme.NoActionBar"
         android:usesCleartextTraffic="true">
         <activity
-            android:name="cn.janking.webDroid.activity.CreatorActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:name="cn.janking.webDroid.activity.CreatorActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -30,8 +29,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="cn.janking.webDroid.activity.WebDroidActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:name="cn.janking.webDroid.activity.WebDroidActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>

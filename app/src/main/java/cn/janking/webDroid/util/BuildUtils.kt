@@ -51,6 +51,13 @@ object BuildUtils {
                         PathConstants.DEFAULT_CONFIG_FILE
                     )
                 )
+                //使用模板中的manifest
+                FileUtils.copyFileToDir(
+                    PathConstants.getSubTemplate(
+                        PathConstants.DEFAULT_MANIFEST_FILE
+                    ),
+                    PathConstants.dirUnzippedApk
+                )
                 //修改包名 和 APP名称 和 FileProvider
                 ManifestUtils(
                     PathConstants.getSubUnzippedApk(
@@ -119,6 +126,7 @@ object BuildUtils {
             override fun onSuccess(result: Unit?) {
                 val apkPath = PathConstants.getFileApkSigned(Config.instance.appName)
                 ConsoleUtils.success(console, "打包完成！(${apkPath})")
+                LogUtils.i("本次打包用时 ${(System.currentTimeMillis() - startTime).toDouble() / 1000}s")
                 //立即安装
                 AppUtils.installApp(apkPath)
             }
@@ -127,7 +135,6 @@ object BuildUtils {
                 super.onDone()
                 console = null
                 EventBus.getDefault().unregister(this)
-                LogUtils.i("本次打包用时 ${(System.currentTimeMillis() - startTime).toDouble() / 1000}s")
                 EventBus.getDefault().post(BuildFinishEvent())
             }
 

@@ -76,13 +76,6 @@ class MyApplication : Application() {
                         }
                     }
                 )
-                //使用模板中的manifest
-                FileUtils.copyFileToDir(
-                    PathConstants.getSubTemplate(
-                        PathConstants.DEFAULT_MANIFEST_FILE
-                    ),
-                    PathConstants.dirUnzippedApk
-                )
             }
 
             override fun onFail(t: Throwable?) {

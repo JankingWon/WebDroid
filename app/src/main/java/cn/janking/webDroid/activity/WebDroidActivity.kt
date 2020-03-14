@@ -14,11 +14,21 @@ import cn.janking.webDroid.util.Utils
 import cn.janking.webDroid.widget.WebDroidItem
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_webdroid.*
+import kotlinx.android.synthetic.main.layout_nav.*
 
 /**
+ * 生成的WebDridAPP的 主Activity
  * @author Janking
  */
 class WebDroidActivity : BaseActivity() {
+    /**
+     * 布局Id
+     */
+    override val layoutId = R.layout.activity_webdroid
+    /**
+     * toolbar右边菜单id
+     */
+    override val toolBarMenuId: Int = R.menu.menu_webdroid
     /**
      * 缓存页面
      */
@@ -100,65 +110,8 @@ class WebDroidActivity : BaseActivity() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_webdroid)
-        initToolBar()
-        initViews()
-    }
-
-    private fun initToolBar() {
-        toolbar.title = Config.instance.appName
-        setSupportActionBar(toolbar)
-        val toggle = ActionBarDrawerToggle(
-            this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
-        )
-        drawer.addDrawerListener(toggle)
-        toggle.syncState()
-        drawerNavigation.setNavigationItemSelectedListener {
-            when (it.itemId) {
-                R.id.nav_settings -> {
-
-                }
-                R.id.nav_about -> {
-
-                }
-            }
-            drawer.closeDrawer(GravityCompat.START)
-            true
-        }
-        drawerNavigation.getHeaderView(0).findViewById<LinearLayout>(R.id.navHeader)
-            .setOnClickListener {
-
-            }
-    }
-
-    /**
-     * toolbar右边的菜单
-     */
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
-    /**
-     * toolbar右边的菜单 点击事件
-     */
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            //调用浏览器
-            R.id.action_menu_browser -> {
-                ShareUtils.shareUrl(pageMap[viewPager.currentItem]?.agentWeb?.webCreator?.webView?.url)
-            }
-            //分享
-            R.id.action_menu_share -> {
-                ShareUtils.shareMessage(Utils.getString(R.string.msg_share))
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    private fun initViews() {
+    override fun initViews() {
+        super.initViews()
         viewPager.adapter = mPagerAdapter
         if (Config.instance.tabCount <= 1) {
             topNavigation.visibility = View.GONE
@@ -185,15 +138,27 @@ class WebDroidActivity : BaseActivity() {
     }
 
     /**
-     * 监听返回键
+     * 重写点击事件
      */
-    override fun onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START)
-        } else if (pageMap[viewPager.currentItem]!!.handleKeyDown(KeyEvent.KEYCODE_BACK, null)) {
-        } else {
-            super.onBackPressed()
+    override fun onClickViewId(viewId: Int) {
+        super.onClickViewId(viewId)
+        when(viewId){
+            //调用浏览器
+            R.id.action_menu_browser -> {
+                ShareUtils.openUrl(pageMap[viewPager.currentItem]?.agentWeb?.webCreator?.webView?.url)
+            }
+            //分享
+            R.id.action_menu_share -> {
+                ShareUtils.shareMessage(Utils.getString(R.string.msg_share))
+            }
         }
+    }
+
+    /**
+     * 网页的返回
+     */
+    override fun onPageBackPressed(): Boolean {
+        return pageMap[viewPager.currentItem]!!.handleKeyDown(KeyEvent.KEYCODE_BACK, null)
     }
 
 }

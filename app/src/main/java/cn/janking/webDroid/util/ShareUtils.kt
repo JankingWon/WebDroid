@@ -39,9 +39,9 @@ object ShareUtils {
     }
 
     /**
-     * 分享 url
+     * 使用浏览器打开 url
      */
-    fun shareUrl(url: String?) {
+    fun openUrl(url: String?) {
         url?.let {
             ActivityUtils.startActivity(Intent(Intent.ACTION_VIEW).apply {
                 data = Uri.parse(it)
