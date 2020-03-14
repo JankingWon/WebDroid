@@ -22,7 +22,9 @@ import org.greenrobot.eventbus.ThreadMode
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
-
+/**
+ * @author Janking
+ */
 class CreatorActivity : BaseActivity() {
     var tabListAdapter: TabListRVAdapter? = null
     /**

@@ -37,7 +37,7 @@ class BuildUtils {
                 return
             }
             console = textView
-            ThreadUtils.executeByCached(object : ThreadUtils.SimpleTask<Unit>() {
+            ThreadUtils.executeByIo(object : ThreadUtils.SimpleTask<Unit>() {
                 /**
                  * 记录打包开始的时间
                  */

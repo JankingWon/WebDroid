@@ -46,7 +46,7 @@ class MyApplication : Application() {
             EventBus.getDefault().post(InitFinishEvent(true))
             return
         }
-        ThreadUtils.executeByCached(object : ThreadUtils.SimpleTask<Unit>() {
+        ThreadUtils.executeByIo(object : ThreadUtils.SimpleTask<Unit>() {
             override fun doInBackground() {
                 //复制资源
                 copyAssets("template")

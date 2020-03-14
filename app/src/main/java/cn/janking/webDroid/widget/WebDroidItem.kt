@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat.getSystemService
 import cn.janking.webDroid.R
 import cn.janking.webDroid.util.LogUtils
 import cn.janking.webDroid.util.ShareUtils
+import cn.janking.webDroid.util.ThreadUtils
 import cn.janking.webDroid.util.Utils
 import com.bumptech.glide.Glide
 import com.just.agentweb.AgentWeb

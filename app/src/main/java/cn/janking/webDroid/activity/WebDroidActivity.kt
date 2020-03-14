@@ -1,7 +1,5 @@
 package cn.janking.webDroid.activity
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.widget.LinearLayout
@@ -17,6 +15,9 @@ import cn.janking.webDroid.widget.WebDroidItem
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_webdroid.*
 
+/**
+ * @author Janking
+ */
 class WebDroidActivity : BaseActivity() {
     /**
      * 缓存页面
