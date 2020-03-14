@@ -20,9 +20,9 @@
             android:background="?attr/colorPrimary"
             app:titleTextColor="?attr/colorOnPrimary"
             android:fitsSystemWindows="true"
-            android:theme="@style/AppTheme.AppBarOverlay"
+            android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
             app:layout_scrollFlags="scroll|enterAlways"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light" />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/topNavigation"

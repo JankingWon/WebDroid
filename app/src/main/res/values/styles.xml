@@ -1,5 +1,6 @@
 <resources>
 
+    <!--基本的APP主题-->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Color Theme: https://material.io/develop/android/theming/color/ -->
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -13,18 +14,23 @@
         <item name="android:windowSoftInputMode">adjustPan</item>
     </style>
 
+    <!--没有ActionBar的主题-->
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
-
-    <style name="CommonLoadingDialogStyle" parent="android:Theme.Dialog">
-        <item name="android:background">@android:color/transparent</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
+    <!--全屏Dialog-->
+    <style name="DialogFullscreen" parent="Theme.MaterialComponents.Light.DialogWhenLarge">
+        <item name="actionBarTheme">@style/ThemeOverlay.MaterialComponents.Light</item>
+        <item name="actionBarPopupTheme">@style/ThemeOverlay.MaterialComponents.Light</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="android:windowNoTitle">true</item>
-        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
     </style>
+
 
     <style name="CommonContentDialogStyle" parent="android:Theme.Dialog">
         <item name="android:background">@android:color/transparent</item>
@@ -35,13 +41,6 @@
         <item name="android:windowMinWidthMinor">85%</item>
     </style>
 
-    <!--自定义工具栏-->
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" >
-
-    </style>
-
-    <!--弹出菜单的样式-->
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light" />
 
     <!--透明activity-->
     <style name="ActivityTranslucent">

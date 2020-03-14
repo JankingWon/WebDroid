@@ -11,6 +11,7 @@ import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import cn.janking.webDroid.R
 import cn.janking.webDroid.model.Config
+import cn.janking.webDroid.util.ShareUtils
 import cn.janking.webDroid.util.Utils
 import cn.janking.webDroid.widget.WebDroidItem
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -146,24 +147,11 @@ class WebDroidActivity : BaseActivity() {
         when (item.itemId) {
             //调用浏览器
             R.id.action_menu_browser -> {
-                startActivity(Intent().apply {
-                    action = "android.intent.action.VIEW"
-                    data =
-                        Uri.parse(pageMap[viewPager.currentItem]?.agentWeb?.webCreator?.webView?.url);
-                });
+                ShareUtils.shareUrl(pageMap[viewPager.currentItem]?.agentWeb?.webCreator?.webView?.url)
             }
             //分享
             R.id.action_menu_share -> {
-                startActivity(
-                    Intent.createChooser(
-                        Intent().apply {
-                            action = Intent.ACTION_SEND
-                            putExtra(Intent.EXTRA_TEXT, Utils.getString(R.string.msg_share))
-                            type = "text/plain"
-                        },
-                        Utils.getString(R.string.msg_share_title)
-                    )
-                )
+                ShareUtils.shareMessage(Utils.getString(R.string.msg_share))
             }
         }
         return super.onOptionsItemSelected(item)
