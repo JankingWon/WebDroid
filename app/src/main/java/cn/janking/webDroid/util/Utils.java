@@ -664,10 +664,6 @@ public final class Utils {
         @Override
         public boolean onCreate() {
             Utils.init(getContext());
-            try {
-                Class.forName("com.blankj.utildebug.DebugUtils");
-            } catch (ClassNotFoundException ignore) {
-            }
             return true;
         }
     }

@@ -3,12 +3,14 @@ package cn.janking.webDroid
 import android.app.Application
 import android.content.Context
 import cn.janking.webDroid.activity.CreatorActivity
+import cn.janking.webDroid.constant.PathConstants
 import cn.janking.webDroid.event.InitFinishEvent
 
 import cn.janking.webDroid.model.Config
 import cn.janking.webDroid.util.*
 import org.greenrobot.eventbus.EventBus
 import java.io.File
+import java.io.FileFilter
 
 /**
  * 自定义应用
@@ -20,12 +22,12 @@ class MyApplication : Application() {
     override fun attachBaseContext(base: Context) {
         super.attachBaseContext(base)
         Utils.init(this)
-        if (isPreview()){
+        if (isPreview()) {
             init()
-        }else{
+        } else {
             //读取配置
             Config.instance.preview = false
-            Config.readFromString(FileUtils.getFileContent(base.assets.open(EnvironmentUtils.DEFAULT_CONFIG_FILE)))
+            Config.readFromString(FileUtils.getFileContent(base.assets.open(PathConstants.DEFAULT_CONFIG_FILE)))
         }
     }
 
@@ -42,7 +44,7 @@ class MyApplication : Application() {
      * 初始化
      */
     private fun init() {
-        if (SPUtils.getInstance().getBoolean(getString(R.string.key_has_init))){
+        if (SPUtils.getInstance().getBoolean(getString(R.string.key_has_init))) {
             EventBus.getDefault().post(InitFinishEvent(true))
             return
         }
@@ -54,24 +56,33 @@ class MyApplication : Application() {
                 //解压apk，此项如果在debug模式有问题
                 ZipUtils.unzipFile(
                     File(Utils.getApp().packageResourcePath),
-                    FileUtils.getExistDir(EnvironmentUtils.dirUnzippedApk)
+                    FileUtils.getExistDir(PathConstants.dirUnzippedApk)
                 )
                 //删除原有签名
                 FileUtils.deleteFilesInDirWithFilter(
-                    EnvironmentUtils.dirUnzippedApkMetaINF
-                ) { pathname ->
-                    FileUtils.getFileExtension(pathname).run {
-                        equals("MF") || equals("SF") || equals("RSA")
+                    PathConstants.dirUnzippedApkMetaINF,
+                    FileFilter { pathname ->
+                        FileUtils.getFileExtension(pathname).run {
+                            equals("MF") || equals("SF") || equals("RSA")
+                        }
                     }
-                }
+                )
                 //删除原有asset
                 FileUtils.deleteFilesInDirWithFilter(
-                    EnvironmentUtils.dirUnzippedApkAssets
-                ) { pathname ->
-                    pathname.name.run {
-                        !equals(EnvironmentUtils.DEFAULT_CONFIG_FILE)
+                    PathConstants.dirUnzippedApkAssets,
+                    FileFilter { pathname ->
+                        pathname?.name.run {
+                            !equals(PathConstants.DEFAULT_CONFIG_FILE)
+                        }
                     }
-                }
+                )
+                //使用模板中的manifest
+                FileUtils.copyFileToDir(
+                    PathConstants.getSubTemplate(
+                        PathConstants.DEFAULT_MANIFEST_FILE
+                    ),
+                    PathConstants.dirUnzippedApk
+                )
             }
 
             override fun onFail(t: Throwable?) {
@@ -96,7 +107,7 @@ class MyApplication : Application() {
         for (name in Utils.getApp().assets.list(assetFolder)!!) {
             FileUtils.copyFileToFile(
                 this.assets.open(assetFolder + File.separator + name),
-                EnvironmentUtils.getSubRoot(assetFolder + File.separator + name)
+                PathConstants.getSubRoot(assetFolder + File.separator + name)
             )
         }
     }

@@ -1,12 +1,15 @@
-package cn.janking.webDroid.util
+package cn.janking.webDroid.constant
 
 import android.os.Environment
+import cn.janking.webDroid.util.AppUtils
+import cn.janking.webDroid.util.FileUtils
+import cn.janking.webDroid.util.Utils
 import java.io.File
 
 /**
- * 环境常量帮助类
+ * 路径帮助类
  */
-object EnvironmentUtils {
+object PathConstants {
     const val DEFAULT_CONFIG_FILE = "config.json"
     const val DEFAULT_MANIFEST_FILE = "AndroidManifest.xml"
     const val DEFAULT_KEY_PASSWORD = "123456"
@@ -16,19 +19,29 @@ object EnvironmentUtils {
      * 存储数据的主路径
      */
     private val dirRoot: String
-        get() = FileUtils.getExistDir(Utils.getApp().getExternalFilesDir(null)).absolutePath
+        get() = Utils.getApp().getExternalFilesDir(
+            null
+        ) ?.let {
+            FileUtils.getExistDir(it).absolutePath
+        } ?: ""
 
     /**
-     * 输出的路径
+     * 输出产物的路径
      */
     private val outRoot: String
-        get() = Environment.getExternalStorageDirectory().absolutePath + File.separator + "WebDroid"
+        get() = Environment.getExternalStorageDirectory().absolutePath + File.separator + AppUtils.getAppName()
 
     /**
      * 存放apk的路径
      */
     val dirApk: String
         get() = outRoot + File.separator + "apk"
+
+    /**
+     * 保存图片的路径
+     */
+    val dirImage: String
+        get() = outRoot + File.separator + "image"
 
     /**
      * 获取某个存储目录下的子目录
@@ -72,7 +85,8 @@ object EnvironmentUtils {
      * 获取生成的apk文件路径，即签名的apk
      */
     fun getFileApkSigned(name: String): String {
-        return FileUtils.getExistFile(dirApk + File.separator + name + ".apk").absolutePath
+        return FileUtils.getExistFile(dirApk + File.separator + name + ".apk")
+            .absolutePath
     }
 
     /**
@@ -124,20 +138,26 @@ object EnvironmentUtils {
      * 获取工程下的资源目录
      */
     fun getDirProjectRes(projectName: String): String {
-        return getDirProject(projectName) + File.separator + "res"
+        return getDirProject(
+            projectName
+        ) + File.separator + "res"
     }
 
     /**
      * 获取工程下的manifest
      */
     fun getFileProjectManifest(projectName: String): String {
-        return getDirProject(projectName) + File.separator + "AndroidManifest.xml"
+        return getDirProject(
+            projectName
+        ) + File.separator + "AndroidManifest.xml"
     }
 
     /**
      * 获取工程下的配置文件
      */
     fun getFileConfig(projectName: String): String {
-        return getDirProject(projectName) + File.separator + "config.properties"
+        return getDirProject(
+            projectName
+        ) + File.separator + "config.properties"
     }
 }

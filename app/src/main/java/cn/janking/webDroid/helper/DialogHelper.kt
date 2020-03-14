@@ -31,6 +31,9 @@ object DialogHelper {
             }.show()
     }
 
+    /**
+     * 打开App权限设置页面
+     */
     fun showOpenAppSettingDialog() {
         val topActivity = ActivityUtils.getTopActivity() ?: return
         AlertDialog.Builder(topActivity)

@@ -13,6 +13,7 @@ import cn.janking.webDroid.event.BuildFinishEvent
 import cn.janking.webDroid.event.CancelBuildEvent
 import cn.janking.webDroid.event.InitFinishEvent
 import cn.janking.webDroid.helper.DialogHelper
+import cn.janking.webDroid.helper.PermissionHelper
 import cn.janking.webDroid.model.Config
 import cn.janking.webDroid.util.*
 import kotlinx.android.synthetic.main.activity_creator.*
@@ -39,15 +40,6 @@ class CreatorActivity : BaseActivity() {
         initViews()
         loadLastConfig()
     }
-
-    /**
-     * 检查权限
-     */
-    override fun onStart() {
-        super.onStart()
-        checkPermission()
-    }
-
 
     /**
      * 在此处保存不是绝对安全，应该在onPause
@@ -82,23 +74,15 @@ class CreatorActivity : BaseActivity() {
         }
         //打包按钮
         build.setOnClickListener {
-            if (isBuilding) {
-                //取消打包任务
-                EventBus.getDefault().post(CancelBuildEvent())
-                build.text = "打包"
-                isBuilding = false
-            } else {
-                //开始打包任务
+            //开始打包任务
+            PermissionHelper.checkStorage(fun (){
                 if (checkConfig(false)) {
                     showProgressBar(true)
                     BuildUtils.build(console)
-                    isBuilding = true
-                    build.text = "取消"
+                    build.isEnabled = false
                 }
-            }
+            }){}
         }
-        //未请求权限之前禁用
-        build.isEnabled = false
         //初始化状态
         if(SPUtils.getInstance().getBoolean(getString(R.string.key_has_init))){
             ConsoleUtils.success(console, "已就绪")
@@ -116,39 +100,6 @@ class CreatorActivity : BaseActivity() {
             tabListAdapter?.addTabItem(Config.instance.tabTitles[i], Config.instance.tabUrls[i])
         }
     }
-
-    /**
-     * 检查是否有存储权限
-     */
-    private fun checkPermission(){
-        //之所以要多多余这个判断是PermissionUtils会调用透明请求的Activity，导致屏幕闪烁
-        if(PermissionUtils.isGranted(PermissionConstants.STORAGE)){
-            build.isEnabled = true
-            return
-        }
-        PermissionUtils.permission(PermissionConstants.STORAGE)
-            .rationale { shouldRequest -> DialogHelper.showRationaleDialog(shouldRequest) }
-            .callback(object : PermissionUtils.FullCallback {
-                override fun onGranted(permissionsGranted: List<String>) {
-                    //获取权限后才进行初始化
-                    LogUtils.i("请求权限成功！")
-                    build.isEnabled = true
-                }
-
-                override fun onDenied(
-                    permissionsDeniedForever: List<String>,
-                    permissionsDenied: List<String>
-                ) {
-                    LogUtils.i("请求权限失败！")
-                    //如果选择了“拒绝后不再询问”，则引导打开权限设置页面
-                    if (permissionsDeniedForever.isNotEmpty()) {
-                        DialogHelper.showOpenAppSettingDialog()
-                    }
-                }
-            })
-            .request()
-    }
-
 
     /**
      * 检查Config是否有效
@@ -229,7 +180,7 @@ class CreatorActivity : BaseActivity() {
     fun onEvent(buildFinishEvent: BuildFinishEvent) {
         showProgressBar(false)
         //使按钮转为常规态
-        build.performClick()
+        build.isEnabled = true
     }
 
     /**

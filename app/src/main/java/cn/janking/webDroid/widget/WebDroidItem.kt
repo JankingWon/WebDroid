@@ -9,18 +9,15 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import android.webkit.WebView
 import android.widget.FrameLayout
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat.getSystemService
 import cn.janking.webDroid.R
-import cn.janking.webDroid.util.LogUtils
-import cn.janking.webDroid.util.ShareUtils
-import cn.janking.webDroid.util.ThreadUtils
-import cn.janking.webDroid.util.Utils
+import cn.janking.webDroid.helper.PermissionHelper
+import cn.janking.webDroid.util.*
 import com.bumptech.glide.Glide
 import com.just.agentweb.AgentWeb
 import com.just.agentweb.AgentWebConfig
 import com.just.agentweb.IWebLayout
+import java.io.File
 
 
 /**
@@ -85,26 +82,42 @@ class AgentWebLayout(context: Context, viewGroup: ViewGroup) : IWebLayout<WebVie
             when (type) {
                 WebView.HitTestResult.IMAGE_TYPE -> {
                     // 获取图片的路径
-                    val saveImgUrl = result.extra
+                    val imageUrl = result.extra
                     // 使用Dialog弹出菜单
                     AlertDialog.Builder(getContext())
                         .setTitle("图片选项")
-                        .setItems(arrayOf("查看图片", "复制链接", "下载图片", "分享图片")) { dialog, which ->
+                        .setItems(arrayOf("查看图片", "复制链接", "保存图片", "分享图片")) { dialog, which ->
                             when (which) {
                                 0 -> {
-                                    ShareUtils.fullDialogImage(saveImgUrl)
+                                    ShareUtils.fullDialogImage(imageUrl)
                                 }
                                 1 -> {
-                                    ShareUtils.copyUrl(saveImgUrl)
+                                    ShareUtils.copyUrl(imageUrl)
                                 }
                                 2 -> {
-                                    Glide.with(context)
-                                        .asFile()
-                                        .load(saveImgUrl)
-                                        .submit()
+                                    PermissionHelper.checkStorage(fun (){
+                                        ShareUtils.saveImage(imageUrl)
+                                    }){}
+
                                 }
                                 3 -> {
-                                    ShareUtils.shareImage(saveImgUrl)
+                                    //下载完成之后再分享
+                                    ThreadUtils.executeByCached(object :
+                                        ThreadUtils.SimpleTask<File>() {
+                                        override fun doInBackground(): File {
+                                            return Glide.with(getContext())
+                                                .asFile()
+                                                .load(imageUrl)
+                                                .submit().get()
+                                        }
+
+                                        override fun onSuccess(result: File?) {
+                                            result?.run {
+                                                ShareUtils.shareImage(UriUtils.file2Uri(this))
+                                            }
+                                        }
+                                    })
+
                                 }
                             }
                         }

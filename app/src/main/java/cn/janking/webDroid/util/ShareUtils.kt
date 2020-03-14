@@ -11,7 +11,9 @@ import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat.getSystemService
 import cn.janking.webDroid.R
+import cn.janking.webDroid.constant.PathConstants
 import com.bumptech.glide.Glide
+import java.io.File
 
 
 /**
@@ -50,10 +52,10 @@ object ShareUtils {
     /**
      * 分享图片到其他应用
      */
-    fun shareImage(imageUrl: String?) {
+    fun shareImage(imageUrl: Uri?) {
         imageUrl?.let {
             ActivityUtils.startActivity(Intent(Intent.ACTION_SEND).apply {
-                putExtra(Intent.EXTRA_STREAM, Uri.parse(it))
+                putExtra(Intent.EXTRA_STREAM, it)
                 type = "image/*"
             })
         }
@@ -94,6 +96,41 @@ object ShareUtils {
             }
         }
 
+    }
+
+    /**
+     * 保存网络图片
+     */
+    fun saveImage(imageUrl: String?){
+        ThreadUtils.executeByCached(object :
+            ThreadUtils.SimpleTask<File>() {
+            override fun doInBackground(): File {
+                return Glide.with(ActivityUtils.getTopActivity())
+                    .asFile()
+                    .load(imageUrl)
+                    .submit().get()
+            }
+
+            override fun onSuccess(result: File?) {
+                result?.run {
+                    ThreadUtils.executeByCached(object :
+                        ThreadUtils.SimpleTask<Unit>() {
+                        override fun doInBackground() {
+                            FileUtils.copyFileToDir(result, PathConstants.dirImage, "jpeg")
+                        }
+
+                        override fun onFail(t: Throwable?) {
+                            Toast.makeText(Utils.getApp(), "保存失败", Toast.LENGTH_SHORT).show()
+                            LogUtils.w(t)
+                        }
+
+                        override fun onSuccess(unit : Unit) {
+                            Toast.makeText(Utils.getApp(), "已保存到${PathConstants.dirImage}", Toast.LENGTH_SHORT).show()
+                        }
+                    })
+                }
+            }
+        })
     }
 
     private fun safeCast(string: String?, function: (arg1: String) -> Unit) {
