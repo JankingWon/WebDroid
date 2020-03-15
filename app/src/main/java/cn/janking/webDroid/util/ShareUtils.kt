@@ -101,10 +101,17 @@ object ShareUtils {
     /**
      * 保存网络图片
      */
-    fun saveImage(imageUrl: String?){
+    fun saveImage(imageUrl: String?) {
         ThreadUtils.executeByCached(object :
             ThreadUtils.SimpleTask<File>() {
+            //保存图片格式
+            var imageFormat = "jpeg"
+
             override fun doInBackground(): File {
+                imageFormat = FileUtils.getFileExtension(imageUrl)?.let {
+                    if (it.isNotBlank()) it
+                    else imageFormat
+                }
                 return Glide.with(ActivityUtils.getTopActivity())
                     .asFile()
                     .load(imageUrl)
@@ -116,7 +123,7 @@ object ShareUtils {
                     ThreadUtils.executeByCached(object :
                         ThreadUtils.SimpleTask<Unit>() {
                         override fun doInBackground() {
-                            FileUtils.copyFileToDir(result, PathConstants.dirImage, "jpeg")
+                            FileUtils.copyFileToDir(result, PathConstants.dirImage, imageFormat)
                         }
 
                         override fun onFail(t: Throwable?) {
@@ -124,8 +131,12 @@ object ShareUtils {
                             LogUtils.w(t)
                         }
 
-                        override fun onSuccess(unit : Unit) {
-                            Toast.makeText(Utils.getApp(), "已保存到${PathConstants.dirImage}", Toast.LENGTH_SHORT).show()
+                        override fun onSuccess(unit: Unit) {
+                            Toast.makeText(
+                                Utils.getApp(),
+                                "已保存到${PathConstants.dirImage}",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     })
                 }

@@ -2,10 +2,7 @@ package cn.janking.webDroid.activity
 
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
-import android.view.KeyEvent
-import android.view.Menu
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.webkit.WebView
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
@@ -163,6 +160,26 @@ class WebDroidActivity : BaseActivity() {
         super.onDestroy()
     }
 
+    /**
+     * 配置更改时调用
+     */
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        when (newConfig.orientation) {
+            Configuration.ORIENTATION_LANDSCAPE -> {
+                window.clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
+                window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+            }
+            Configuration.ORIENTATION_PORTRAIT -> {
+                window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                window.addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
+            }
+        }
+    }
+
+    /**
+     * 全屏
+     */
     private fun fullScreen() {
         if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE

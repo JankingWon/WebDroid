@@ -42,11 +42,12 @@ class WebDroidItem constructor(
         )
         .closeIndicator()
         .setWebLayout(AgentWebLayout(context, viewGroup))
+        .setWebChromeClient(DefaultWebChromeClient())
         .createAgentWeb()
         .ready()
         .go(configUrl).also {
             it.agentWebSettings.webSettings.run {
-                //解决 sysu.edu.cn 部分内容不加载，只有背景的问题
+                //解决 sysu.edu.cn 超出屏幕部分内容不加载，只有背景的问题
                 useWideViewPort = true
                 //解决 sysu.edu.cn 不能缩放的问题
                 builtInZoomControls = true
