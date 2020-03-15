@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -22,6 +23,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.fragment.app.Fragment;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -533,6 +535,33 @@ public final class ActivityUtils {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
             activity.overridePendingTransition(enterAnim, exitAnim);
         }
+    }
+
+    /**
+     * Start the activity.
+     *
+     * @param uri The description of the activity to start.
+     * @return {@code true}: success<br>{@code false}: fail
+     */
+    public static boolean startActivity(@NonNull final Uri uri) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.setData(uri);
+        return startActivity(intent, Utils.getTopActivityOrApp(), null);
+    }
+
+    /**
+     * Start the activity.
+     *
+     * @param uri The description of the activity to start.
+     * @return {@code true}: success<br>{@code false}: fail
+     */
+    public static boolean startActivity(@NonNull final Uri uri, final int flag) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.setData(uri);
+        intent.setFlags(flag);
+        return startActivity(intent, Utils.getTopActivityOrApp(), null);
     }
 
     /**

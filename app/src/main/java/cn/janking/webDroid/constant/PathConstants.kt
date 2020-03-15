@@ -26,6 +26,11 @@ object PathConstants {
         } ?: ""
 
     /**
+     * webview相关的缓存
+     */
+    val dirWebCache : String = Utils.getApp().cacheDir.absolutePath + File.separator + "web-cache"
+
+    /**
      * 输出产物的路径
      */
     private val outRoot: String

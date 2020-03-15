@@ -8,9 +8,9 @@ import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import cn.janking.webDroid.R
 import cn.janking.webDroid.model.Config
-import cn.janking.webDroid.util.ShareUtils
+import cn.janking.webDroid.util.OpenUtils
 import cn.janking.webDroid.util.Utils
-import cn.janking.webDroid.web.WebDroidItem
+import cn.janking.webDroid.web.WebBox
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activity_webdroid.*
@@ -32,7 +32,7 @@ class WebDroidActivity : BaseActivity() {
     /**
      * 缓存页面
      */
-    private val pageMap: MutableMap<Int, WebDroidItem> = HashMap()
+    private val pageMap: MutableMap<Int, WebBox> = HashMap()
 
     /**
      * 滑动页面的适配器
@@ -48,13 +48,13 @@ class WebDroidActivity : BaseActivity() {
 
         override fun instantiateItem(container: ViewGroup, position: Int): Any {
             if (pageMap[position] == null) {
-                pageMap[position] = WebDroidItem(
+                pageMap[position] = WebBox(
                     this@WebDroidActivity,
                     viewPager,
                     Config.instance.tabUrls[position]
                 )
             }
-            val view = pageMap[position]!!.agentWeb.webCreator.webParentLayout
+            val view = pageMap[position]!!.webLayout
             //如果已经被回收了，需要手动添加进去
             if (viewPager.indexOfChild(view) == -1) {
                 viewPager.addView(
@@ -93,12 +93,12 @@ class WebDroidActivity : BaseActivity() {
     /**
      * 顶部导航栏的监听器
      */
-    private val onTabSelectedListener = object :TabLayout.OnTabSelectedListener{
-        var clickTime : Long = 0
+    private val onTabSelectedListener = object : TabLayout.OnTabSelectedListener {
+        var clickTime: Long = 0
         //双击tab刷新
         override fun onTabReselected(tab: TabLayout.Tab?) {
             //0.5s以内算双击
-            if(System.currentTimeMillis() - clickTime < 500){
+            if (System.currentTimeMillis() - clickTime < 500) {
                 //刷新页面
                 getCurrentWebView().reload()
             }
@@ -107,9 +107,13 @@ class WebDroidActivity : BaseActivity() {
 
         override fun onTabSelected(tab: TabLayout.Tab?) {
             clickTime = System.currentTimeMillis()
+            //此处不能使用getCurrentWebView() 因为 viewPager.currentItem 还未更改
+            pageMap[tab?.position]?.webLifeCycle?.onResume()
         }
 
-        override fun onTabUnselected(tab: TabLayout.Tab?) {}
+        override fun onTabUnselected(tab: TabLayout.Tab?) {
+            pageMap[tab?.position]?.webLifeCycle?.onPause()
+        }
     }
 
     /**
@@ -131,21 +135,23 @@ class WebDroidActivity : BaseActivity() {
         ) {
         }
     }
+
     /**
      * 调用WebView的生命周期
      */
     override fun onResume() {
-        for(webDroidItem in pageMap.values){
-            webDroidItem.agentWeb.webLifeCycle.onResume()
+        for (webDroidItem in pageMap.values) {
+            webDroidItem.webLifeCycle.onResume()
         }
         super.onResume()
     }
+
     /**
      * 调用WebView的生命周期
      */
     override fun onPause() {
-        for(webDroidItem in pageMap.values){
-            webDroidItem.agentWeb.webLifeCycle.onPause()
+        for (webDroidItem in pageMap.values) {
+            webDroidItem.webLifeCycle.onPause()
         }
         super.onPause()
     }
@@ -154,10 +160,18 @@ class WebDroidActivity : BaseActivity() {
      * 销毁WebView
      */
     override fun onDestroy() {
-        for(webDroidItem in pageMap.values){
-            webDroidItem.agentWeb.webLifeCycle.onDestroy()
+        for (webDroidItem in pageMap.values) {
+            webDroidItem.webLifeCycle.onDestroy()
         }
         super.onDestroy()
+    }
+
+    fun getCurrentWebItem(): WebBox {
+        return pageMap[viewPager.currentItem]!!
+    }
+
+    fun getCurrentWebView(): WebView {
+        return getCurrentWebItem().webView
     }
 
     /**
@@ -178,9 +192,9 @@ class WebDroidActivity : BaseActivity() {
     }
 
     /**
-     * 全屏
+     * 全屏切换
      */
-    private fun fullScreen() {
+    fun fullScreen() {
         if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         } else {
@@ -195,6 +209,8 @@ class WebDroidActivity : BaseActivity() {
             topNavigation.visibility = View.GONE
             bottomNavigation.visibility = View.GONE
         } else {
+            //防止频繁回收
+            viewPager.offscreenPageLimit = Config.instance.tabCount - 1
             //如果是设置顶部tab
             if (Config.instance.tabStyle == 0) {
                 topNavigation.visibility = View.VISIBLE
@@ -216,36 +232,35 @@ class WebDroidActivity : BaseActivity() {
         }
     }
 
-    fun getCurrentWebItem() : WebDroidItem{
-        return pageMap[viewPager.currentItem]!!
-    }
-
-    fun getCurrentWebView() : WebView{
-        return getCurrentWebItem().agentWeb.webCreator.webView
-    }
-
     /**
      * 重写点击事件
      */
     override fun onClickViewId(viewId: Int) {
         super.onClickViewId(viewId)
-        when(viewId){
+        when (viewId) {
             //调用浏览器
             R.id.action_menu_browser -> {
-                ShareUtils.openUrl(pageMap[viewPager.currentItem]?.agentWeb?.webCreator?.webView?.url)
+                OpenUtils.openUrl(getCurrentWebView().url)
             }
             //分享
             R.id.action_menu_share -> {
-                ShareUtils.shareMessage(Utils.getString(R.string.msg_share))
+                OpenUtils.shareMessage(Utils.getString(R.string.msg_share))
             }
         }
     }
 
-    /**
-     * 网页的返回
-     */
-    override fun onPageBackPressed(): Boolean {
-        return getCurrentWebItem().handleKeyDown(KeyEvent.KEYCODE_BACK, null)
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        return if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (getCurrentWebItem().onBack()) {
+                true
+            } else {
+                super.onKeyDown(keyCode, event)
+            }
+        } else {
+            super.onKeyDown(keyCode, event)
+        }
+
     }
+
 
 }

@@ -2,12 +2,7 @@ package cn.janking.webDroid.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
-import android.widget.LinearLayout
-import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import cn.janking.webDroid.R
@@ -19,10 +14,6 @@ import cn.janking.webDroid.helper.PermissionHelper
 import cn.janking.webDroid.model.Config
 import cn.janking.webDroid.util.*
 import kotlinx.android.synthetic.main.activity_creator.*
-import kotlinx.android.synthetic.main.activity_creator.drawer
-import kotlinx.android.synthetic.main.activity_creator.toolbar
-import kotlinx.android.synthetic.main.activity_webdroid.*
-import kotlinx.android.synthetic.main.layout_nav.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -93,7 +84,7 @@ open class CreatorActivity : BaseActivity() {
         when(viewId){
             //关于
             R.id.action_menu_about -> {
-                ShareUtils.openUrl("https://github.com/JankingWon/WebDroid")
+                OpenUtils.openUrl("https://github.com/JankingWon/WebDroid")
             }
             //添加tab按钮
             R.id.addTab -> {
