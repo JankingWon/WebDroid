@@ -82,7 +82,8 @@ class AgentWebLayout(context: Context, viewGroup: ViewGroup) : IWebLayout<WebVie
 
             // 这里可以拦截很多类型
             when (type) {
-                WebView.HitTestResult.IMAGE_TYPE -> {
+                WebView.HitTestResult.IMAGE_TYPE,
+                WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE -> {
                     // 获取图片的路径
                     val imageUrl = result.extra
                     // 使用Dialog弹出菜单
@@ -97,9 +98,9 @@ class AgentWebLayout(context: Context, viewGroup: ViewGroup) : IWebLayout<WebVie
                                     ShareUtils.copyUrl(imageUrl)
                                 }
                                 2 -> {
-                                    PermissionHelper.checkStorage(fun (){
+                                    PermissionHelper.checkStorage(fun() {
                                         ShareUtils.saveImage(imageUrl)
-                                    }){}
+                                    }) {}
 
                                 }
                                 3 -> {
