@@ -1,20 +1,23 @@
 package cn.janking.webDroid.activity
 
-import android.os.Bundle
-import android.view.*
-import android.widget.LinearLayout
-import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.core.view.GravityCompat
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
+import android.view.KeyEvent
+import android.view.Menu
+import android.view.View
+import android.view.ViewGroup
+import android.webkit.WebView
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import cn.janking.webDroid.R
 import cn.janking.webDroid.model.Config
 import cn.janking.webDroid.util.ShareUtils
 import cn.janking.webDroid.util.Utils
-import cn.janking.webDroid.widget.WebDroidItem
+import cn.janking.webDroid.web.WebDroidItem
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activity_webdroid.*
-import kotlinx.android.synthetic.main.layout_nav.*
+
 
 /**
  * 生成的WebDridAPP的 主Activity
@@ -82,13 +85,35 @@ class WebDroidActivity : BaseActivity() {
     }
 
     /**
-     * 底部的监听器
+     * 底部导航栏的监听器
      */
-    private val mOnNavigationItemSelectedListener =
+    private val onNavigationItemSelectedListener =
         BottomNavigationView.OnNavigationItemSelectedListener { item ->
             viewPager.currentItem = item.itemId
             return@OnNavigationItemSelectedListener true
         }
+
+    /**
+     * 顶部导航栏的监听器
+     */
+    private val onTabSelectedListener = object :TabLayout.OnTabSelectedListener{
+        var clickTime : Long = 0
+        //双击tab刷新
+        override fun onTabReselected(tab: TabLayout.Tab?) {
+            //0.5s以内算双击
+            if(System.currentTimeMillis() - clickTime < 500){
+                //刷新页面
+                getCurrentWebView().reload()
+            }
+            clickTime = System.currentTimeMillis()
+        }
+
+        override fun onTabSelected(tab: TabLayout.Tab?) {
+            clickTime = System.currentTimeMillis()
+        }
+
+        override fun onTabUnselected(tab: TabLayout.Tab?) {}
+    }
 
     /**
      * 适用于底部导航栏的对viewPager的监听器
@@ -109,6 +134,42 @@ class WebDroidActivity : BaseActivity() {
         ) {
         }
     }
+    /**
+     * 调用WebView的生命周期
+     */
+    override fun onResume() {
+        for(webDroidItem in pageMap.values){
+            webDroidItem.agentWeb.webLifeCycle.onResume()
+        }
+        super.onResume()
+    }
+    /**
+     * 调用WebView的生命周期
+     */
+    override fun onPause() {
+        for(webDroidItem in pageMap.values){
+            webDroidItem.agentWeb.webLifeCycle.onPause()
+        }
+        super.onPause()
+    }
+
+    /**
+     * 销毁WebView
+     */
+    override fun onDestroy() {
+        for(webDroidItem in pageMap.values){
+            webDroidItem.agentWeb.webLifeCycle.onDestroy()
+        }
+        super.onDestroy()
+    }
+
+    private fun fullScreen() {
+        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        } else {
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+    }
 
     override fun initViews() {
         super.initViews()
@@ -122,6 +183,7 @@ class WebDroidActivity : BaseActivity() {
                 topNavigation.visibility = View.VISIBLE
                 bottomNavigation.visibility = View.GONE
                 topNavigation.setupWithViewPager(viewPager)
+                topNavigation.addOnTabSelectedListener(onTabSelectedListener)
             } else {
                 //设置底部tab @todo 添加底部tab icon
                 topNavigation.visibility = View.GONE
@@ -131,10 +193,18 @@ class WebDroidActivity : BaseActivity() {
                     bottomNavigation.menu.add(Menu.NONE, i, i, Config.instance.tabTitles[i])
                 }
                 bottomNavigation.setOnNavigationItemSelectedListener(
-                    mOnNavigationItemSelectedListener
+                    onNavigationItemSelectedListener
                 )
             }
         }
+    }
+
+    fun getCurrentWebItem() : WebDroidItem{
+        return pageMap[viewPager.currentItem]!!
+    }
+
+    fun getCurrentWebView() : WebView{
+        return getCurrentWebItem().agentWeb.webCreator.webView
     }
 
     /**
@@ -158,7 +228,7 @@ class WebDroidActivity : BaseActivity() {
      * 网页的返回
      */
     override fun onPageBackPressed(): Boolean {
-        return pageMap[viewPager.currentItem]!!.handleKeyDown(KeyEvent.KEYCODE_BACK, null)
+        return getCurrentWebItem().handleKeyDown(KeyEvent.KEYCODE_BACK, null)
     }
 
 }

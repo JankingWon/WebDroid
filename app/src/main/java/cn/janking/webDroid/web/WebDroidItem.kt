@@ -1,4 +1,4 @@
-package cn.janking.webDroid.widget
+package cn.janking.webDroid.web
 
 import android.app.Activity
 import android.content.Context
@@ -72,13 +72,14 @@ class AgentWebLayout(context: Context, viewGroup: ViewGroup) : IWebLayout<WebVie
     )
     //WebView控件
     private val webView = contentView.findViewById<WebView>(R.id.webView).apply {
+        //拦截长按事件
         setOnLongClickListener {
             val result =
                 (it as WebView).hitTestResult ?: return@setOnLongClickListener false
             val type = result.type
             if (type == WebView.HitTestResult.UNKNOWN_TYPE) return@setOnLongClickListener false
 
-            // 这里可以拦截很多类型，我们只处理图片类型就可以了
+            // 这里可以拦截很多类型
             when (type) {
                 WebView.HitTestResult.IMAGE_TYPE -> {
                     // 获取图片的路径
@@ -86,7 +87,7 @@ class AgentWebLayout(context: Context, viewGroup: ViewGroup) : IWebLayout<WebVie
                     // 使用Dialog弹出菜单
                     AlertDialog.Builder(getContext())
                         .setTitle("图片选项")
-                        .setItems(arrayOf("查看图片", "复制链接", "保存图片", "分享图片")) { dialog, which ->
+                        .setItems(arrayOf("查看图片", "复制链接", "保存图片", "分享图片")) { _, which ->
                             when (which) {
                                 0 -> {
                                     ShareUtils.fullDialogImage(imageUrl)

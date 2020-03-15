@@ -1,15 +1,14 @@
 {
   "appName" : "baby",
   "tabTitles" : [
-    "微博",
-    "知乎",
-    "百度",
+    "DashBoard",
+    "Explore",
+    "Download",
     "QQ"
   ],
   "tabUrls" : [
-    "https://tt6s.com",
-    "https://zhihu.com",
-    "https://baidu.com",
-    "https://qq.com"
+    "http://android.myapp.com/",
+    "https://m.bilibili.com/video/av95995959?spm_id_from=333.400.b_766964656f5f30.1\n",
+    "https://github.com/JankingWon/SignApk/releases"
   ]
 }
