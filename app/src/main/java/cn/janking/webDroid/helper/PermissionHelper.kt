@@ -18,27 +18,27 @@ object PermissionHelper {
      * 检查是否有存储权限
      */
     fun checkStorage(
-        grantedListener: () -> Unit,
-        deniedListener: () -> Unit
+        grantedListener: Runnable,
+        deniedListener: Runnable? = null
     ) {
         checkPermission(PermissionConstants.STORAGE, grantedListener, deniedListener)
     }
 
     private fun checkPermission(
         @PermissionConstants.Permission permission: String,
-        grantedListener: () -> Unit,
-        deniedListener: () -> Unit
+        grantedListener: Runnable,
+        deniedListener: Runnable? = null
     ) {
         //之所以要多多余这个判断是PermissionUtils会调用透明请求的Activity，导致屏幕闪烁
         if(PermissionUtils.isGranted(PermissionConstants.STORAGE)){
-            grantedListener()
+            grantedListener.run()
             return
         }
         PermissionUtils.permission(permission)
             .callback(object : PermissionUtils.FullCallback {
                 override fun onGranted(permissionsGranted: List<String>) {
                     LogUtils.d(permissionsGranted)
-                    grantedListener()
+                    grantedListener.run()
                 }
 
                 override fun onDenied(
@@ -46,6 +46,7 @@ object PermissionHelper {
                     permissionsDenied: List<String>
                 ) {
                     LogUtils.d(permissionsDeniedForever, permissionsDenied)
+                    deniedListener?.run()
                     //如果选择了“拒绝后不再询问”，则引导打开权限设置页面
 //                    if (permissionsDeniedForever.isNotEmpty()) {
 //                        DialogHelper.showOpenAppSettingDialog()

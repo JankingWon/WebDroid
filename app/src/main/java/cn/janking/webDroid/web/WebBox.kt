@@ -6,10 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
 import cn.janking.webDroid.R
-import cn.janking.webDroid.web.extend.defaultOnLongClickListener
-import cn.janking.webDroid.web.extend.defaultSetting
-import cn.janking.webDroid.web.extend.defaultWebChromeClient
-import cn.janking.webDroid.web.extend.defaultWebViewClient
+import cn.janking.webDroid.web.extend.*
 import cn.janking.webDroid.web.lifecycle.WebLifeCycleImpl
 import cn.janking.webDroid.web.view.NestedScrollWebView
 
@@ -30,8 +27,9 @@ class WebBox(activity: Activity, viewGroup: ViewGroup, homeUrl: String) {
         //使用默认WebViewClient
         defaultWebViewClient()
         //使用默认WebChromeClient
-        webVideoPlayer = WebVideoPlayer(activity, this)
-        defaultWebChromeClient(webVideoPlayer)
+        defaultWebChromeClient(WebVideoPlayer(activity, this).also { webVideoPlayer = it })
+        //使用默认下载器
+        defaultDownloadListener()
         //拦截长按事件
         defaultOnLongClickListener()
         //加载url

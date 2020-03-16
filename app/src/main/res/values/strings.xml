@@ -13,4 +13,5 @@
     <string name="msg_note">提示</string>
     <string name="msg_open_app">您需要离开%s前往%s吗？</string>
     <string name="msg_install_app">您未安装此应用，是否安装？</string>
+    <string name="msg_use_cellular_network">是否允许使用流量下载？</string>
 </resources>

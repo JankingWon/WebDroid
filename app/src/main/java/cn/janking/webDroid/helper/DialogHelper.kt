@@ -11,32 +11,10 @@ import com.bumptech.glide.util.Util
 /**
  */
 object DialogHelper {
-    /**
-     * 显示跳转到某个应用的提示
-     */
-    fun showOpenApp(callback: Handler.Callback, appLabel: String) {
-        AlertDialog.Builder(ActivityUtils.getTopActivity())
-            .setTitle(R.string.msg_note)
-            .setMessage(
-                Utils.getApp().resources.getString(
-                    R.string.msg_open_app,
-                    AppUtils.getAppName(),
-                    appLabel
-                )
-            )
-            .setNegativeButton(
-                android.R.string.cancel
-            ) { _, _ ->
-                callback.handleMessage(Message.obtain(null, -1))
-            }
-            .setPositiveButton(
-                android.R.string.ok
-            ) { _, _ ->
-                callback.handleMessage(Message.obtain(null, 1))
-            }
-            .show()
-    }
 
+    /**
+     * 提示用户允许权限
+     */
     fun showRationaleDialog(shouldRequest: PermissionUtils.OnRationaleListener.ShouldRequest) {
         val topActivity = ActivityUtils.getTopActivity() ?: return
         AlertDialog.Builder(topActivity)

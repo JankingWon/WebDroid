@@ -99,13 +99,13 @@ open class CreatorActivity : BaseActivity() {
             //打包按钮
             R.id.build -> {
                 //开始打包任务
-                PermissionHelper.checkStorage(fun (){
+                PermissionHelper.checkStorage(Runnable {
                     if (checkConfig(false)) {
                         showProgressBar(true)
                         BuildUtils.build(console)
                         build.isEnabled = false
                     }
-                }){}
+                })
             }
         }
     }

@@ -128,7 +128,7 @@ object OpenUtils {
      * 保存网络图片
      */
     fun saveImage(imageUrl: String?) {
-        PermissionHelper.checkStorage(fun() {
+        PermissionHelper.checkStorage(Runnable {
             ThreadUtils.executeByCached(object :
                 ThreadUtils.SimpleTask<File>() {
                 //保存图片格式
@@ -169,8 +169,7 @@ object OpenUtils {
                     }
                 }
             })
-        }) {}
-
+        })
     }
 
     /**

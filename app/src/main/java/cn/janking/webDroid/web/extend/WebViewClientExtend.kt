@@ -11,6 +11,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.annotation.RequiresApi
+import cn.janking.webDroid.R
 import cn.janking.webDroid.constant.WebConstants
 import cn.janking.webDroid.helper.DialogHelper
 import cn.janking.webDroid.util.*
@@ -67,26 +68,11 @@ class DefaultWebClient : WebViewClient() {
          */
         if (WebConfig.interceptUnknownUrl) {
             if(WebConfig.DEBUG){
-                LogUtils.i("intercept UnkownUrl :" + request.url)
+                LogUtils.i("Intercept Unknown Url :" + request.url)
             }
             return true
         }
         return super.shouldOverrideUrlLoading(view, request)
-    }
-
-    /**
-     * 获取调用APP对话框的回调
-     */
-    private fun getDialogCallBack(uri: Uri): Handler.Callback {
-        return object : Handler.Callback {
-            override fun handleMessage(msg: Message): Boolean {
-                when (msg.what) {
-                    1 -> openApp(uri)
-                    else -> return true
-                }
-                return true
-            }
-        }
     }
 
     /**
@@ -96,13 +82,21 @@ class DefaultWebClient : WebViewClient() {
     private fun determineOpenApp(uri: Uri): Boolean {
         return OpenUtils.getResolveInfoFromUri(uri)?.let {
             when (WebConfig.handleOpenUrl) {
+                //直接跳转
                 WebConfig.DIRECT_OPEN_OTHER_PAGE -> {
                     return openApp(uri)
                 }
+                //询问用户
                 WebConfig.ASK_USER_OPEN_OTHER_PAGE -> {
-                    DialogHelper.showOpenApp(
-                        getDialogCallBack(uri),
-                        it.loadLabel(Utils.getApp().packageManager).toString()
+                    DialogUtils.showAlertDialog(
+                        Utils.getApp().resources.getString(
+                            R.string.msg_open_app,
+                            AppUtils.getAppName(),
+                            it.loadLabel(Utils.getApp().packageManager)
+                        ),
+                        Runnable {
+                            openApp(uri)
+                        }
                     )
                     return true
                 }
