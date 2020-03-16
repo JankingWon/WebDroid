@@ -81,7 +81,7 @@ class WebVideoPlayer(private val activity: Activity, private val webViw: WebView
 
 
     /**
-     * 退出播放
+     * 退出全屏播放
      */
     fun onHideCustomView() {
         if (videoView == null) {
@@ -91,7 +91,7 @@ class WebVideoPlayer(private val activity: Activity, private val webViw: WebView
         if (activity.requestedOrientation != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
             activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         }
-        //删除flag
+        //恢复flag
         if (mFlags.isNotEmpty()) {
             for (mPair in mFlags) {
                 activity.window.setFlags(mPair.second, mPair.first!!)
@@ -104,8 +104,8 @@ class WebVideoPlayer(private val activity: Activity, private val webViw: WebView
             it.removeView(videoView)
             it.visibility = View.GONE
         }
-        videoView = null
         mCallback?.onCustomViewHidden()
+        videoView = null
         webViw?.visibility = View.VISIBLE
     }
 
@@ -113,12 +113,10 @@ class WebVideoPlayer(private val activity: Activity, private val webViw: WebView
     /**
      * 处理返回事件
      */
-    fun backEvent(): Boolean {
+    fun handleKeyEvent(): Boolean {
         return if (videoView != null) {
-            //取消全屏
-            if (activity.requestedOrientation != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-                activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-            }
+            //退出全屏
+            onHideCustomView()
             true
         } else {
             false

@@ -19,11 +19,11 @@ object WebConfig{
     /**
      * 是否是debug模式
      */
-    val DEBUG = false
+    val DEBUG = true
     /**
      * 打开外部链接的方式
      */
-    val handleOpenUrl = ASK_USER_OPEN_OTHER_PAGE
+    val handleOpenUrl = DISALLOW_OPEN_OTHER_APP
     /**
      * 是否拦截未知应用
      */

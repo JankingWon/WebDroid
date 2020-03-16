@@ -1,6 +1,7 @@
 package cn.janking.webDroid.activity
 
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -88,12 +89,12 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
      * 根据view的id判断点击事件
      * 集中处理点击事件
      */
-    protected open fun onClickViewId(viewId : Int){
-        when(viewId){
+    protected open fun onClickViewId(viewId: Int) {
+        when (viewId) {
             /*toolbar菜单*/
 
             /*侧边导航栏header*/
-            R.id.navHeader ->{
+            R.id.navHeader -> {
 
             }
             /*侧边导航栏菜单*/
@@ -114,22 +115,23 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
     }
 
     /**
-     * 监听返回键
+     * 统一监听返回键
      */
-    override fun onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        return if (keyCode == KeyEvent.KEYCODE_BACK && drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START)
+            true
+        } else if (handleKeyEvent(keyCode, event)) {
+            true
         } else {
-            if (!onPageBackPressed()) {
-                super.onBackPressed()
-            }
+            super.onKeyDown(keyCode, event)
         }
     }
 
     /**
-     * 返回true表示page已经处理
+     * 返回true表示返回事件已经处理
      */
-    protected open fun onPageBackPressed(): Boolean {
+    protected open fun handleKeyEvent(keyCode: Int, event: KeyEvent?): Boolean {
         return false
     }
 }

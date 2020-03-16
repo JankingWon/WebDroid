@@ -11,6 +11,8 @@ import cn.janking.webDroid.web.extend.defaultSetting
 import cn.janking.webDroid.web.extend.defaultWebChromeClient
 import cn.janking.webDroid.web.extend.defaultWebViewClient
 import cn.janking.webDroid.web.lifecycle.WebLifeCycleImpl
+import cn.janking.webDroid.web.view.NestedScrollWebView
+
 /**
  * @author Janking
  */
@@ -20,14 +22,9 @@ import cn.janking.webDroid.web.lifecycle.WebLifeCycleImpl
 class WebBox(activity: Activity, viewGroup: ViewGroup, homeUrl: String) {
     //Webview视频播放器
     val webVideoPlayer: WebVideoPlayer
-    //WebView根布局
-    val webLayout: View = LayoutInflater.from(activity).inflate(
-        R.layout.layout_webview,
-        viewGroup,
-        false
-    )
+
     //WebView控件
-    val webView = webLayout.findViewById<WebView>(R.id.webView).apply {
+    val webView: WebView = NestedScrollWebView(activity).apply {
         //使用默认setting
         defaultSetting()
         //使用默认WebViewClient
@@ -47,16 +44,20 @@ class WebBox(activity: Activity, viewGroup: ViewGroup, homeUrl: String) {
     /**
      * 返回键的监听
      */
-    fun onBack(): Boolean {
-        return webView?.let {
-            if (webVideoPlayer.backEvent()) {
-                true
-            } else if (it.canGoBack()) {
-                it.goBack()
-                false
-            } else {
-                false
+    fun handleKeyEvent(): Boolean {
+        return webView.let {
+            when {
+                webVideoPlayer.handleKeyEvent() -> {
+                    true
+                }
+                it.canGoBack() -> {
+                    it.goBack()
+                    false
+                }
+                else -> {
+                    false
+                }
             }
-        } ?: false
+        }
     }
 }

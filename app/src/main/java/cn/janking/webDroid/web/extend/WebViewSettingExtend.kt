@@ -10,6 +10,8 @@ import cn.janking.webDroid.constant.WebConstants
 import cn.janking.webDroid.util.LogUtils
 import cn.janking.webDroid.util.ProcessUtils
 import cn.janking.webDroid.util.WebUtils
+import cn.janking.webDroid.web.WebConfig
+
 /**
  * @author Janking
  */
@@ -55,16 +57,20 @@ fun WebView.defaultSetting() {
         setMinimumFontSize(12) //设置 WebView 支持的最小字体大小，默认为 8
         setGeolocationEnabled(true)
         val dir = PathConstants.dirWebCache
-        LogUtils.i(
-            "WebView.defaultSetting()",
-            "dir:" + dir + "   appcache:" + PathConstants.dirWebCache
-        )
+        if(WebConfig.DEBUG){
+            LogUtils.i(
+                "WebView.defaultSetting()",
+                "dir:" + dir + "   appcache:" + PathConstants.dirWebCache
+            )
+        }
         setAppCachePath(dir)
         userAgentString +=  WebConstants.USERAGENT_UC
-        LogUtils.i(
-            "WebView.defaultSetting()",
-            "UserAgentString : " + getUserAgentString()
-        )
+        if(WebConfig.DEBUG){
+            LogUtils.i(
+                "WebView.defaultSetting()",
+                "UserAgentString : " + getUserAgentString()
+            )
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) { // 安卓9.0后不允许多进程使用同一个数据目录，需设置前缀来区分
 // 参阅 https://blog.csdn.net/lvshuchangyin/article/details/89446629
             val context = this@defaultSetting.context

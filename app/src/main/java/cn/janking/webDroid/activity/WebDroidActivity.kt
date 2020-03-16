@@ -1,6 +1,5 @@
 package cn.janking.webDroid.activity
 
-import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.view.*
 import android.webkit.WebView
@@ -37,7 +36,7 @@ class WebDroidActivity : BaseActivity() {
     /**
      * 滑动页面的适配器
      */
-    private val mPagerAdapter: PagerAdapter = object : PagerAdapter() {
+    private val pagerAdapter: PagerAdapter = object : PagerAdapter() {
         override fun isViewFromObject(view: View, `object`: Any): Boolean {
             return view === `object`
         }
@@ -54,7 +53,7 @@ class WebDroidActivity : BaseActivity() {
                     Config.instance.tabUrls[position]
                 )
             }
-            val view = pageMap[position]!!.webLayout
+            val view = pageMap[position]!!.webView
             //如果已经被回收了，需要手动添加进去
             if (viewPager.indexOfChild(view) == -1) {
                 viewPager.addView(
@@ -119,7 +118,7 @@ class WebDroidActivity : BaseActivity() {
     /**
      * 适用于底部导航栏的对viewPager的监听器
      */
-    private val pageChangeListener: OnPageChangeListener = object : OnPageChangeListener {
+    private val onPageChangeListener: OnPageChangeListener = object : OnPageChangeListener {
 
         override fun onPageSelected(position: Int) {
             if (bottomNavigation.selectedItemId != position) {
@@ -134,6 +133,47 @@ class WebDroidActivity : BaseActivity() {
             positionOffsetPixels: Int
         ) {
         }
+    }
+
+    /**
+     * 配置更改时调用
+     */
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        when (newConfig.orientation) {
+            Configuration.ORIENTATION_LANDSCAPE -> {
+                window.clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
+                window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+            }
+            Configuration.ORIENTATION_PORTRAIT -> {
+                window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                window.addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
+            }
+        }
+    }
+
+    /**
+     * 重写点击事件
+     */
+    override fun onClickViewId(viewId: Int) {
+        super.onClickViewId(viewId)
+        when (viewId) {
+            //调用浏览器
+            R.id.action_menu_browser -> {
+                OpenUtils.openUrl(getCurrentWebView().url)
+            }
+            //分享
+            R.id.action_menu_share -> {
+                OpenUtils.shareMessage(Utils.getString(R.string.msg_share))
+            }
+        }
+    }
+
+    /**
+     * 处理按键事件
+     */
+    override fun handleKeyEvent(keyCode: Int, event: KeyEvent?): Boolean {
+        return keyCode == KeyEvent.KEYCODE_BACK && getCurrentWebItem().handleKeyEvent()
     }
 
     /**
@@ -166,7 +206,7 @@ class WebDroidActivity : BaseActivity() {
         super.onDestroy()
     }
 
-    fun getCurrentWebItem(): WebBox {
+    private fun getCurrentWebItem(): WebBox {
         return pageMap[viewPager.currentItem]!!
     }
 
@@ -174,37 +214,11 @@ class WebDroidActivity : BaseActivity() {
         return getCurrentWebItem().webView
     }
 
-    /**
-     * 配置更改时调用
-     */
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        when (newConfig.orientation) {
-            Configuration.ORIENTATION_LANDSCAPE -> {
-                window.clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
-                window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-            }
-            Configuration.ORIENTATION_PORTRAIT -> {
-                window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-                window.addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN)
-            }
-        }
-    }
 
-    /**
-     * 全屏切换
-     */
-    fun fullScreen() {
-        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-        } else {
-            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        }
-    }
 
     override fun initViews() {
         super.initViews()
-        viewPager.adapter = mPagerAdapter
+        viewPager.adapter = pagerAdapter
         if (Config.instance.tabCount <= 1) {
             topNavigation.visibility = View.GONE
             bottomNavigation.visibility = View.GONE
@@ -221,7 +235,7 @@ class WebDroidActivity : BaseActivity() {
                 //设置底部tab @todo 添加底部tab icon
                 topNavigation.visibility = View.GONE
                 bottomNavigation.visibility = View.VISIBLE
-                viewPager.addOnPageChangeListener(pageChangeListener)
+                viewPager.addOnPageChangeListener(onPageChangeListener)
                 for (i in 0 until Config.instance.tabCount) {
                     bottomNavigation.menu.add(Menu.NONE, i, i, Config.instance.tabTitles[i])
                 }
@@ -230,36 +244,6 @@ class WebDroidActivity : BaseActivity() {
                 )
             }
         }
-    }
-
-    /**
-     * 重写点击事件
-     */
-    override fun onClickViewId(viewId: Int) {
-        super.onClickViewId(viewId)
-        when (viewId) {
-            //调用浏览器
-            R.id.action_menu_browser -> {
-                OpenUtils.openUrl(getCurrentWebView().url)
-            }
-            //分享
-            R.id.action_menu_share -> {
-                OpenUtils.shareMessage(Utils.getString(R.string.msg_share))
-            }
-        }
-    }
-
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        return if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (getCurrentWebItem().onBack()) {
-                true
-            } else {
-                super.onKeyDown(keyCode, event)
-            }
-        } else {
-            super.onKeyDown(keyCode, event)
-        }
-
     }
 
 

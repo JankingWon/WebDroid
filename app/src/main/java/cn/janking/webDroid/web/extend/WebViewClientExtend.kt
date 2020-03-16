@@ -57,14 +57,18 @@ class DefaultWebClient : WebViewClient() {
          * 其他应用跳转协议，需要查询是否存在应用
          */
         if (determineOpenApp(request.url)) {
-            LogUtils.i("determineOpenApp", url)
+            if(WebConfig.DEBUG){
+                LogUtils.i("determineOpenApp", url)
+            }
             return true
         }
         /**
          * 拦截未知协议
          */
         if (WebConfig.interceptUnknownUrl) {
-            LogUtils.i("intercept UnkownUrl :" + request.url)
+            if(WebConfig.DEBUG){
+                LogUtils.i("intercept UnkownUrl :" + request.url)
+            }
             return true
         }
         return super.shouldOverrideUrlLoading(view, request)
@@ -128,10 +132,12 @@ class DefaultWebClient : WebViewClient() {
         description: String,
         failingUrl: String
     ) {
-        LogUtils.i(
-            "onReceivedError：$description",
-            "CODE:$errorCode"
-        )
+        if (WebConfig.DEBUG) {
+            LogUtils.i(
+                "onReceivedError：$description",
+                "CODE:$errorCode"
+            )
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -141,10 +147,12 @@ class DefaultWebClient : WebViewClient() {
         request: WebResourceRequest,
         error: WebResourceError
     ) {
-        LogUtils.i(
-            "onReceivedError:${error.description}" ,
-            "code:${error.errorCode}"
-        )
+        if (WebConfig.DEBUG){
+            LogUtils.i(
+                "onReceivedError:${error.description}",
+                "code:${error.errorCode}"
+            )
+        }
     }
 
 
@@ -153,10 +161,12 @@ class DefaultWebClient : WebViewClient() {
         oldScale: Float,
         newScale: Float
     ) {
-        LogUtils.i(
-            "onScaleChanged:$oldScale",
-            "newScale:$newScale"
-        )
+        if(WebConfig.DEBUG){
+            LogUtils.i(
+                "onScaleChanged:$oldScale",
+                "newScale:$newScale"
+            )
+        }
         if (newScale - oldScale > WebConfig.abnormalScale) {
             view.setInitialScale((oldScale / newScale * 100).toInt())
         }
