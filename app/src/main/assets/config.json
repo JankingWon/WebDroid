@@ -11,5 +11,6 @@
     "https://map.baidu.com/mobile/webapp/index/index/#index/index/foo=bar/vt=map",
     "https://m.youtube.com/watch?v=aLLsmJfvixM",
     "https://ant.design/components/upload-cn/"
-  ]
+  ],
+  "tabStyle" : 1
 }
