@@ -8,46 +8,55 @@
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
 
-    <LinearLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
-            app:titleTextColor="?attr/colorOnPrimary"
-            android:fitsSystemWindows="true"
-            android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
-            app:layout_scrollFlags="scroll|enterAlways"
-            app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light" />
+            android:layout_height="wrap_content">
 
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/topNavigation"
-            android:background="?attr/colorPrimary"
-            style="@style/Widget.MaterialComponents.TabLayout.Colored"
-            android:layout_width="match_parent"
-            android:layout_height="45dp" />
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light" />
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/viewPager"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:fitsSystemWindows="true" />
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/topNavigation"
+                style="@style/Widget.MaterialComponents.TabLayout.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|enterAlways" />
+        </com.google.android.material.appbar.AppBarLayout>
 
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottomNavigation"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:background="?attr/colorPrimary"
-            app:itemTextColor="@color/colorOnSecondary"
-            app:labelVisibilityMode="labeled" />
-    </LinearLayout>
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:fitsSystemWindows="true" />
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/bottomNavigation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="?attr/colorPrimary"
+                app:itemTextColor="@color/colorOnSecondary"
+                app:labelVisibilityMode="labeled" />
+        </LinearLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <include layout="@layout/layout_nav" />
 </androidx.drawerlayout.widget.DrawerLayout>
+
 
