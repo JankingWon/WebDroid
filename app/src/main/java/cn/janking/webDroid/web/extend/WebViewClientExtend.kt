@@ -5,7 +5,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
-import android.view.View
+import android.text.TextUtils
 import android.webkit.*
 import androidx.annotation.RequiresApi
 import cn.janking.webDroid.R
@@ -104,7 +104,7 @@ class DefaultWebClient(val webBox: WebBox) : WebViewClient() {
                 //询问用户
                 WebConfig.ASK_USER_OPEN_OTHER_PAGE -> {
                     DialogUtils.showAlertDialog(
-                        Utils.getApp().resources.getString(
+                        Utils.getString(
                             R.string.msg_open_app,
                             AppUtils.getAppName(),
                             it.loadLabel(Utils.getApp().packageManager)
@@ -212,4 +212,5 @@ class DefaultWebClient(val webBox: WebBox) : WebViewClient() {
         }
         super.onScaleChanged(view, oldScale, newScale)
     }
+
 }

@@ -1,5 +1,7 @@
 package cn.janking.webDroid.activity
 
+import android.app.Activity
+import android.content.Intent
 import android.content.res.Configuration
 import android.view.*
 import android.webkit.WebView
@@ -10,6 +12,7 @@ import cn.janking.webDroid.model.Config
 import cn.janking.webDroid.util.OpenUtils
 import cn.janking.webDroid.util.Utils
 import cn.janking.webDroid.web.WebBox
+import cn.janking.webDroid.web.WebConfig
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activity_webdroid.*
@@ -175,6 +178,18 @@ class WebDroidActivity : BaseActivity() {
     }
 
     /**
+     * 选择文件返回
+     */
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == WebConfig.SELECT_FILE_REQUEST_CODE && resultCode == Activity.RESULT_OK){
+            data?.data?.let {
+                getCurrentWebBox().fileChooserCallback(arrayOf(it))
+            }
+        }
+    }
+
+    /**
      * 处理按键事件
      */
     override fun handleKeyEvent(keyCode: Int, event: KeyEvent?): Boolean {
@@ -211,6 +226,9 @@ class WebDroidActivity : BaseActivity() {
         super.onDestroy()
     }
 
+    /**
+     * 获取当前tab的webBox
+     */
     private fun getCurrentWebBox(): WebBox {
         return pageMap[viewPager.currentItem]!!
     }

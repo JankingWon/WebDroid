@@ -1,6 +1,7 @@
 package cn.janking.webDroid.web
 
 import android.app.Activity
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +29,9 @@ class WebBox(activity: Activity, homeUrl: String) {
     //Webview视频播放器
     val webVideoPlayer: WebVideoPlayer
 
+
+    var filePathChooserCallback: FilePathChooserCallback
+
     //WebView根布局
     val webLayout: FrameLayout = LayoutInflater.from(activity).inflate(
         R.layout.layout_webview, null
@@ -54,7 +58,8 @@ class WebBox(activity: Activity, homeUrl: String) {
         //使用默认WebViewClient
         defaultWebViewClient(this@WebBox)
         //使用默认WebChromeClient
-        defaultWebChromeClient(WebVideoPlayer(activity, this).also { webVideoPlayer = it })
+        filePathChooserCallback = defaultWebChromeClient(
+            WebVideoPlayer(activity, this).also { webVideoPlayer = it })
         //使用默认下载器
         defaultDownloadListener()
         //拦截长按事件
@@ -131,6 +136,14 @@ class WebBox(activity: Activity, homeUrl: String) {
             errorPage.visibility = View.GONE
             webPageStatus = 0
         }
+    }
+
+
+    /**
+     * 选择文件返回的回调
+     */
+    fun fileChooserCallback(uris: Array<Uri>) {
+        filePathChooserCallback.onChooseFile(uris)
     }
 
     /**

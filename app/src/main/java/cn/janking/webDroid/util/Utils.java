@@ -136,6 +136,13 @@ public final class Utils {
         return sApplication.getString(id);
     }
 
+    /**
+     * 获取字符串资源
+     */
+    public static String getString(int id, Object... formatArgs) {
+        return sApplication.getString(id, formatArgs);
+    }
+
     static ActivityLifecycleImpl getActivityLifecycle() {
         return ACTIVITY_LIFECYCLE;
     }

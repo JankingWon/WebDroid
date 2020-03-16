@@ -5,6 +5,10 @@ package cn.janking.webDroid.web
  */
 object WebConfig{
     /**
+     * 打开文件页面的请求码
+     */
+    const val SELECT_FILE_REQUEST_CODE = 99
+    /**
      * 直接打开其他页面
      */
     const val DIRECT_OPEN_OTHER_PAGE = 1001

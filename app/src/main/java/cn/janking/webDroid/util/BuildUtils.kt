@@ -76,9 +76,6 @@ object BuildUtils {
                 ).modifyStringAttribute(
                     AppUtils.getAppPackageName() + ".DownloadFileProvider",
                     Config.instance.appPackage + ".DownloadFileProvider"
-                ).modifyStringAttribute(
-                    AppUtils.getAppPackageName() + ".AgentWebFileProvider",
-                    Config.instance.appPackage + ".AgentWebFileProvider"
                 ).check().exec()
                 //压缩
                 ConsoleUtils.info(console, "正在压缩...")

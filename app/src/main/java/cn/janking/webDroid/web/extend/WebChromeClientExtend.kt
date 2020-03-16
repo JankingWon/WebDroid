@@ -1,22 +1,33 @@
 package cn.janking.webDroid.web.extend
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.Intent
 import android.net.Uri
+import android.os.Build
+import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.webkit.*
-import cn.janking.webDroid.util.LogUtils
+import cn.janking.webDroid.R
+import cn.janking.webDroid.util.*
+import cn.janking.webDroid.web.FilePathChooserCallback
+import cn.janking.webDroid.web.WebConfig
 import cn.janking.webDroid.web.WebVideoPlayer
+import com.bumptech.glide.util.Util
 
 /**
  * @author Janking
  */
-fun WebView.defaultWebChromeClient(webVideoPlayer: WebVideoPlayer) {
-    webChromeClient = DefaultWebChromeClient(webVideoPlayer)
+fun WebView.defaultWebChromeClient(webVideoPlayer: WebVideoPlayer): FilePathChooserCallback {
+    return DefaultWebChromeClient(webVideoPlayer).also {
+        webChromeClient = it
+    }
 }
 
 
-class DefaultWebChromeClient(private val webVideoPlayer: WebVideoPlayer?) : WebChromeClient() {
+class DefaultWebChromeClient(private val webVideoPlayer: WebVideoPlayer?) : WebChromeClient(),
+    FilePathChooserCallback {
 
     /**
      * 重载自定义页面，如播放视频
@@ -48,19 +59,65 @@ class DefaultWebChromeClient(private val webVideoPlayer: WebVideoPlayer?) : WebC
         super.onPermissionRequestCanceled(request)
     }
 
+    /**
+     * 重载询问位置权限的对话框
+     */
     override fun onGeolocationPermissionsShowPrompt(
         origin: String?,
         callback: GeolocationPermissions.Callback?
     ) {
-        super.onGeolocationPermissionsShowPrompt(origin, callback)
+        DialogUtils.showAlertDialog(
+            Utils.getString(R.string.msg_request_geo_permission, origin),
+            Runnable { callback?.invoke(origin, true, false) },
+            Runnable { callback?.invoke(origin, false, true) }
+        )
     }
 
+    var filePathCallback: ValueCallback<Array<Uri>>? = null
+    /**
+     * 重载选择文件的操作
+     */
     override fun onShowFileChooser(
         webView: WebView?,
         filePathCallback: ValueCallback<Array<Uri>>?,
         fileChooserParams: FileChooserParams?
     ): Boolean {
-        return super.onShowFileChooser(webView, filePathCallback, fileChooserParams)
+        this.filePathCallback = filePathCallback
+        //先自动创建Intent
+        fileChooserParams?.let {
+            it.createIntent()?.run {
+                if (it.mode == FileChooserParams.MODE_OPEN_MULTIPLE) {
+                    putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                }
+                if (action == Intent.ACTION_GET_CONTENT) {
+                    action == Intent.ACTION_OPEN_DOCUMENT
+                }
+                ActivityUtils.startActivityForResult(
+                    ActivityUtils.getTopActivity(),
+                    this,
+                    WebConfig.SELECT_FILE_REQUEST_CODE
+                )
+                return true
+            }
+            //创建失败的话默认选择所有类型
+            Intent(Intent.ACTION_GET_CONTENT).run {
+                type = "*/*"
+                addCategory(Intent.CATEGORY_OPENABLE)
+                ActivityUtils.startActivityForResult (
+                    ActivityUtils.getTopActivity(),
+                    this,
+                    WebConfig.SELECT_FILE_REQUEST_CODE
+                )
+            }
+        }
+        return true
+    }
+
+    /**
+     * 选择文件返回的回调
+     */
+    override fun onChooseFile(uris: Array<Uri>) {
+        filePathCallback?.onReceiveValue(uris)
     }
 
 }

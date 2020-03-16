@@ -16,4 +16,5 @@
     <string name="msg_use_cellular_network">是否允许使用流量下载？</string>
     <string name="msg_web_error">页面出错了哦~\n双击TAB栏进行刷新~</string>
     <string name="msg_web_network_error">网络错误~\n请检查网络设置哦~\n双击TAB栏进行刷新~</string>
+    <string name="msg_request_geo_permission">%s正在请求访问您的位置，是否继续？</string>
 </resources>
