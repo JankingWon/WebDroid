@@ -45,7 +45,6 @@ class Config private constructor() {
      * 0 : top
      * 1 : bottom
      */
-    @Transient
     var tabStyle = 0
 
     companion object {

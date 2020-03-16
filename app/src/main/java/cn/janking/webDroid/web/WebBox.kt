@@ -12,6 +12,7 @@ import android.widget.ScrollView
 import android.widget.TextView
 import androidx.core.widget.NestedScrollView
 import cn.janking.webDroid.R
+import cn.janking.webDroid.model.Config
 import cn.janking.webDroid.util.LogUtils
 import cn.janking.webDroid.util.ScreenUtils
 import cn.janking.webDroid.util.Utils

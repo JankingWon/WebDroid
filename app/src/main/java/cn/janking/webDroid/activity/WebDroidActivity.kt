@@ -88,7 +88,28 @@ class WebDroidActivity : BaseActivity() {
     private val onNavigationItemSelectedListener =
         BottomNavigationView.OnNavigationItemSelectedListener { item ->
             viewPager.currentItem = item.itemId
+            for (i in 0 until bottomNavigation.menu.size()) {
+                pageMap[i]?.webLifeCycle?.onPause()
+            }
+            pageMap[item.itemId]?.webLifeCycle?.onResume()
             return@OnNavigationItemSelectedListener true
+        }
+    private val onNavigationItemReselectedListener =
+        object : BottomNavigationView.OnNavigationItemReselectedListener {
+            var clickTime: Long = -1
+            override fun onNavigationItemReselected(item: MenuItem) {
+                //0.5s以内算双击
+                System.currentTimeMillis().let {
+                    if (it - clickTime < 500) {
+                        //刷新
+                        getCurrentWebBox().reload()
+                        //下一次不算
+                        clickTime = -1
+                    } else {
+                        clickTime = it
+                    }
+                }
+            }
         }
 
     /**
@@ -100,12 +121,12 @@ class WebDroidActivity : BaseActivity() {
         override fun onTabReselected(tab: TabLayout.Tab?) {
             //0.5s以内算双击
             System.currentTimeMillis().let {
-                if(it - clickTime < 500){
+                if (it - clickTime < 500) {
                     //刷新
                     getCurrentWebBox().reload()
                     //下一次不算
                     clickTime = -1
-                }else{
+                } else {
                     clickTime = it
                 }
             }
@@ -182,7 +203,7 @@ class WebDroidActivity : BaseActivity() {
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == WebConfig.SELECT_FILE_REQUEST_CODE && resultCode == Activity.RESULT_OK){
+        if (requestCode == WebConfig.SELECT_FILE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             data?.data?.let {
                 getCurrentWebBox().fileChooserCallback(arrayOf(it))
             }
@@ -262,6 +283,18 @@ class WebDroidActivity : BaseActivity() {
                 bottomNavigation.setOnNavigationItemSelectedListener(
                     onNavigationItemSelectedListener
                 )
+                bottomNavigation.setOnNavigationItemReselectedListener(
+                    onNavigationItemReselectedListener
+                )
+                //如果是底部tab，则需要添加底部padding，防止内容遮挡
+                if (Config.instance.tabStyle == 1) {
+                    viewPager.setPadding(
+                        viewPager.paddingLeft,
+                        viewPager.paddingTop,
+                        viewPager.paddingRight,
+                        bottomNavigation.measuredHeight
+                    )
+                }
             }
         }
     }
