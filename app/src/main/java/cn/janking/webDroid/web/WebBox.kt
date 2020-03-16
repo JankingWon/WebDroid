@@ -13,6 +13,7 @@ import androidx.core.widget.NestedScrollView
 import cn.janking.webDroid.R
 import cn.janking.webDroid.util.LogUtils
 import cn.janking.webDroid.util.ScreenUtils
+import cn.janking.webDroid.util.Utils
 import cn.janking.webDroid.web.extend.*
 import cn.janking.webDroid.web.lifecycle.WebLifeCycleImpl
 import cn.janking.webDroid.web.view.NestedScrollWebView
@@ -33,9 +34,11 @@ class WebBox(activity: Activity, homeUrl: String) {
     ) as FrameLayout
 
     //错误页面
-    val errorPage = webLayout.findViewById<NestedScrollView>(R.id.errorPage).apply {
+    val errorPage = webLayout.findViewById<NestedScrollView>(R.id.errorPage)
+    //错误提示信息
+    val errorText = (errorPage.getChildAt(0) as TextView).apply {
         //解决错误页无法滑动的问题
-        (getChildAt(0) as TextView).height = ScreenUtils.getScreenHeight()
+        height = ScreenUtils.getScreenHeight()
     }
 
     //WebView控件
@@ -61,7 +64,7 @@ class WebBox(activity: Activity, homeUrl: String) {
     }
 
     //Webview生命周期监控
-    val webLifeCycle = WebLifeCycleImpl(webView)
+    val webLifeCycle = WebLifeCycleImpl(webView).also { it.onPause() }
 
     /**
      * 返回当前显示的url
@@ -90,19 +93,44 @@ class WebBox(activity: Activity, homeUrl: String) {
     }
 
     /**
+     * 记录当前网页的状态
+     * 0：正常
+     * 1：网络错误
+     * 2：网页错误
+     */
+    var webPageStatus = 0
+
+    /**
+     * 显示未连接网络
+     */
+    fun showNetworkErrorPage() {
+        webView.visibility = View.INVISIBLE
+        errorText.text = Utils.getString(R.string.msg_web_network_error)
+        errorPage.visibility = View.VISIBLE
+        webPageStatus = 1
+    }
+
+    /**
      * 显示错误页
      */
     fun showErrorPage() {
-        webView.visibility = View.INVISIBLE
-        errorPage.visibility = View.VISIBLE
+        if (webPageStatus != 1) {
+            webView.visibility = View.INVISIBLE
+            errorText.text = Utils.getString(R.string.msg_web_error)
+            errorPage.visibility = View.VISIBLE
+            webPageStatus = 2
+        }
     }
 
     /**
      * 取消错误页
      */
     fun dismissErrorPage() {
-        webView.visibility = View.VISIBLE
-        errorPage.visibility = View.GONE
+        if (webPageStatus != 0) {
+            webView.visibility = View.VISIBLE
+            errorPage.visibility = View.GONE
+            webPageStatus = 0
+        }
     }
 
     /**
@@ -116,7 +144,7 @@ class WebBox(activity: Activity, homeUrl: String) {
                 }
                 it.canGoBack() -> {
                     it.goBack()
-                    false
+                    true
                 }
                 else -> {
                     false

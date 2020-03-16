@@ -5,7 +5,7 @@
 
     <!--SP Key-->
     <string name="key_has_init">hasInit</string>
-    <string name="key_last_onfig">lastConfig</string>
+    <string name="key_last_config">lastConfig</string>
 
     <!--Message-->
     <string name="msg_share">来跟我一起使用吧！</string>
@@ -14,4 +14,6 @@
     <string name="msg_open_app">您需要离开%s前往%s吗？</string>
     <string name="msg_install_app">您未安装此应用，是否安装？</string>
     <string name="msg_use_cellular_network">是否允许使用流量下载？</string>
+    <string name="msg_web_error">页面出错了哦~\n双击TAB栏进行刷新~</string>
+    <string name="msg_web_network_error">网络错误~\n请检查网络设置哦~\n双击TAB栏进行刷新~</string>
 </resources>

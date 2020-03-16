@@ -133,7 +133,7 @@ class DefaultWebClient(val webBox: WebBox) : WebViewClient() {
     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
         //网络不可用时显示错误页面
         if (!WebUtils.checkNetwork(Utils.getApp())) {
-            webBox.showErrorPage()
+            webBox.showNetworkErrorPage()
         } else {
             webBox.dismissErrorPage()
             super.onPageStarted(view, url, favicon)

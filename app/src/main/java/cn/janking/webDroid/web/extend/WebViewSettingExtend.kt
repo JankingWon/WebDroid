@@ -18,6 +18,7 @@ import cn.janking.webDroid.web.WebConfig
 fun WebView.defaultSetting() {
     settings.apply {
         setJavaScriptEnabled(true)
+        //支持缩放
         setSupportZoom(true)
         //解决 sysu.edu.cn 超出屏幕部分内容不加载，只有背景的问题
         useWideViewPort = true
@@ -52,9 +53,11 @@ fun WebView.defaultSetting() {
         loadWithOverviewMode = false
         domStorageEnabled = true
         setNeedInitialFocus(true)
-        defaultTextEncodingName = "utf-8" //设置编码格式
+        //设置编码格式
+        defaultTextEncodingName = "utf-8"
         defaultFontSize = 16
-        minimumFontSize = 12 //设置 WebView 支持的最小字体大小，默认为 8
+        //设置 WebView 支持的最小字体大小，默认为 8
+        minimumFontSize = 12
         setGeolocationEnabled(true)
         val dir = PathConstants.dirWebCache
         if(WebConfig.DEBUG){
@@ -68,7 +71,7 @@ fun WebView.defaultSetting() {
         if(WebConfig.DEBUG){
             LogUtils.i(
                 "WebView.defaultSetting()",
-                "UserAgentString : " + getUserAgentString()
+                "UserAgentString : $userAgentString"
             )
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) { // 安卓9.0后不允许多进程使用同一个数据目录，需设置前缀来区分

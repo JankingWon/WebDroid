@@ -61,7 +61,7 @@ open class CreatorActivity : BaseActivity() {
         super.onStop()
         //保存输入的配置
         generateConfig(true)
-        SPUtils.getInstance().put(Utils.getString(R.string.key_last_onfig), Config.toJsonString())
+        SPUtils.getInstance().put(Utils.getString(R.string.key_last_config), Config.toJsonString())
     }
 
     override fun initViews() {
@@ -114,7 +114,7 @@ open class CreatorActivity : BaseActivity() {
      * 加载上次输入的配置
      */
     private fun loadLastConfig() {
-        Config.readFromString(SPUtils.getInstance().getString(Utils.getString(R.string.key_last_onfig)))
+        Config.readFromString(SPUtils.getInstance().getString(Utils.getString(R.string.key_last_config)))
         appName.setText(Config.instance.appName)
         appPackage.setText(Config.instance.appPackage)
         for (i in 0 until Config.instance.tabCount) {
