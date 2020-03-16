@@ -49,11 +49,10 @@ class WebDroidActivity : BaseActivity() {
             if (pageMap[position] == null) {
                 pageMap[position] = WebBox(
                     this@WebDroidActivity,
-                    viewPager,
                     Config.instance.tabUrls[position]
                 )
             }
-            val view = pageMap[position]!!.webView
+            val view = pageMap[position]!!.webLayout
             //如果已经被回收了，需要手动添加进去
             if (viewPager.indexOfChild(view) == -1) {
                 viewPager.addView(
@@ -93,15 +92,21 @@ class WebDroidActivity : BaseActivity() {
      * 顶部导航栏的监听器
      */
     private val onTabSelectedListener = object : TabLayout.OnTabSelectedListener {
-        var clickTime: Long = 0
+        var clickTime: Long = -1
         //双击tab刷新
         override fun onTabReselected(tab: TabLayout.Tab?) {
             //0.5s以内算双击
-            if (System.currentTimeMillis() - clickTime < 500) {
-                //刷新页面
-                getCurrentWebView().reload()
+            System.currentTimeMillis().let {
+                if(it - clickTime < 500){
+                    //刷新
+                    getCurrentWebBox().reload()
+                    //下一次不算
+                    clickTime = -1
+                }else{
+                    clickTime = it
+                }
             }
-            clickTime = System.currentTimeMillis()
+
         }
 
         override fun onTabSelected(tab: TabLayout.Tab?) {
@@ -160,7 +165,7 @@ class WebDroidActivity : BaseActivity() {
         when (viewId) {
             //调用浏览器
             R.id.action_menu_browser -> {
-                OpenUtils.openUrl(getCurrentWebView().url)
+                OpenUtils.openUrl(getCurrentWebBox().getUrl())
             }
             //分享
             R.id.action_menu_share -> {
@@ -173,7 +178,7 @@ class WebDroidActivity : BaseActivity() {
      * 处理按键事件
      */
     override fun handleKeyEvent(keyCode: Int, event: KeyEvent?): Boolean {
-        return keyCode == KeyEvent.KEYCODE_BACK && getCurrentWebItem().handleKeyEvent()
+        return keyCode == KeyEvent.KEYCODE_BACK && getCurrentWebBox().handleKeyEvent()
     }
 
     /**
@@ -206,16 +211,13 @@ class WebDroidActivity : BaseActivity() {
         super.onDestroy()
     }
 
-    private fun getCurrentWebItem(): WebBox {
+    private fun getCurrentWebBox(): WebBox {
         return pageMap[viewPager.currentItem]!!
     }
 
-    fun getCurrentWebView(): WebView {
-        return getCurrentWebItem().webView
-    }
-
-
-
+    /**
+     * 初始化View
+     */
     override fun initViews() {
         super.initViews()
         viewPager.adapter = pagerAdapter
@@ -245,6 +247,5 @@ class WebDroidActivity : BaseActivity() {
             }
         }
     }
-
 
 }

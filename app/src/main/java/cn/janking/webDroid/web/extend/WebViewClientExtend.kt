@@ -2,29 +2,44 @@ package cn.janking.webDroid.web.extend
 
 import android.annotation.TargetApi
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
-import android.os.Handler
-import android.os.Message
-import android.webkit.WebResourceError
-import android.webkit.WebResourceRequest
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.view.View
+import android.webkit.*
 import androidx.annotation.RequiresApi
 import cn.janking.webDroid.R
 import cn.janking.webDroid.constant.WebConstants
-import cn.janking.webDroid.helper.DialogHelper
 import cn.janking.webDroid.util.*
+import cn.janking.webDroid.web.WebBox
 import cn.janking.webDroid.web.WebConfig
+import java.util.*
 
 /**
  * @author Janking
  */
-fun WebView.defaultWebViewClient() {
-    webViewClient = DefaultWebClient()
+fun WebView.defaultWebViewClient(webBox: WebBox) {
+    webViewClient = DefaultWebClient(webBox).also {
+        addJavascriptInterface(it, "Java")
+    }
+
 }
 
-class DefaultWebClient : WebViewClient() {
+class DefaultWebClient(val webBox: WebBox) : WebViewClient() {
+    /**
+     * 缓存当前出现错误的页面
+     */
+    private val errorPageSet = HashSet<String>()
+    /**
+     * 缓存等待加载完成的页面 onPageStart()执行之后 ，onPageFinished()执行之前
+     */
+    private val cachePageSet = HashSet<String>()
+    private val DOC_CALLBACK = "if (document.URL.indexOf('data:text/html') == -1) {" +
+            "      window.Java.onPageFinished(true);\n" +
+            "} else {\n" +
+            "      window.Java.onPageFinished(false);\n" +
+            "}"
+
     /**
      * 重载URL
      */
@@ -58,7 +73,7 @@ class DefaultWebClient : WebViewClient() {
          * 其他应用跳转协议，需要查询是否存在应用
          */
         if (determineOpenApp(request.url)) {
-            if(WebConfig.DEBUG){
+            if (WebConfig.DEBUG) {
                 LogUtils.i("determineOpenApp", url)
             }
             return true
@@ -67,7 +82,7 @@ class DefaultWebClient : WebViewClient() {
          * 拦截未知协议
          */
         if (WebConfig.interceptUnknownUrl) {
-            if(WebConfig.DEBUG){
+            if (WebConfig.DEBUG) {
                 LogUtils.i("Intercept Unknown Url :" + request.url)
             }
             return true
@@ -113,27 +128,48 @@ class DefaultWebClient : WebViewClient() {
     }
 
     /**
-     * MainFrame Error
-     *
-     * @param view
-     * @param errorCode
-     * @param description
-     * @param failingUrl
+     * 开始加载回调
      */
-    override fun onReceivedError(
-        view: WebView,
-        errorCode: Int,
-        description: String,
-        failingUrl: String
-    ) {
-        if (WebConfig.DEBUG) {
-            LogUtils.i(
-                "onReceivedError：$description",
-                "CODE:$errorCode"
-            )
+    override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+        //网络不可用时显示错误页面
+        if (!WebUtils.checkNetwork(Utils.getApp())) {
+            webBox.showErrorPage()
+        } else {
+            webBox.dismissErrorPage()
+            super.onPageStarted(view, url, favicon)
         }
     }
 
+    /**
+     * 加载完成回调
+     */
+    override fun onPageFinished(view: WebView?, url: String?) {
+        super.onPageFinished(view, url)
+    }
+
+    /**
+     * 错误回调 Android6.0以下
+     */
+    override fun onReceivedError(
+        view: WebView?,
+        errorCode: Int,
+        description: String?,
+        failingUrl: String?
+    ) {
+        webBox.showErrorPage()
+        if (WebConfig.DEBUG) {
+            LogUtils.i(
+                "onReceivedError:${description}",
+                "url:${failingUrl}",
+                "code:${errorCode}"
+            )
+        }
+        super.onReceivedError(view, errorCode, description, failingUrl)
+    }
+
+    /**
+     * 错误回调 Android6.0以上
+     */
     @TargetApi(Build.VERSION_CODES.M)
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     override fun onReceivedError(
@@ -141,21 +177,31 @@ class DefaultWebClient : WebViewClient() {
         request: WebResourceRequest,
         error: WebResourceError
     ) {
-        if (WebConfig.DEBUG){
+        val url = request.url.toString()
+        //只处理mainFrame的错误，忽略iframe等
+        if (request.isForMainFrame) {
+            webBox.showErrorPage()
+        }
+        if (WebConfig.DEBUG) {
             LogUtils.i(
                 "onReceivedError:${error.description}",
+                "url:${url}",
                 "code:${error.errorCode}"
             )
         }
+        super.onReceivedError(view, request, error)
     }
 
 
+    /**
+     * 缩放回调
+     */
     override fun onScaleChanged(
         view: WebView,
         oldScale: Float,
         newScale: Float
     ) {
-        if(WebConfig.DEBUG){
+        if (WebConfig.DEBUG) {
             LogUtils.i(
                 "onScaleChanged:$oldScale",
                 "newScale:$newScale"
@@ -164,5 +210,6 @@ class DefaultWebClient : WebViewClient() {
         if (newScale - oldScale > WebConfig.abnormalScale) {
             view.setInitialScale((oldScale / newScale * 100).toInt())
         }
+        super.onScaleChanged(view, oldScale, newScale)
     }
 }

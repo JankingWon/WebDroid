@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<cn.janking.webDroid.web.view.NestedScrollWebView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/webView"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/errorPage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="页面出错了哦~\n双击TAB栏进行刷新~"
+        android:visibility="gone" />
+</FrameLayout>

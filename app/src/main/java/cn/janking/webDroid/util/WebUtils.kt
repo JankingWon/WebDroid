@@ -16,7 +16,6 @@ object WebUtils {
     fun checkNetwork(context: Context): Boolean {
         val connectivity =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-                ?: return false
         @SuppressLint("MissingPermission") val info =
             connectivity.activeNetworkInfo
         return info != null && info.isConnected
