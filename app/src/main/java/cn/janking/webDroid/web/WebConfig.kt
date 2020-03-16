@@ -27,7 +27,7 @@ object WebConfig{
     /**
      * 打开外部链接的方式
      */
-    val handleOpenUrl = DISALLOW_OPEN_OTHER_APP
+    val handleOpenUrl = ASK_USER_OPEN_OTHER_PAGE
     /**
      * 是否拦截未知应用
      */

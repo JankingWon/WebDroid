@@ -27,7 +27,10 @@ object WebConstants{
     /**
      * SMS scheme
      */
-    const val SCHEME_SMS = "sms:"
+    const val SCHEME_SMS = "sms"
+    const val SCHEME_TEL = "tel"
+    const val SCHEME_MAILTO = "mailto"
+    const val SCHEME_GEO = "geo"
 
     const val USERAGENT_UC = " UCBrowser/11.6.4.950 "
     const val USERAGENT_QQ_BROWSER = " MQQBrowser/8.0 "

@@ -61,10 +61,10 @@ class DefaultWebClient(val webBox: WebBox) : WebViewClient() {
             /**
              * 电话、短信、邮件、位置
              */
-            WebView.SCHEME_TEL,
+            WebConstants.SCHEME_TEL,
             WebConstants.SCHEME_SMS,
-            WebView.SCHEME_MAILTO,
-            WebView.SCHEME_GEO -> {
+            WebConstants.SCHEME_MAILTO,
+            WebConstants.SCHEME_GEO -> {
                 return ActivityUtils.startActivity(Uri.parse(url))
             }
         }
