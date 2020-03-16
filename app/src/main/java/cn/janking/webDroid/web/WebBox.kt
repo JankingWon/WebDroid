@@ -7,9 +7,12 @@ import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.widget.FrameLayout
+import android.widget.ScrollView
 import android.widget.TextView
+import androidx.core.widget.NestedScrollView
 import cn.janking.webDroid.R
 import cn.janking.webDroid.util.LogUtils
+import cn.janking.webDroid.util.ScreenUtils
 import cn.janking.webDroid.web.extend.*
 import cn.janking.webDroid.web.lifecycle.WebLifeCycleImpl
 import cn.janking.webDroid.web.view.NestedScrollWebView
@@ -30,7 +33,10 @@ class WebBox(activity: Activity, homeUrl: String) {
     ) as FrameLayout
 
     //错误页面
-    val errorPage = webLayout.findViewById<TextView>(R.id.errorPage)
+    val errorPage = webLayout.findViewById<NestedScrollView>(R.id.errorPage).apply {
+        //解决错误页无法滑动的问题
+        (getChildAt(0) as TextView).height = ScreenUtils.getScreenHeight()
+    }
 
     //WebView控件
     private val webView: WebView = NestedScrollWebView(activity).apply {
@@ -87,7 +93,7 @@ class WebBox(activity: Activity, homeUrl: String) {
      * 显示错误页
      */
     fun showErrorPage() {
-        webView.visibility = View.GONE
+        webView.visibility = View.INVISIBLE
         errorPage.visibility = View.VISIBLE
     }
 
@@ -96,7 +102,7 @@ class WebBox(activity: Activity, homeUrl: String) {
      */
     fun dismissErrorPage() {
         webView.visibility = View.VISIBLE
-        errorPage.visibility = View.VISIBLE
+        errorPage.visibility = View.GONE
     }
 
     /**
