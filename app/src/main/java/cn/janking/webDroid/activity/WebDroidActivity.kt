@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
 import android.view.*
-import android.webkit.WebView
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import cn.janking.webDroid.R
@@ -280,6 +279,10 @@ class WebDroidActivity : BaseActivity() {
                 //添加Tab
                 for (i in 0 until Config.instance.tabCount) {
                     bottomNavigation.menu.add(Menu.NONE, i, i, Config.instance.tabTitles[i])
+                    //添加Icon
+                    bottomNavigation.menu.getItem(i).icon = Utils.getApp().resources.run {
+                        getDrawable(getIdentifier("ic_tab_$i", "drawable",packageName))
+                    }
                 }
                 //添加监听器
                 bottomNavigation.setOnNavigationItemSelectedListener(
