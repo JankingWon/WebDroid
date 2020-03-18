@@ -24,6 +24,11 @@ class Config private constructor() {
     var appPackage = ""
 
     /**
+     * APP图标
+     */
+    var appIcon = ""
+
+    /**
      * tab的标题集合
      */
     var tabTitles: List<String> = List(0) { "" }

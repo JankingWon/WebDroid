@@ -17,10 +17,11 @@
         android:paddingEnd="16dp"
         android:paddingBottom="8dp">
 
-        <ImageButton
+        <ImageView
             android:id="@+id/itemTabIcon"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:background="?android:attr/selectableItemBackground"
             android:scaleType="fitXY"
             android:src="@drawable/ic_tab_0"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -31,7 +32,8 @@
             android:id="@+id/itemTabTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
+            android:layout_marginStart="16dp"
+            android:background="#eee"
             android:gravity="center"
             android:hint="标题"
             android:maxLength="4"
@@ -46,6 +48,8 @@
             android:id="@+id/itemTabUrl"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="#eee"
             android:gravity="center"
             android:hint="网址"
             android:maxLines="1"

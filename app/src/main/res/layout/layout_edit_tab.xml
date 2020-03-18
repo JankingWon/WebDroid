@@ -51,7 +51,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:background="@null"
-            android:onClick="onClick"
             android:src="@drawable/ic_add_primary" />
 
     </FrameLayout>

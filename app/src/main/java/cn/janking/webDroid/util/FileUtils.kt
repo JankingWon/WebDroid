@@ -90,8 +90,8 @@ object FileUtils {
      * 复制文件到一个目录中
      */
     @Throws(IOException::class)
-    fun copyFileToDir(fromFile: String, toDir: String) {
-        copyFileToFile(
+    fun copyFileToDir(fromFile: String, toDir: String): Boolean {
+        return copyFileToFile(
             fromFile,
             toDir + File.separator + getFileName(fromFile)
         )
@@ -101,8 +101,8 @@ object FileUtils {
      * 复制文件到一个目录中
      */
     @Throws(IOException::class)
-    fun copyFileToDir(fromFile: String, toDir: String, fileFormat: String) {
-        copyFileToFile(
+    fun copyFileToDir(fromFile: String, toDir: String, fileFormat: String) : Boolean{
+        return copyFileToFile(
             fromFile,
             toDir + File.separator + getFileNameNoExtension(fromFile) + "." + fileFormat
         )
@@ -112,8 +112,8 @@ object FileUtils {
      * 复制文件到一个目录中
      */
     @Throws(IOException::class)
-    fun copyFileToDir(fromFile: File, toDir: String) {
-        copyFileToFile(
+    fun copyFileToDir(fromFile: File, toDir: String): Boolean {
+        return copyFileToFile(
             fromFile.absolutePath,
             toDir + File.separator + fromFile.name
         )
@@ -123,8 +123,8 @@ object FileUtils {
      * 复制文件到一个目录中
      */
     @Throws(IOException::class)
-    fun copyFileToDir(fromFile: File, toDir: String, fileFormat: String) {
-        copyFileToFile(
+    fun copyFileToDir(fromFile: File, toDir: String, fileFormat: String) : Boolean{
+        return copyFileToFile(
             fromFile.absolutePath,
             toDir + File.separator + getFileNameNoExtension(fromFile) + "." + fileFormat
         )
@@ -135,34 +135,31 @@ object FileUtils {
      */
     @Throws(IOException::class)
     fun copyFileToFile(fromFile: String?, toFile: String?): Boolean {
-        val existFile = getExistFile(toFile)
-        val file = File(fromFile)
-        if (file == getExistFile(toFile)) {
-            return true
-        }
-        copyFileToFile(file, existFile)
-        return true
+        return copyFileToFile(File(fromFile), getExistFile(toFile))
     }
 
     /**
      * 复制文件到文件
      */
     @Throws(IOException::class)
-    fun copyFileToFile(fromFile: File?, toFile: File) {
-        try {
-            FileInputStream(fromFile).use { inputStream ->
-                FileOutputStream(
-                    getExistFile(toFile)
-                ).use { outputStream ->
-                    copyFileToFile(
-                        inputStream,
-                        outputStream
-                    )
-                }
-            }
-        } finally {
-
+    fun copyFileToFile(fromFile: File, toFile: File):Boolean {
+        if (fromFile == toFile) {
+            return false
         }
+        if(!fromFile.exists()){
+            return false
+        }
+        FileInputStream(fromFile).use { inputStream ->
+            FileOutputStream(
+                getExistFile(toFile)
+            ).use { outputStream ->
+                copyFileToFile(
+                    inputStream,
+                    outputStream
+                )
+            }
+        }
+        return true
     }
 
     /**

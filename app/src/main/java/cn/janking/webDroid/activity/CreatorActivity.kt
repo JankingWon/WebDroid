@@ -221,15 +221,19 @@ open class CreatorActivity : BaseActivity() {
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode in TabListRVAdapter.SELECT_FILE_REQUEST_CODE_MIN..TabListRVAdapter.SELECT_FILE_REQUEST_CODE_MAX
-            && resultCode == Activity.RESULT_OK
-        ) {
-            //交给adapter处理
-            data?.data?.let {
-                editTabLayout?.tabListAdapter?.onSelectImageResult(
-                    requestCode % TabListRVAdapter.SELECT_FILE_REQUEST_CODE_MIN,
-                    it
-                )
+        if(resultCode == Activity.RESULT_OK){
+            if (requestCode in TabListRVAdapter.SELECT_FILE_REQUEST_CODE_MIN..TabListRVAdapter.SELECT_FILE_REQUEST_CODE_MAX) {
+                //交给adapter处理
+                data?.data?.let {
+                    editTabLayout?.tabListAdapter?.onSelectImageResult(
+                        requestCode % TabListRVAdapter.SELECT_FILE_REQUEST_CODE_MIN,
+                        it
+                    )
+                }
+            }else if(requestCode == EditAppLayout.SELECT_FILE_REQUEST_CODE){
+                data?.data?.let {
+                    editAppLayout?.onSelectImageResult(it)
+                }
             }
         }
     }

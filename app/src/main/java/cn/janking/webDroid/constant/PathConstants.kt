@@ -12,6 +12,8 @@ import java.io.File
 object PathConstants {
     const val DEFAULT_CONFIG_FILE = "config.json"
     const val DEFAULT_MANIFEST_FILE = "AndroidManifest.xml"
+    const val DEFAULT_APP_ICON = "ic_launcher.png"
+    const val DEFAULT_TAB_ICON_PREFIX = "ic_tab_"
     const val DEFAULT_KEY_PASSWORD = "123456"
     const val DEFAULT_STORE_PASSWORD = "123456"
     const val DEFAULT_KEY_ALIAS = "webdroid"
@@ -125,6 +127,13 @@ object PathConstants {
     val dirUnzippedApkAssets: String
         get() = getSubUnzippedApk("assets")
 
+
+    /**
+     * 获取解压的apk目录下的assets目录
+     */
+    val dirUnzippedApkDrawable: String
+        get() = getSubUnzippedApk("res" + File.separator + "drawable")
+
     /**
      * 获取解压的apk目录下的assets目录的子目录或子文件
      */
@@ -133,42 +142,10 @@ object PathConstants {
     }
 
     /**
-     * 获取工程目录
+     * 获取解压的apk目录下的drawable目录的子目录或子文件
      */
-    val dirAllProjects: String
-        get() = getSubRoot("project")
-
-    /**
-     * 获取特定的工程
-     */
-    fun getDirProject(projectName: String): String {
-        return dirAllProjects + File.separator + projectName
+    fun getSubUnzippedApkDrawable(sub: String): String {
+        return dirUnzippedApkDrawable + File.separator + sub
     }
 
-    /**
-     * 获取工程下的资源目录
-     */
-    fun getDirProjectRes(projectName: String): String {
-        return getDirProject(
-            projectName
-        ) + File.separator + "res"
-    }
-
-    /**
-     * 获取工程下的manifest
-     */
-    fun getFileProjectManifest(projectName: String): String {
-        return getDirProject(
-            projectName
-        ) + File.separator + "AndroidManifest.xml"
-    }
-
-    /**
-     * 获取工程下的配置文件
-     */
-    fun getFileConfig(projectName: String): String {
-        return getDirProject(
-            projectName
-        ) + File.separator + "config.properties"
-    }
 }

@@ -55,7 +55,7 @@ object OpenUtils {
     /**
      * 分享图片到其他应用
      */
-    fun shareImage(imageUrl: String?){
+    fun shareImage(imageUrl: String?) {
         //下载完成之后再分享
         ThreadUtils.executeByCached(object :
             ThreadUtils.SimpleTask<File>() {
@@ -108,19 +108,29 @@ object OpenUtils {
     /**
      * 弹出全屏窗口显示图片
      */
-    fun showFullImageDialog(imageUrl: String?) {
-        imageUrl?.let {
-            Dialog(ActivityUtils.getTopActivity(), R.style.DialogFullscreen).run {
-                setContentView(R.layout.layout_dialog_fullscreen)
-                val imageView: ImageView = findViewById(R.id.img_full_screen_dialog)
-                //使用Glide加载图片
-                Glide.with(ActivityUtils.getTopActivity()).load(it).into(imageView)
-                val toolBar: Toolbar = findViewById(R.id.toolbar_full_screen_dialog)
-                toolBar.setNavigationOnClickListener { dismiss() }
-                show()
-            }
-        }
+    fun showFullImageDialog(imageUrl: String?): Boolean {
+        return imageUrl?.let {
+            showFullImageDialog(File(it))
+        } ?: false
+    }
 
+    fun showFullImageDialog(imageFile: File): Boolean {
+        return if (FileUtils.isFileExists(imageFile)) {
+            PermissionHelper.checkStorage(Runnable {
+                Dialog(ActivityUtils.getTopActivity(), R.style.DialogFullscreen).run {
+                    setContentView(R.layout.layout_dialog_fullscreen)
+                    val imageView: ImageView = findViewById(R.id.img_full_screen_dialog)
+                    //使用Glide加载图片
+                    Glide.with(ActivityUtils.getTopActivity()).load(imageFile).into(imageView)
+                    val toolBar: Toolbar = findViewById(R.id.toolbar_full_screen_dialog)
+                    toolBar.setNavigationOnClickListener { dismiss() }
+                    show()
+                }
+            })
+            true
+        } else {
+            false
+        }
     }
 
     /**
@@ -149,7 +159,11 @@ object OpenUtils {
                         ThreadUtils.executeByCached(object :
                             ThreadUtils.SimpleTask<Unit>() {
                             override fun doInBackground() {
-                                FileUtils.copyFileToDir(result, PathConstants.dirSaveImage, imageFormat)
+                                FileUtils.copyFileToDir(
+                                    result,
+                                    PathConstants.dirSaveImage,
+                                    imageFormat
+                                )
                             }
 
                             override fun onFail(t: Throwable?) {
@@ -190,16 +204,21 @@ object OpenUtils {
     /**
      * 跳转到选择文件的窗口
      */
-    fun toSelectFile(typeString : String, requestCode : Int){
-        Intent(Intent.ACTION_GET_CONTENT).run {
-            type = typeString
-            addCategory(Intent.CATEGORY_OPENABLE)
-            ActivityUtils.startActivityForResult (
-                ActivityUtils.getTopActivity(),
-                this,
-                requestCode
-            )
-        }
+    fun toSelectFile(typeString: String, requestCode: Int) {
+        /**
+         * 需要保证存储权限
+         */
+        PermissionHelper.checkStorage(Runnable {
+            Intent(Intent.ACTION_GET_CONTENT).run {
+                type = typeString
+                addCategory(Intent.CATEGORY_OPENABLE)
+                ActivityUtils.startActivityForResult(
+                    ActivityUtils.getTopActivity(),
+                    this,
+                    requestCode
+                )
+            }
+        })
     }
 
     private fun safeCast(string: String?, function: (arg1: String) -> Unit) {

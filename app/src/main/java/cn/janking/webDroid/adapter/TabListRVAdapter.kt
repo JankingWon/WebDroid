@@ -7,11 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import cn.janking.webDroid.R
-import cn.janking.webDroid.helper.PermissionHelper
 import cn.janking.webDroid.util.*
 import java.io.File
 import java.util.*
@@ -127,13 +126,13 @@ class TabListRVAdapter :
                     }
                 }
             }
+            //点击选取icon
             holder.tabItemIcon.setOnClickListener {
-                /**
-                 * 需要保证存储权限
-                 */
-                PermissionHelper.checkStorage(Runnable {
-                    OpenUtils.toSelectFile("image/*", SELECT_FILE_REQUEST_CODE_MIN + position)
-                })
+                OpenUtils.toSelectFile("image/*", SELECT_FILE_REQUEST_CODE_MIN + position)
+            }
+            //长按预览icon
+            holder.tabItemIcon.setOnLongClickListener {
+                return@setOnLongClickListener OpenUtils.showFullImageDialog(tabIconItems[position])
             }
         }
     }
@@ -192,7 +191,7 @@ class TabListRVAdapter :
  */
 class TabItemViewHolder constructor(view: View) :
     RecyclerView.ViewHolder(view) {
-    val tabItemIcon: ImageButton = view.findViewById(R.id.itemTabIcon)
+    val tabItemIcon: ImageView = view.findViewById(R.id.itemTabIcon)
     val tabItemTitle: EditText = view.findViewById(R.id.itemTabTitle)
     val tabItemUrl: EditText = view.findViewById(R.id.itemTabUrl)
 }

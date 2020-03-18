@@ -1,15 +1,18 @@
 package cn.janking.webDroid.layout
 
 import android.app.Activity
+import android.net.Uri
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import cn.janking.webDroid.R
 import cn.janking.webDroid.model.Config
-import cn.janking.webDroid.util.ConsoleUtils
+import cn.janking.webDroid.util.*
+import java.io.File
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -17,23 +20,26 @@ import java.util.regex.Pattern
  * @author Janking
  */
 class EditAppLayout(activity: Activity) : EditLayout() {
+    companion object {
+        const val SELECT_FILE_REQUEST_CODE = 200
+    }
+
     /**
      * 视图
      */
     override val contentView = LayoutInflater.from(activity)
         .inflate(R.layout.layout_edit_app, null) as LinearLayout
-    /**
-     * app名称
-     */
-    val appName = contentView.findViewById<EditText>(R.id.appName)
+
     /**
      * app包名
      */
     val appPackage = contentView.findViewById<EditText>(R.id.appPackage)
 
-    init {
-        loadLastConfig()
-        appName.addTextChangedListener(object : TextWatcher {
+    /**
+     * app名称
+     */
+    val appName = contentView.findViewById<EditText>(R.id.appName).apply {
+        addTextChangedListener(object : TextWatcher {
             var lastAutoFillText = appPackage.text.toString()
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
@@ -48,11 +54,49 @@ class EditAppLayout(activity: Activity) : EditLayout() {
         })
     }
 
+    /**
+     * app图标
+     */
+    val appIcon = contentView.findViewById<ImageView>(R.id.appIcon).apply {
+        setOnClickListener {
+            OpenUtils.toSelectFile("image/*", SELECT_FILE_REQUEST_CODE)
+        }
+        //长按预览
+        setOnLongClickListener {
+            return@setOnLongClickListener OpenUtils.showFullImageDialog(Config.instance.appIcon)
+        }
+    }
+
+    init {
+        loadLastConfig()
+    }
+
+    /**
+     * 加载上次配置
+     */
     override fun loadLastConfig() {
         appName.setText(Config.instance.appName)
         appPackage.setText(Config.instance.appPackage)
+        //设置默认icon
+        appIcon.setImageResource(R.drawable.ic_launcher)
+        loadAppIcon()
     }
 
+    /**
+     * 设置APP图标预览
+     */
+    fun loadAppIcon() {
+        //加载config的icon
+        File(Config.instance.appIcon).run {
+            if (FileUtils.isFileExists(this)) {
+                appIcon.setImageURI(UriUtils.file2Uri(this))
+            }
+        }
+    }
+
+    /**
+     * 根据用户设置生成配置实例
+     */
     override fun generateConfig() {
         Config.instance.let {
             it.appName = appName.text.toString()
@@ -98,5 +142,24 @@ class EditAppLayout(activity: Activity) : EditLayout() {
         return true
     }
 
+
+    /**
+     * 选择图标返回
+     */
+    fun onSelectImageResult(uri: Uri) {
+        ThreadUtils.executeByIo(object : ThreadUtils.SimpleTask<String>() {
+            override fun doInBackground(): String {
+                return FileUtils.copyUriToTempFile(uri).toString()
+            }
+
+            override fun onSuccess(result: String) {
+                Config.instance.appIcon = result
+                Utils.runOnUiThread {
+                    loadAppIcon()
+                }
+            }
+
+        })
+    }
 
 }

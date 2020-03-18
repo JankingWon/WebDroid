@@ -288,7 +288,14 @@ class WebDroidActivity : BaseActivity() {
                                 ), null
                             )
                         } else {
-                            getDrawable(getIdentifier("ic_tab_$i", "drawable", packageName))
+                            //这里需要用"cn.janking.webDroid"，因为打包后apk里R没有修改，仍然是之前的包名
+                            getDrawable(
+                                getIdentifier(
+                                    "ic_tab_$i",
+                                    "drawable",
+                                    "cn.janking.webDroid"
+                                )
+                            )
                         }
                     }
                 }

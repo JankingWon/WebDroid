@@ -11,8 +11,6 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import sun.security.tools.jarsigner.Main
 import java.io.File
-import java.text.SimpleDateFormat
-import java.util.*
 
 /**
  * 用于打包apk的工具类
@@ -58,6 +56,22 @@ object BuildUtils {
                     ),
                     PathConstants.dirUnzippedApk
                 )
+                //复制 app icon
+                FileUtils.copyFileToFile(
+                    Config.instance.appIcon,
+                    PathConstants.getSubUnzippedApkDrawable(
+                        PathConstants.DEFAULT_APP_ICON
+                    )
+                )
+                //复制 tab icon
+                for (i in Config.instance.tabIcons.indices) {
+                    FileUtils.copyFileToFile(
+                        Config.instance.tabIcons[i],
+                        PathConstants.getSubUnzippedApkDrawable(
+                            "${PathConstants.DEFAULT_TAB_ICON_PREFIX}${i}.png"
+                        )
+                    )
+                }
                 //修改包名 和 APP名称 和 FileProvider
                 ManifestUtils(
                     PathConstants.getSubUnzippedApk(
@@ -142,7 +156,7 @@ object BuildUtils {
         })
     }
 
-    fun install(){
+    fun install() {
         val apkPath = PathConstants.getFileApkSigned(Config.instance.appName)
         AppUtils.installApp(apkPath)
     }
