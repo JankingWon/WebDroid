@@ -58,8 +58,8 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginTop="10dp"
-        android:scaleType="fitXY"
         android:background="?android:attr/selectableItemBackground"
+        android:scaleType="fitXY"
         android:src="@drawable/ic_launcher" />
 
     <com.google.android.material.textfield.TextInputLayout
@@ -69,7 +69,7 @@
         android:layout_marginTop="10dp">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/appVersion"
+            android:id="@+id/versionName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="APP版本"

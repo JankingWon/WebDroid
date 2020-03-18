@@ -29,6 +29,16 @@ class Config private constructor() {
     var appIcon = ""
 
     /**
+     * 版本名称
+     */
+    var versionName = ""
+
+    /**
+     * 版本名称
+     */
+    var versionCode = 1
+
+    /**
      * tab的标题集合
      */
     var tabTitles: List<String> = List(0) { "" }

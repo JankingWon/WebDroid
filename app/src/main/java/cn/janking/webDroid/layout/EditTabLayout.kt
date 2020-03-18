@@ -4,6 +4,7 @@ import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RadioGroup
 import androidx.core.view.get
@@ -55,7 +56,7 @@ class EditTabLayout(activity: Activity) : EditLayout() {
         setOnCheckedChangeListener { group, checkedId ->
             if (checkedId == R.id.itemTabStyleTop) {
                 for (i in 0 until tabList.childCount) {
-                    tabList[i].findViewById<ImageButton>(R.id.itemTabIcon).visibility = View.GONE
+                    tabList[i].findViewById<ImageView>(R.id.itemTabIcon).visibility = View.GONE
                 }
                 //即时更新config
                 Config.instance.tabStyle = 0

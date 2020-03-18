@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
 import luyao.parser.parser.xml.XmlParser;
@@ -43,12 +42,18 @@ public class ManifestUtils {
         }
     }
 
-    public ManifestUtils check() throws UnsupportedEncodingException {
+    public ManifestUtils check() {
         xmlParser.parse();
         return this;
     }
 
-    public ManifestUtils modifyStringAttribute(String oldAttr, String newAttr) throws IOException {
+    /**
+     * 此方法只能用来修改AXML里的唯一的字符串
+     * @param oldAttr 原来的属性值
+     * @param newAttr 修改后的属性值
+     * @throws IOException
+     */
+    public ManifestUtils modifyUniqueStringAttribute(String oldAttr, String newAttr) throws IOException {
         if (oldAttr.equals(newAttr)) {
             return this;
         }

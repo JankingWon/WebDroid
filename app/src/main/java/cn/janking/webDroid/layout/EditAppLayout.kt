@@ -67,6 +67,13 @@ class EditAppLayout(activity: Activity) : EditLayout() {
         }
     }
 
+    /**
+     * 版本名
+     */
+    val versionName = contentView.findViewById<EditText>(R.id.versionName).apply {
+        setText(AppUtils.getAppVersionName())
+    }
+
     init {
         loadLastConfig()
     }
@@ -101,6 +108,7 @@ class EditAppLayout(activity: Activity) : EditLayout() {
         Config.instance.let {
             it.appName = appName.text.toString()
             it.appPackage = appPackage.text.toString()
+            it.versionName = versionName.text.toString()
         }
     }
 
@@ -135,7 +143,27 @@ class EditAppLayout(activity: Activity) : EditLayout() {
         if (!matcher.matches()) {
             ConsoleUtils.warning(
                 console,
-                "APP包名不合法！(示例: cn.janking.webDroid)"
+                "APP包名格式错误！(示例: cn.janking.webDroid)"
+            )
+            return false
+        }
+        return true
+    }
+
+
+
+    /**
+     * 检查app的版本名
+     */
+    fun checkAppVersionName(console: TextView): Boolean {
+        val tempVersionName = versionName.text.toString()
+        val pattern: Pattern =
+            Pattern.compile("^([0-9]+)+([.][0-9]+)+([.][0-9]+)?")
+        val matcher: Matcher = pattern.matcher(tempVersionName)
+        if (!matcher.matches()) {
+            ConsoleUtils.warning(
+                console,
+                "APP版本名格式错误！(示例: 0.0.1)"
             )
             return false
         }

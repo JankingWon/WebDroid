@@ -186,7 +186,7 @@ open class CreatorActivity : BaseActivity() {
 
     private fun checkAppConfig(): Boolean {
         return editAppLayout?.let {
-            it.checkAppName(console) && it.checkAppPackage(console)
+            it.checkAppName(console) && it.checkAppPackage(console) && it.checkAppVersionName(console)
         } ?: false
     }
 

@@ -72,22 +72,25 @@ object BuildUtils {
                         )
                     )
                 }
-                //修改包名 和 APP名称 和 FileProvider
+                //修改包名、APP名称、APP版本、FileProvider
                 ManifestUtils(
                     PathConstants.getSubUnzippedApk(
                         PathConstants.DEFAULT_MANIFEST_FILE
                     ),
                     null
-                ).modifyStringAttribute(
+                ).modifyUniqueStringAttribute(
                     AppUtils.getAppPackageName(),
                     Config.instance.appPackage
-                ).modifyStringAttribute(
+                ).modifyUniqueStringAttribute(
                     AppUtils.getAppName(),
                     Config.instance.appName
-                ).modifyStringAttribute(
+                ).modifyUniqueStringAttribute(
+                    AppUtils.getAppVersionName(),
+                    Config.instance.versionName
+                ).modifyUniqueStringAttribute(
                     AppUtils.getAppPackageName() + ".utilcode.provider",
                     Config.instance.appPackage + ".utilcode.provider"
-                ).modifyStringAttribute(
+                ).modifyUniqueStringAttribute(
                     AppUtils.getAppPackageName() + ".DownloadFileProvider",
                     Config.instance.appPackage + ".DownloadFileProvider"
                 ).check().exec()
