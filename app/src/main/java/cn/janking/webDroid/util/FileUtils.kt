@@ -2,7 +2,9 @@ package cn.janking.webDroid.util
 
 import android.net.Uri
 import android.os.Build
+import cn.janking.webDroid.constant.PathConstants
 import java.io.*
+import java.util.*
 
 object FileUtils {
     /**
@@ -180,8 +182,7 @@ object FileUtils {
     private fun copyFileToFile(
         fromFile: InputStream,
         toFile: OutputStream
-    ) { //把读取到的内容写入新文件
-//把字节数组设置大一些   1*1024*1024=1M
+    ) { //把读取到的内容写入新文件，把字节数组设置大一些   1*1024*1024=1M
         val bs = ByteArray(1 * 1024 * 1024)
         var count = 0
         while (fromFile.read(bs).also { count = it } != -1) {
@@ -190,6 +191,40 @@ object FileUtils {
         //关闭流
         fromFile.close()
         toFile.flush()
+    }
+
+
+    /**
+     * 复制uri到文件
+     */
+    @Throws(IOException::class)
+    fun copyUriToFile(
+        uri: Uri,
+        toFile: File
+    ) {
+        copyFileToFile(
+            UriUtils.uri2File(uri),
+            getExistFile(toFile)
+        )
+    }
+
+    /**
+     * 复制uri到临时文件
+     */
+    @Throws(IOException::class)
+    fun copyUriToTempFile(
+        uri: Uri
+    ): File {
+        val outFile =
+            getExistFile(
+                PathConstants.dirTemp + File.separator + UUID.randomUUID().toString()
+                    .substring(0, 5)
+            )
+        copyUriToFile(
+            uri,
+            outFile
+        )
+        return outFile
     }
 
     private fun isSpace(s: String?): Boolean {

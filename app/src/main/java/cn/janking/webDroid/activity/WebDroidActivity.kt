@@ -3,19 +3,23 @@ package cn.janking.webDroid.activity
 import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
+import android.graphics.drawable.Drawable
 import android.view.*
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import cn.janking.webDroid.R
 import cn.janking.webDroid.adapter.BasicPagerAdapter
 import cn.janking.webDroid.model.Config
+import cn.janking.webDroid.util.FileUtils
 import cn.janking.webDroid.util.OpenUtils
+import cn.janking.webDroid.util.UriUtils
 import cn.janking.webDroid.util.Utils
 import cn.janking.webDroid.web.WebBox
 import cn.janking.webDroid.web.WebConfig
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activity_webdroid.*
+import java.io.File
 
 
 /**
@@ -27,10 +31,12 @@ class WebDroidActivity : BaseActivity() {
      * 布局Id
      */
     override val layoutId = R.layout.activity_webdroid
+
     /**
      * toolbar右边菜单id
      */
     override val toolBarMenuId: Int = R.menu.menu_webdroid
+
     /**
      * 缓存页面
      */
@@ -105,6 +111,7 @@ class WebDroidActivity : BaseActivity() {
      */
     private val onTabSelectedListener = object : TabLayout.OnTabSelectedListener {
         var clickTime: Long = -1
+
         //双击tab刷新
         override fun onTabReselected(tab: TabLayout.Tab?) {
             //0.5s以内算双击
@@ -265,7 +272,7 @@ class WebDroidActivity : BaseActivity() {
                 topNavigation.setupWithViewPager(viewPager)
                 topNavigation.addOnTabSelectedListener(onTabSelectedListener)
             } else {
-                //设置底部tab @todo 添加底部tab icon
+                //设置底部tab
                 topNavigation.visibility = View.GONE
                 bottomNavigation.visibility = View.VISIBLE
                 viewPager.addOnPageChangeListener(onPageChangeListener)
@@ -274,7 +281,15 @@ class WebDroidActivity : BaseActivity() {
                     bottomNavigation.menu.add(Menu.NONE, i, i, Config.instance.tabTitles[i])
                     //添加Icon
                     bottomNavigation.menu.getItem(i).icon = Utils.getApp().resources.run {
-                        getDrawable(getIdentifier("ic_tab_$i", "drawable", packageName))
+                        if (Config.instance.preview && FileUtils.isFileExists(Config.instance.tabIcons[i])) {
+                            Drawable.createFromStream(
+                                contentResolver.openInputStream(
+                                    UriUtils.file2Uri(File(Config.instance.tabIcons[i]))
+                                ), null
+                            )
+                        } else {
+                            getDrawable(getIdentifier("ic_tab_$i", "drawable", packageName))
+                        }
                     }
                 }
                 //添加监听器

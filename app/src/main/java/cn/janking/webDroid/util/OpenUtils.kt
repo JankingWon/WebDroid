@@ -16,7 +16,6 @@ import cn.janking.webDroid.constant.PathConstants
 import cn.janking.webDroid.helper.PermissionHelper
 import com.bumptech.glide.Glide
 import java.io.File
-import java.net.URISyntaxException
 
 
 /**
@@ -109,10 +108,10 @@ object OpenUtils {
     /**
      * 弹出全屏窗口显示图片
      */
-    fun fullDialogImage(imageUrl: String?) {
+    fun showFullImageDialog(imageUrl: String?) {
         imageUrl?.let {
             Dialog(ActivityUtils.getTopActivity(), R.style.DialogFullscreen).run {
-                setContentView(R.layout.dialog_fullscreen)
+                setContentView(R.layout.layout_dialog_fullscreen)
                 val imageView: ImageView = findViewById(R.id.img_full_screen_dialog)
                 //使用Glide加载图片
                 Glide.with(ActivityUtils.getTopActivity()).load(it).into(imageView)
@@ -150,7 +149,7 @@ object OpenUtils {
                         ThreadUtils.executeByCached(object :
                             ThreadUtils.SimpleTask<Unit>() {
                             override fun doInBackground() {
-                                FileUtils.copyFileToDir(result, PathConstants.dirImage, imageFormat)
+                                FileUtils.copyFileToDir(result, PathConstants.dirSaveImage, imageFormat)
                             }
 
                             override fun onFail(t: Throwable?) {
@@ -161,7 +160,7 @@ object OpenUtils {
                             override fun onSuccess(unit: Unit) {
                                 Toast.makeText(
                                     Utils.getApp(),
-                                    "已保存到${PathConstants.dirImage}",
+                                    "已保存到${PathConstants.dirSaveImage}",
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
@@ -173,7 +172,7 @@ object OpenUtils {
     }
 
     /**
-     * 跳转的uri获取
+     * 从uri获取要跳转的ResolveInfo，从而得知需要跳转的应用
      */
     fun getResolveInfoFromUri(uri: Uri): ResolveInfo? {
         val packageManager =
@@ -186,6 +185,21 @@ object OpenUtils {
             intent,
             PackageManager.MATCH_DEFAULT_ONLY
         )
+    }
+
+    /**
+     * 跳转到选择文件的窗口
+     */
+    fun toSelectFile(typeString : String, requestCode : Int){
+        Intent(Intent.ACTION_GET_CONTENT).run {
+            type = typeString
+            addCategory(Intent.CATEGORY_OPENABLE)
+            ActivityUtils.startActivityForResult (
+                ActivityUtils.getTopActivity(),
+                this,
+                requestCode
+            )
+        }
     }
 
     private fun safeCast(string: String?, function: (arg1: String) -> Unit) {

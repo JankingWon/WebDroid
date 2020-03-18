@@ -1,5 +1,6 @@
 package cn.janking.webDroid.activity
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -7,6 +8,7 @@ import android.view.ViewGroup
 import androidx.viewpager.widget.PagerAdapter
 import cn.janking.webDroid.R
 import cn.janking.webDroid.adapter.BasicPagerAdapter
+import cn.janking.webDroid.adapter.TabListRVAdapter
 import cn.janking.webDroid.event.BuildFinishEvent
 import cn.janking.webDroid.event.InitFinishEvent
 import cn.janking.webDroid.helper.PermissionHelper
@@ -29,15 +31,18 @@ open class CreatorActivity : BaseActivity() {
      * 布局Id
      */
     override val layoutId = R.layout.activity_creator
+
     /**
      * toolbar右边菜单id
      */
     override val toolBarMenuId: Int = R.menu.menu_creator
+
     /**
      * Sub Layout
      */
     var editAppLayout: EditAppLayout? = null
     var editTabLayout: EditTabLayout? = null
+
     /**
      * 是否正在build
      */
@@ -167,7 +172,9 @@ open class CreatorActivity : BaseActivity() {
      * 加载上次输入的配置
      */
     private fun loadLastConfig() {
-        Config.readFromString(SPUtils.getInstance().getString(Utils.getString(R.string.key_last_config)))
+        Config.readFromString(
+            SPUtils.getInstance().getString(Utils.getString(R.string.key_last_config))
+        )
     }
 
     /**
@@ -206,6 +213,24 @@ open class CreatorActivity : BaseActivity() {
         } else {
             spaceLine.visibility = View.VISIBLE
             progressBar.visibility = View.INVISIBLE
+        }
+    }
+
+    /**
+     * 跳转结果返回
+     */
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode in TabListRVAdapter.SELECT_FILE_REQUEST_CODE_MIN..TabListRVAdapter.SELECT_FILE_REQUEST_CODE_MAX
+            && resultCode == Activity.RESULT_OK
+        ) {
+            //交给adapter处理
+            data?.data?.let {
+                editTabLayout?.tabListAdapter?.onSelectImageResult(
+                    requestCode % TabListRVAdapter.SELECT_FILE_REQUEST_CODE_MIN,
+                    it
+                )
+            }
         }
     }
 

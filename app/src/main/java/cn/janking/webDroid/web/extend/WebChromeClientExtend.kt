@@ -1,12 +1,7 @@
 package cn.janking.webDroid.web.extend
 
-import android.app.Activity
-import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
-import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.webkit.*
 import cn.janking.webDroid.R
@@ -14,7 +9,6 @@ import cn.janking.webDroid.util.*
 import cn.janking.webDroid.web.FilePathChooserCallback
 import cn.janking.webDroid.web.WebConfig
 import cn.janking.webDroid.web.WebVideoPlayer
-import com.bumptech.glide.util.Util
 
 /**
  * @author Janking
@@ -74,6 +68,7 @@ class DefaultWebChromeClient(private val webVideoPlayer: WebVideoPlayer?) : WebC
     }
 
     var filePathCallback: ValueCallback<Array<Uri>>? = null
+
     /**
      * 重载选择文件的操作
      */
@@ -100,15 +95,7 @@ class DefaultWebChromeClient(private val webVideoPlayer: WebVideoPlayer?) : WebC
                 return true
             }
             //创建失败的话默认选择所有类型
-            Intent(Intent.ACTION_GET_CONTENT).run {
-                type = "*/*"
-                addCategory(Intent.CATEGORY_OPENABLE)
-                ActivityUtils.startActivityForResult (
-                    ActivityUtils.getTopActivity(),
-                    this,
-                    WebConfig.SELECT_FILE_REQUEST_CODE
-                )
-            }
+            OpenUtils.toSelectFile("*/*", WebConfig.SELECT_FILE_REQUEST_CODE)
         }
         return true
     }

@@ -24,31 +24,36 @@ class Config private constructor() {
     var appPackage = ""
 
     /**
-     * 是否显示标题栏
-     */
-    var showActionBar = true
-    /**
      * tab的标题集合
      */
-    var tabTitles: List<String> = List(0) {""}
+    var tabTitles: List<String> = List(0) { "" }
+
     /**
      * viewPager的url集合
      */
-    var tabUrls: List<String> = List(0) {""}
+    var tabUrls: List<String> = List(0) { "" }
+
+    /**
+     * tab的icon集合，表示文件位置
+     */
+    var tabIcons: List<String> = List(0) { "" }
+
     /**
      * tab的个数
      */
     @Transient
     var tabCount = 0
+
     /**
      * tab的风格
      * 0 : top
      * 1 : bottom
      */
-    var tabStyle = 0
+    var tabStyle = 1
 
     companion object {
         private val gson = Gson()
+
         /**
          * 单例
          */
@@ -65,7 +70,7 @@ class Config private constructor() {
                 Config::class.java
             ).let {
                 it?.apply {
-                    tabCount = tabTitles.size.coerceAtMost(tabUrls.size)
+                    tabCount = tabTitles.size.coerceAtMost(tabUrls.size).coerceAtMost(tabIcons.size)
                 } ?: Config()
             }
         }
@@ -73,7 +78,7 @@ class Config private constructor() {
         /**
          * 生成json配置文件
          */
-        fun toJsonString() : String {
+        fun toJsonString(): String {
             return gson.toJson(instance)
         }
     }

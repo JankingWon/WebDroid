@@ -17,15 +17,24 @@ import java.util.regex.Pattern
  * @author Janking
  */
 class EditAppLayout(activity: Activity) : EditLayout() {
+    /**
+     * 视图
+     */
     override val contentView = LayoutInflater.from(activity)
         .inflate(R.layout.layout_edit_app, null) as LinearLayout
+    /**
+     * app名称
+     */
     val appName = contentView.findViewById<EditText>(R.id.appName)
+    /**
+     * app包名
+     */
     val appPackage = contentView.findViewById<EditText>(R.id.appPackage)
 
     init {
         loadLastConfig()
         appName.addTextChangedListener(object : TextWatcher {
-            var lastAutoFillText = ""
+            var lastAutoFillText = appPackage.text.toString()
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {

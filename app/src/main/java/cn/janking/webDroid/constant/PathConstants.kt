@@ -26,6 +26,12 @@ object PathConstants {
         } ?: ""
 
     /**
+     * 临时存储目录
+     */
+    val dirTemp: String
+        get() = dirRoot + File.separator + "temp"
+
+    /**
      * webview相关的缓存
      */
     val dirWebCache : String = Utils.getApp().cacheDir.absolutePath + File.separator + "web-cache"
@@ -45,7 +51,7 @@ object PathConstants {
     /**
      * 保存图片的路径
      */
-    val dirImage: String
+    val dirSaveImage: String
         get() = outRoot + File.separator + "image"
 
     /**
