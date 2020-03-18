@@ -3,22 +3,22 @@ package cn.janking.webDroid.activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
+import android.view.ViewGroup
+import androidx.viewpager.widget.PagerAdapter
 import cn.janking.webDroid.R
-import cn.janking.webDroid.adapter.ItemTouchHelperCallback
-import cn.janking.webDroid.adapter.TabListRVAdapter
+import cn.janking.webDroid.adapter.BasicPagerAdapter
 import cn.janking.webDroid.event.BuildFinishEvent
 import cn.janking.webDroid.event.InitFinishEvent
 import cn.janking.webDroid.helper.PermissionHelper
+import cn.janking.webDroid.layout.EditAppLayout
+import cn.janking.webDroid.layout.EditLayout
+import cn.janking.webDroid.layout.EditTabLayout
 import cn.janking.webDroid.model.Config
 import cn.janking.webDroid.util.*
 import kotlinx.android.synthetic.main.activity_creator.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import java.util.regex.Matcher
-import java.util.regex.Pattern
 
 /**
  * WebDroidCreator 的 主Activity
@@ -34,9 +34,10 @@ open class CreatorActivity : BaseActivity() {
      */
     override val toolBarMenuId: Int = R.menu.menu_creator
     /**
-     * 配置tab列表的适配器
+     * Sub Layout
      */
-    var tabListAdapter: TabListRVAdapter? = null
+    var editAppLayout: EditAppLayout? = null
+    var editTabLayout: EditTabLayout? = null
     /**
      * 是否正在build
      */
@@ -47,6 +48,7 @@ open class CreatorActivity : BaseActivity() {
         EventBus.getDefault().register(this)
         loadLastConfig()
     }
+
 
     override fun onDestroy() {
         super.onDestroy()
@@ -64,32 +66,72 @@ open class CreatorActivity : BaseActivity() {
         SPUtils.getInstance().put(Utils.getString(R.string.key_last_config), Config.toJsonString())
     }
 
+
+    /**
+     * 滑动页面的适配器
+     */
+    private val pagerAdapter: PagerAdapter = object : BasicPagerAdapter() {
+        override fun getCount(): Int {
+            return 2
+        }
+
+        override fun instantiateItem(container: ViewGroup, position: Int): Any {
+            val editLayout: EditLayout = if (position == 0) {
+                EditAppLayout(this@CreatorActivity).apply {
+                    editAppLayout = this
+                }
+            } else {
+                EditTabLayout(this@CreatorActivity).apply {
+                    editTabLayout = this
+                }
+            }
+            return editLayout.run {
+                container.addView(
+                    contentView,
+                    ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT
+                    )
+                )
+                contentView
+            }
+        }
+
+        override fun getPageTitle(position: Int): CharSequence? {
+            return when (position) {
+                0 -> "APP"
+                else -> "TAB"
+            }
+        }
+    }
+
+
+    override fun initToolBarTitle() {
+        toolbar.title = AppUtils.getAppName()
+    }
+
     override fun initViews() {
-        //tab设置
-        tabListAdapter = TabListRVAdapter(this)
-        tabList.layoutManager = LinearLayoutManager(this)
-        tabList.adapter = tabListAdapter
-        //tab滑动删除和移动的手势操作
-        val callback: ItemTouchHelper.Callback = ItemTouchHelperCallback(tabListAdapter!!)
-        val mItemTouchHelper = ItemTouchHelper(callback)
-        mItemTouchHelper.attachToRecyclerView(tabList)
         //初始化状态
-        if(SPUtils.getInstance().getBoolean(getString(R.string.key_has_init))){
+        if (SPUtils.getInstance().getBoolean(getString(R.string.key_has_init))) {
             ConsoleUtils.success(console, "已就绪")
         }
+        //设置tab
+        viewPager.adapter = pagerAdapter
+        viewPager.offscreenPageLimit = 1
+        topNavigation.setupWithViewPager(viewPager)
     }
 
     override fun onClickViewId(viewId: Int) {
         super.onClickViewId(viewId)
-        when(viewId){
+        when (viewId) {
             //关于
             R.id.action_menu_about -> {
                 OpenUtils.openUrl("https://github.com/JankingWon/WebDroid")
             }
             //添加tab按钮
-            R.id.addTab -> {
+/*            R.id.addTab -> {
                 (tabList.adapter as TabListRVAdapter).addTabItem()
-            }
+            }*/
             //预览按钮
             R.id.preview -> {
                 if (checkConfig(true)) {
@@ -108,11 +150,11 @@ open class CreatorActivity : BaseActivity() {
                 })
             }
             //输出区域
-            R.id.console ->{
+            R.id.console -> {
                 //安装APK
-                if(console.text.contains("打包完成！")){
+                if (console.text.contains("打包完成！")) {
                     BuildUtils.install()
-                }else{
+                } else {
                     //显示完整内容
                     DialogUtils.showMessageDialog(console.text)
                 }
@@ -126,77 +168,32 @@ open class CreatorActivity : BaseActivity() {
      */
     private fun loadLastConfig() {
         Config.readFromString(SPUtils.getInstance().getString(Utils.getString(R.string.key_last_config)))
-        appName.setText(Config.instance.appName)
-        appPackage.setText(Config.instance.appPackage)
-        for (i in 0 until Config.instance.tabCount) {
-            tabListAdapter?.addTabItem(Config.instance.tabTitles[i], Config.instance.tabUrls[i])
-        }
     }
 
     /**
      * 检查Config是否有效
      */
     private fun checkConfig(isPreview: Boolean): Boolean {
-        if (checkAppName() && checkAppPackage()) {
+        if (checkAppConfig()) {
             generateConfig(isPreview)
             return true
         }
         return false
     }
 
+    private fun checkAppConfig(): Boolean {
+        return editAppLayout?.let {
+            it.checkAppName(console) && it.checkAppPackage(console)
+        } ?: false
+    }
+
     /**
      * 生成Config参数
      */
-    private fun generateConfig(isPreview: Boolean){
-        Config.instance.run {
-            preview = isPreview
-            appName = this@CreatorActivity.appName.text.toString()
-            appPackage = this@CreatorActivity.appPackage.text.toString()
-            tabTitles = tabListAdapter?.tabTitleItems!!.map {
-                it.toString()
-            }
-            tabUrls = tabListAdapter?.tabUrlItems!!.map {
-                it.toString()
-            }
-            tabCount = tabTitles.size.coerceAtMost(tabUrls.size)
-        }
-    }
-
-    /**
-     * 检查app的名称
-     */
-    private fun checkAppName(): Boolean {
-        if (appName.text.isNullOrEmpty()) {
-            ConsoleUtils.warning(console, "APP名称必填！")
-            return false
-        } else if (appName.text.toString().length >= 9) {
-            ConsoleUtils.warning(console, "APP名称最多为8个字符！")
-        }
-        return true
-    }
-
-
-    /**
-     * 检查app的包名
-     */
-    private fun checkAppPackage(): Boolean {
-        if (appPackage.text.isNullOrEmpty()) {
-            ConsoleUtils.warning(console, "APP包名必填！")
-            return false
-        }
-        val tempPackage = appPackage.text.toString()
-        // Java/Android合法包名，可以包含大写字母、小写字母、数字和下划线，用点(英文句号)分隔称为段，且至少包含2个段，隔开的每一段都必须以字母开头
-        val pattern: Pattern =
-            Pattern.compile("^([a-zA-Z_][a-zA-Z0-9_]*)+([.][a-zA-Z_][a-zA-Z0-9_]*)+([.][a-zA-Z_][a-zA-Z0-9_]*)")
-        val matcher: Matcher = pattern.matcher(tempPackage)
-        if (!matcher.matches()) {
-            ConsoleUtils.warning(
-                console,
-                "APP包名不合法！(示例: cn.janking.webDroid)"
-            )
-            return false
-        }
-        return true
+    private fun generateConfig(isPreview: Boolean) {
+        Config.instance.preview = isPreview
+        editAppLayout?.generateConfig()
+        editTabLayout?.generateConfig()
     }
 
     /**

@@ -10,7 +10,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import cn.janking.webDroid.R
-import cn.janking.webDroid.model.Config
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_webdroid.*
 import kotlinx.android.synthetic.main.layout_nav.*
@@ -57,7 +56,7 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
 
 
     protected open fun initToolBar() {
-        toolbar.title = Config.instance.appName
+        initToolBarTitle()
         setSupportActionBar(toolbar)
         val toggle = ActionBarDrawerToggle(
             this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close
@@ -68,6 +67,8 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
         drawerNavigation.getHeaderView(0).findViewById<LinearLayout>(R.id.navHeader)
             .setOnClickListener(this)
     }
+
+    abstract fun initToolBarTitle()
 
     /**
      * 点击侧边导航栏的菜单

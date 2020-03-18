@@ -7,6 +7,7 @@ import android.view.*
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import cn.janking.webDroid.R
+import cn.janking.webDroid.adapter.BasicPagerAdapter
 import cn.janking.webDroid.model.Config
 import cn.janking.webDroid.util.OpenUtils
 import cn.janking.webDroid.util.Utils
@@ -38,11 +39,7 @@ class WebDroidActivity : BaseActivity() {
     /**
      * 滑动页面的适配器
      */
-    private val pagerAdapter: PagerAdapter = object : PagerAdapter() {
-        override fun isViewFromObject(view: View, `object`: Any): Boolean {
-            return view === `object`
-        }
-
+    private val pagerAdapter: PagerAdapter = object : BasicPagerAdapter() {
         override fun getCount(): Int {
             return Config.instance.tabCount
         }
@@ -56,8 +53,8 @@ class WebDroidActivity : BaseActivity() {
             }
             val view = pageMap[position]!!.webLayout
             //如果已经被回收了，需要手动添加进去
-            if (viewPager.indexOfChild(view) == -1) {
-                viewPager.addView(
+            if (container.indexOfChild(view) == -1) {
+                container.addView(
                     view,
                     ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
@@ -66,14 +63,6 @@ class WebDroidActivity : BaseActivity() {
                 )
             }
             return view
-        }
-
-        override fun destroyItem(
-            container: ViewGroup,
-            position: Int,
-            `object`: Any
-        ) {
-            container.removeView(`object` as View)
         }
 
         override fun getPageTitle(position: Int): CharSequence? {
@@ -253,6 +242,10 @@ class WebDroidActivity : BaseActivity() {
         return pageMap[viewPager.currentItem]!!
     }
 
+    override fun initToolBarTitle() {
+        toolbar.title = Config.instance.appName
+    }
+
     /**
      * 初始化View
      */
@@ -281,7 +274,7 @@ class WebDroidActivity : BaseActivity() {
                     bottomNavigation.menu.add(Menu.NONE, i, i, Config.instance.tabTitles[i])
                     //添加Icon
                     bottomNavigation.menu.getItem(i).icon = Utils.getApp().resources.run {
-                        getDrawable(getIdentifier("ic_tab_$i", "drawable",packageName))
+                        getDrawable(getIdentifier("ic_tab_$i", "drawable", packageName))
                     }
                 }
                 //添加监听器
