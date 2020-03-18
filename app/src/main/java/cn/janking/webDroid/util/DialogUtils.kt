@@ -20,12 +20,27 @@ object DialogUtils {
         )
     }
 
+    fun showMessageDialog(
+        message: CharSequence
+    ) {
+        AlertDialog.Builder(ActivityUtils.getTopActivity())
+            .setTitle(R.string.msg_note)
+            .setMessage(
+                message
+            )
+            .setPositiveButton(
+                android.R.string.ok
+            ) { _, _ ->
+            }
+            .show()
+    }
+
     /**
      * 统一显示dialog
      */
     fun showAlertDialog(
-        message: String,
-        positiveListener: Runnable,
+        message: CharSequence,
+        positiveListener: Runnable? = null,
         negativeListener: Runnable? = null
     ) {
         AlertDialog.Builder(ActivityUtils.getTopActivity())
@@ -41,7 +56,7 @@ object DialogUtils {
             .setPositiveButton(
                 android.R.string.ok
             ) { _, _ ->
-                positiveListener.run()
+                positiveListener?.run()
             }
             .show()
     }

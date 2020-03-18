@@ -122,10 +122,10 @@ object BuildUtils {
 
             override fun onSuccess(result: Unit?) {
                 val apkPath = PathConstants.getFileApkSigned(Config.instance.appName)
-                ConsoleUtils.success(console, "打包完成！(${apkPath})")
+                ConsoleUtils.success(console, "打包完成！点击立即安装\n(${apkPath})")
                 LogUtils.i("本次打包用时 ${(System.currentTimeMillis() - startTime).toDouble() / 1000}s")
                 //立即安装
-                AppUtils.installApp(apkPath)
+                install()
             }
 
             override fun onDone() {
@@ -140,5 +140,10 @@ object BuildUtils {
                 cancel()
             }
         })
+    }
+
+    fun install(){
+        val apkPath = PathConstants.getFileApkSigned(Config.instance.appName)
+        AppUtils.installApp(apkPath)
     }
 }

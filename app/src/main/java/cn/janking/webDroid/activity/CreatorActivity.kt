@@ -107,6 +107,17 @@ open class CreatorActivity : BaseActivity() {
                     }
                 })
             }
+            //输出区域
+            R.id.console ->{
+                //安装APK
+                if(console.text.contains("打包完成！")){
+                    BuildUtils.install()
+                }else{
+                    //显示完整内容
+                    DialogUtils.showMessageDialog(console.text)
+                }
+
+            }
         }
     }
 
