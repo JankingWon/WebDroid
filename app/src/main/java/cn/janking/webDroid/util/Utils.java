@@ -62,8 +62,8 @@ import java.util.concurrent.ExecutorService;
 public final class Utils {
 
     private static final ActivityLifecycleImpl ACTIVITY_LIFECYCLE = new ActivityLifecycleImpl();
-    private static final ExecutorService       UTIL_POOL          = ThreadUtils.getCachedPool();
-    private static final Handler               UTIL_HANDLER       = new Handler(Looper.getMainLooper());
+    private static final ExecutorService UTIL_POOL = ThreadUtils.getCachedPool();
+    private static final Handler UTIL_HANDLER = new Handler(Looper.getMainLooper());
 
     @SuppressLint("StaticFieldLeak")
     private static Application sApplication;
@@ -223,7 +223,6 @@ public final class Utils {
     }
 
 
-
     ///////////////////////////////////////////////////////////////////////////
     // private method
     ///////////////////////////////////////////////////////////////////////////
@@ -313,7 +312,7 @@ public final class Utils {
             float sDurationScale = (Float) sDurationScaleField.get(null);
             if (sDurationScale == 0f) {
                 sDurationScaleField.set(null, 1f);
-                LogUtils.i( "setAnimatorsEnabled: Animators are enabled now!");
+                LogUtils.i("setAnimatorsEnabled: Animators are enabled now!");
             }
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
@@ -327,7 +326,7 @@ public final class Utils {
     public static final class TransActivity extends FragmentActivity {
 
         private static final Map<TransActivity, TransActivityDelegate> CALLBACK_MAP = new HashMap<>();
-        private static       TransActivityDelegate                     sDelegate;
+        private static TransActivityDelegate sDelegate;
 
         public static void start(final Func1<Void, Intent> consumer,
                                  final TransActivityDelegate delegate) {
@@ -465,13 +464,13 @@ public final class Utils {
 
     static class ActivityLifecycleImpl implements ActivityLifecycleCallbacks {
 
-        final LinkedList<Activity>                             mActivityList         = new LinkedList<>();
-        final List<OnAppStatusChangedListener>                 mStatusListeners      = new ArrayList<>();
+        final LinkedList<Activity> mActivityList = new LinkedList<>();
+        final List<OnAppStatusChangedListener> mStatusListeners = new ArrayList<>();
         final Map<Activity, List<OnActivityDestroyedListener>> mDestroyedListenerMap = new HashMap<>();
 
-        private int     mForegroundCount = 0;
-        private int     mConfigCount     = 0;
-        private boolean mIsBackground    = false;
+        private int mForegroundCount = 0;
+        private int mConfigCount = 0;
+        private boolean mIsBackground = false;
 
         @Override
         public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
@@ -538,6 +537,31 @@ public final class Utils {
                     if (activity == null
                             || activity.isFinishing()
                             || (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && activity.isDestroyed())) {
+                        continue;
+                    }
+                    return activity;
+                }
+            }
+            Activity topActivityByReflect = getTopActivityByReflect();
+            if (topActivityByReflect != null) {
+                setTopActivity(topActivityByReflect);
+            }
+            return topActivityByReflect;
+        }
+
+        /**
+         * 除去透明Activity的干扰
+         *
+         * @return
+         */
+        Activity getTopActivityExceptTrans() {
+            if (!mActivityList.isEmpty()) {
+                for (int i = mActivityList.size() - 1; i >= 0; i--) {
+                    Activity activity = mActivityList.get(i);
+                    if (activity == null
+                            || activity.isFinishing()
+                            || (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1 && activity.isDestroyed()
+                            || activity instanceof TransActivity)) {
                         continue;
                     }
                     return activity;
@@ -681,9 +705,9 @@ public final class Utils {
 
     public abstract static class Task<Result> implements Runnable {
 
-        private static final int NEW         = 0;
-        private static final int COMPLETING  = 1;
-        private static final int CANCELLED   = 2;
+        private static final int NEW = 0;
+        private static final int COMPLETING = 1;
+        private static final int CANCELLED = 2;
         private static final int EXCEPTIONAL = 3;
 
         private volatile int state = NEW;

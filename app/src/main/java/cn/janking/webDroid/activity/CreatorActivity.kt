@@ -133,10 +133,6 @@ open class CreatorActivity : BaseActivity() {
             R.id.action_menu_about -> {
                 OpenUtils.openUrl("https://github.com/JankingWon/WebDroid")
             }
-            //添加tab按钮
-/*            R.id.addTab -> {
-                (tabList.adapter as TabListRVAdapter).addTabItem()
-            }*/
             //预览按钮
             R.id.preview -> {
                 if (checkConfig(true)) {

@@ -213,7 +213,7 @@ object OpenUtils {
                 type = typeString
                 addCategory(Intent.CATEGORY_OPENABLE)
                 ActivityUtils.startActivityForResult(
-                    ActivityUtils.getTopActivity(),
+                    ActivityUtils.getTopActivityExceptTrans(),
                     this,
                     requestCode
                 )

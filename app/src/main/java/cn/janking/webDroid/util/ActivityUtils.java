@@ -23,7 +23,6 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.fragment.app.Fragment;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -1476,6 +1475,15 @@ public final class ActivityUtils {
      */
     public static Activity getTopActivity() {
         return Utils.getActivityLifecycle().getTopActivity();
+    }
+
+    /**
+     * 除去透明Activity的干扰
+     *
+     * @return the top activity in activity's stack
+     */
+    public static Activity getTopActivityExceptTrans() {
+        return Utils.getActivityLifecycle().getTopActivityExceptTrans();
     }
 
     /**
