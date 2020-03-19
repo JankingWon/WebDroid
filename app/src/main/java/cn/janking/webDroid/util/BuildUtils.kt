@@ -72,6 +72,8 @@ object BuildUtils {
                         )
                     )
                 }
+                //删除 author avatar
+                FileUtils.delete(PathConstants.getSubUnzippedApkDrawable(PathConstants.DEFAULT_AUTHOR_AVATAR))
                 //修改包名、APP名称、APP版本、FileProvider
                 ManifestUtils(
                     PathConstants.getSubUnzippedApk(

@@ -12,8 +12,12 @@ import java.io.File
 object PathConstants {
     const val DEFAULT_CONFIG_FILE = "config.json"
     const val DEFAULT_MANIFEST_FILE = "AndroidManifest.xml"
+    const val DEFAULT_AUTHOR_AVATAR = "img_author_avatar.jpg"
     const val DEFAULT_APP_ICON = "ic_launcher.png"
     const val DEFAULT_TAB_ICON_PREFIX = "ic_tab_"
+    /**
+     * key
+     */
     const val DEFAULT_KEY_PASSWORD = "123456"
     const val DEFAULT_STORE_PASSWORD = "123456"
     const val DEFAULT_KEY_ALIAS = "webdroid"

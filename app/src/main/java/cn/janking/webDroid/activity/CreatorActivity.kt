@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.viewpager.widget.PagerAdapter
 import cn.janking.webDroid.R
 import cn.janking.webDroid.adapter.BasicPagerAdapter
@@ -18,6 +19,7 @@ import cn.janking.webDroid.layout.EditTabLayout
 import cn.janking.webDroid.model.Config
 import cn.janking.webDroid.util.*
 import kotlinx.android.synthetic.main.activity_creator.*
+import kotlinx.android.synthetic.main.layout_nav.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -124,6 +126,9 @@ open class CreatorActivity : BaseActivity() {
         viewPager.adapter = pagerAdapter
         viewPager.offscreenPageLimit = 1
         topNavigation.setupWithViewPager(viewPager)
+        //设置作者头像
+        drawerNavigation.getHeaderView(0).findViewById<ImageView>(R.id.avatarImage)
+            .setImageResource(R.drawable.img_author_avatar)
     }
 
     override fun onClickViewId(viewId: Int) {
@@ -186,7 +191,9 @@ open class CreatorActivity : BaseActivity() {
 
     private fun checkAppConfig(): Boolean {
         return editAppLayout?.let {
-            it.checkAppName(console) && it.checkAppPackage(console) && it.checkAppVersionName(console)
+            it.checkAppName(console) && it.checkAppPackage(console) && it.checkAppVersionName(
+                console
+            )
         } ?: false
     }
 
@@ -217,7 +224,7 @@ open class CreatorActivity : BaseActivity() {
      */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(resultCode == Activity.RESULT_OK){
+        if (resultCode == Activity.RESULT_OK) {
             if (requestCode in TabListRVAdapter.SELECT_FILE_REQUEST_CODE_MIN..TabListRVAdapter.SELECT_FILE_REQUEST_CODE_MAX) {
                 //交给adapter处理
                 data?.data?.let {
@@ -226,7 +233,7 @@ open class CreatorActivity : BaseActivity() {
                         it
                     )
                 }
-            }else if(requestCode == EditAppLayout.SELECT_FILE_REQUEST_CODE){
+            } else if (requestCode == EditAppLayout.SELECT_FILE_REQUEST_CODE) {
                 data?.data?.let {
                     editAppLayout?.onSelectImageResult(it)
                 }
