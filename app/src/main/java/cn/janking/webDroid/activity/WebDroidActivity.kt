@@ -233,6 +233,13 @@ class WebDroidActivity : BaseActivity() {
     }
 
     /**
+     * 保存tab位置
+     */
+    override fun onStop() {
+        super.onStop()
+    }
+
+    /**
      * 销毁WebView
      */
     override fun onDestroy() {
@@ -315,6 +322,12 @@ class WebDroidActivity : BaseActivity() {
                         bottomNavigation.measuredHeight
                     )
                 }
+                //读取上次tab位置的配置
+//                SPUtils.getInstance().getInt(Utils.getString(R.string.key_last_tab)).also {
+//                    if (it in 0 until Config.instance.tabCount) {
+//                        viewPager.currentItem = it
+//                    }
+//                }
             }
         }
     }

@@ -6,6 +6,8 @@
     <!--SP Key-->
     <string name="key_has_init">hasInit</string>
     <string name="key_last_config">lastConfig</string>
+    <string name="key_last_tab">lastTab</string>
+
 
     <!--Message-->
     <string name="msg_share">来跟我一起使用吧！</string>

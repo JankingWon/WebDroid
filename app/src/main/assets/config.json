@@ -1,16 +1,23 @@
 {
-  "appName" : "baby",
-  "tabTitles" : [
-    "DashBoard",
-    "Explore",
-    "Download",
-    "QQ"
+  "appIcon": "/storage/emulated/0/Android/data/cn.janking.webDroid/files/temp/76ef0",
+  "appName": "宝宝",
+  "appPackage": "cn.janking.baby",
+  "tabIcons": [
+    "null",
+    "null",
+    "null"
   ],
-  "tabUrls" : [
-    "http://music.ifkdy.com/?name=%E7%A9%BA%E7%A9%BA%E5%A6%82%E4%B9%9F%20%E6%B1%AA%E5%B3%B0&type=netease",
-    "https://map.baidu.com/mobile/webapp/index/index/#index/index/foo=bar/vt=map",
-    "https://m.youtube.com/watch?v=aLLsmJfvixM",
-    "https://ant.design/components/upload-cn/"
+  "tabStyle": 1,
+  "tabTitles": [
+    "百度",
+    "微博",
+    "中大"
   ],
-  "tabStyle" : 1
+  "tabUrls": [
+    "https://baidu.com",
+    "https://weibo.com",
+    "http://sysu.edu.cn"
+  ],
+  "versionCode": 10,
+  "versionName": "1.0"
 }

@@ -5,15 +5,11 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.widget.FrameLayout
-import android.widget.ScrollView
 import android.widget.TextView
 import androidx.core.widget.NestedScrollView
 import cn.janking.webDroid.R
-import cn.janking.webDroid.model.Config
-import cn.janking.webDroid.util.LogUtils
 import cn.janking.webDroid.util.ScreenUtils
 import cn.janking.webDroid.util.Utils
 import cn.janking.webDroid.web.extend.*
@@ -70,7 +66,7 @@ class WebBox(activity: Activity, homeUrl: String) {
     }
 
     //Webview生命周期监控
-    val webLifeCycle = WebLifeCycleImpl(webView).also { it.onPause() }
+    val webLifeCycle = WebLifeCycleImpl(webView)
 
     /**
      * 返回当前显示的url
