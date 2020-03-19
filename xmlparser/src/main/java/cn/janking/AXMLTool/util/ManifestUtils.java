@@ -1,4 +1,4 @@
-package cn.janking.binaryXml.util;
+package cn.janking.AXMLTool.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -49,6 +49,7 @@ public class ManifestUtils {
 
     /**
      * 此方法只能用来修改AXML里的唯一的字符串
+     *
      * @param oldAttr 原来的属性值
      * @param newAttr 修改后的属性值
      * @throws IOException
@@ -114,7 +115,7 @@ public class ManifestUtils {
             //判断【String Pool内的字符串字节数】（不是String Trunk的字节数）是否是4的倍数
             int stringPoolSize =
                     (xmlParser.stylePoolOffset == 0 ? xmlParser.stringTrunkSize : xmlParser.stylePoolOffset)
-                    - xmlParser.stringPoolOffset + diffByteCount;
+                            - xmlParser.stringPoolOffset + diffByteCount;
             if (stringPoolSize % 4 != 0) {
                 diffByteCount += 2;
                 //在String Pool中的字符串最后添加两个字节补齐
@@ -138,6 +139,40 @@ public class ManifestUtils {
                     ByteUtils.int2Byte(xmlParser.stringTrunkSize + diffByteCount)
             );
         }
+        return this;
+    }
+
+    /**
+     * 专用于新修改Manifest中的versionCode
+     *
+     * @param oldAttr 原来的versionCode
+     * @param newAttr 修改后的versionCode
+     * @return this
+     */
+    public ManifestUtils modifyVersionCode(int oldAttr, int newAttr) {
+        if (oldAttr == newAttr) {
+            return this;
+        }
+        xmlParser.parse();
+        //找到需要修改的属性位置
+        int attributePosition = 0;
+        //magicnumber 和 filesize
+        attributePosition += 4 * 2;
+        //string trunk
+        attributePosition += xmlParser.stringTrunkSize;
+        //resource trunk
+        attributePosition += xmlParser.resourceChunkSize;
+        //tag trunk
+        attributePosition += 6 * 4;
+        //start tag attributes前面的字节数
+        attributePosition += 9 * 4;
+        //attribute data前面的字节数
+        attributePosition += 4 * 4;
+        ByteUtils.replaceBytes(
+                xmlParser.reader.data,
+                attributePosition,
+                ByteUtils.int2Byte(newAttr)
+        );
         return this;
     }
 }

@@ -14,5 +14,9 @@ public abstract class Chunk {
         this.chunkType=chunkType;
     }
 
+    public int getChunkSize() {
+        return chunkSize;
+    }
+
     public abstract String toXmlString();
 }

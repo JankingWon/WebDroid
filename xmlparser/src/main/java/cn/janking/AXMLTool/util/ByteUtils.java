@@ -1,4 +1,4 @@
-package cn.janking.binaryXml.util;
+package cn.janking.AXMLTool.util;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
@@ -10,7 +10,7 @@ public class ByteUtils {
     static private final short LITTLE_ENDIAN = 0;
     static private final short BIG_ENDIAN = 1;
     /**
-     * 编码方式
+     * 编码方式，默认是Unicode
      */
     static private String encoding = "Unicode";
 
@@ -19,9 +19,9 @@ public class ByteUtils {
     }
 
     /**
-     * 字节序
-     * true：大端
-     * false：小端
+     * 字节序，默认是小端
+     * BIG_ENDIAN：大端
+     * LITTLE_ENDIAN：小端
      */
     static private short byteEndian = LITTLE_ENDIAN;
 

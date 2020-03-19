@@ -1,4 +1,4 @@
-package cn.janking.xmlProcessor;
+package cn.janking.AXMLTool;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

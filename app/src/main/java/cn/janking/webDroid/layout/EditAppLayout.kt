@@ -74,6 +74,13 @@ class EditAppLayout(activity: Activity) : EditLayout() {
         setText(AppUtils.getAppVersionName())
     }
 
+    /**
+     * 版本码
+     */
+    val versionCode = contentView.findViewById<EditText>(R.id.versionCode).apply {
+        setText(AppUtils.getAppVersionCode().toString())
+    }
+
     init {
         loadLastConfig()
     }
@@ -109,6 +116,7 @@ class EditAppLayout(activity: Activity) : EditLayout() {
             it.appName = appName.text.toString()
             it.appPackage = appPackage.text.toString()
             it.versionName = versionName.text.toString()
+            it.versionCode = versionCode.text.toString().toInt()
         }
     }
 
@@ -149,7 +157,6 @@ class EditAppLayout(activity: Activity) : EditLayout() {
         }
         return true
     }
-
 
 
     /**

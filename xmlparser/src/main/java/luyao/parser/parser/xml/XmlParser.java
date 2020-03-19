@@ -7,12 +7,12 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.janking.binaryXml.util.ByteUtils;
-import luyao.parser.parser.xml.bean.chunk.Chunk;
+import cn.janking.AXMLTool.util.ByteUtils;
 import luyao.parser.parser.utils.BytesReader;
 import luyao.parser.parser.utils.Utils;
 import luyao.parser.parser.xml.bean.Attribute;
 import luyao.parser.parser.xml.bean.Xml;
+import luyao.parser.parser.xml.bean.chunk.Chunk;
 import luyao.parser.parser.xml.bean.chunk.EndNameSpaceChunk;
 import luyao.parser.parser.xml.bean.chunk.EndTagChunk;
 import luyao.parser.parser.xml.bean.chunk.StartNameSpaceChunk;
@@ -35,6 +35,8 @@ public class XmlParser {
     public int stringTrunkSize;
     public int stringPoolOffset;
     public int stylePoolOffset;
+
+    public int resourceChunkSize;
 
     public XmlParser(byte[] source){
         this.reader = new BytesReader(source, true);
@@ -157,6 +159,7 @@ public class XmlParser {
             log("chunk type: %s", chunkType);
 
             int chunkSize = reader.readInt();
+            resourceChunkSize = chunkSize;
             log("chunk size: %d", chunkSize);
 
             int resourcesIdChunkCount = (chunkSize - 8) / 4;

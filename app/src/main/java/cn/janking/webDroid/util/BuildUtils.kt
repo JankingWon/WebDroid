@@ -1,7 +1,7 @@
 package cn.janking.webDroid.util
 
 import android.widget.TextView
-import cn.janking.binaryXml.util.ManifestUtils
+import cn.janking.AXMLTool.util.ManifestUtils
 import cn.janking.webDroid.R
 import cn.janking.webDroid.constant.PathConstants
 import cn.janking.webDroid.event.BuildFinishEvent
@@ -87,6 +87,9 @@ object BuildUtils {
                 ).modifyUniqueStringAttribute(
                     AppUtils.getAppVersionName(),
                     Config.instance.versionName
+                ).modifyVersionCode(
+                    1,
+                    Config.instance.versionCode
                 ).modifyUniqueStringAttribute(
                     AppUtils.getAppPackageName() + ".utilcode.provider",
                     Config.instance.appPackage + ".utilcode.provider"
@@ -114,7 +117,6 @@ object BuildUtils {
                 //v1签名  @todo 5.0签名会出现No Entry异常
                 Main.main(
                     arrayOf(
-                        "-verbose",
                         "-keystore", PathConstants.jks,
                         "-storepass", PathConstants.DEFAULT_STORE_PASSWORD,
                         "-keyPass", PathConstants.DEFAULT_KEY_PASSWORD,
