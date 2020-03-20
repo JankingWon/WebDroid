@@ -13,9 +13,9 @@ object WebUtils {
     /**
      * 检查网络状态
      */
-    fun checkNetwork(context: Context): Boolean {
+    fun networkAvailable(): Boolean {
         val connectivity =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            Utils.getApp().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         @SuppressLint("MissingPermission") val info =
             connectivity.activeNetworkInfo
         return info != null && info.isConnected
@@ -33,11 +33,11 @@ object WebUtils {
     /**
      * 检查网络类型
      */
-    fun checkNetworkType(context: Context): Int {
+    fun checkNetworkType(): Int {
         val netType = 0
         //连接管理对象
         val manager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            Utils.getApp().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         //获取NetworkInfo对象
         val networkInfo = manager.activeNetworkInfo ?: return netType
         return when (networkInfo.type) {

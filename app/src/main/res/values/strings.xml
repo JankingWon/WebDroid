@@ -10,6 +10,8 @@
 
 
     <!--Message-->
+
+
     <string name="msg_share">来跟我一起使用吧！</string>
     <string name="msg_share_title">分享到</string>
     <string name="msg_note">提示</string>
@@ -19,4 +21,6 @@
     <string name="msg_web_error">页面出错了哦~\n双击TAB栏进行刷新~</string>
     <string name="msg_web_network_error">网络错误~\n请检查网络设置哦~\n双击TAB栏进行刷新~</string>
     <string name="msg_request_geo_permission">%s正在请求访问您的位置，是否继续？</string>
+    <string name="msg_web_network_not_available">网络连接不可用，请稍后再试</string>
+    <string name="msg_load_cache_web_page">网络不可用，已显示缓存页面</string>
 </resources>

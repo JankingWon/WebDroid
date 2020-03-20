@@ -5,8 +5,11 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
-import android.text.TextUtils
-import android.webkit.*
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import cn.janking.webDroid.R
 import cn.janking.webDroid.constant.WebConstants
@@ -131,9 +134,13 @@ class DefaultWebClient(val webBox: WebBox) : WebViewClient() {
      * 开始加载回调
      */
     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-        //网络不可用时显示错误页面
-        if (!WebUtils.checkNetwork(Utils.getApp())) {
-            webBox.showNetworkErrorPage()
+        //网络不可用时提示，并且取消加载
+        if (!WebUtils.networkAvailable()) {
+            Toast.makeText(
+                Utils.getApp(),
+                Utils.getString(R.string.msg_web_network_not_available),
+                Toast.LENGTH_SHORT
+            ).show()
         } else {
             webBox.dismissErrorPage()
             super.onPageStarted(view, url, favicon)
@@ -196,21 +203,21 @@ class DefaultWebClient(val webBox: WebBox) : WebViewClient() {
     /**
      * 缩放回调
      */
-    override fun onScaleChanged(
-        view: WebView,
-        oldScale: Float,
-        newScale: Float
-    ) {
-        if (WebConfig.DEBUG) {
-            LogUtils.i(
-                "onScaleChanged:$oldScale",
-                "newScale:$newScale"
-            )
-        }
-        if (newScale - oldScale > WebConfig.abnormalScale) {
-            view.setInitialScale((oldScale / newScale * 100).toInt())
-        }
-        super.onScaleChanged(view, oldScale, newScale)
-    }
+//    override fun onScaleChanged(
+//        view: WebView,
+//        oldScale: Float,
+//        newScale: Float
+//    ) {
+//        if (WebConfig.DEBUG) {
+//            LogUtils.i(
+//                "onScaleChanged:$oldScale",
+//                "newScale:$newScale"
+//            )
+//        }
+//        if (newScale - oldScale > WebConfig.abnormalScale) {
+//            view.setInitialScale(/*(oldScale / newScale * 100).toInt()*/10)
+//        }
+//        super.onScaleChanged(view, oldScale, newScale)
+//    }
 
 }

@@ -11,8 +11,10 @@ import cn.janking.webDroid.util.LogUtils
 import cn.janking.webDroid.util.Utils
 import cn.janking.webDroid.util.WebUtils
 import cn.janking.webDroid.web.WebConfig
-import com.download.library.*
+import com.download.library.DownloadImpl
 import com.download.library.DownloadListenerAdapter
+import com.download.library.Extra
+import com.download.library.ResourceRequest
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -57,7 +59,7 @@ open class DefaultDownloadImpl : DownloadListener {
      */
     private fun determineDownload(url: String) {
         // 移动数据
-        if (WebUtils.checkNetworkType(Utils.getApp()) > 1) {
+        if (WebUtils.checkNetworkType() > 1) {
             DialogUtils.showAlertDialog(
                 R.string.msg_use_cellular_network,
                 Runnable {

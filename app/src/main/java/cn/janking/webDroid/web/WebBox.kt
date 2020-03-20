@@ -12,6 +12,7 @@ import androidx.core.widget.NestedScrollView
 import cn.janking.webDroid.R
 import cn.janking.webDroid.util.ScreenUtils
 import cn.janking.webDroid.util.Utils
+import cn.janking.webDroid.util.WebUtils
 import cn.janking.webDroid.web.extend.*
 import cn.janking.webDroid.web.lifecycle.WebLifeCycleImpl
 import cn.janking.webDroid.web.view.NestedScrollWebView
@@ -116,11 +117,16 @@ class WebBox(activity: Activity, homeUrl: String) {
      * 显示错误页
      */
     fun showErrorPage() {
-        if (webPageStatus != 1) {
+        if (WebUtils.networkAvailable()) {
             webView.visibility = View.INVISIBLE
             errorText.text = Utils.getString(R.string.msg_web_error)
             errorPage.visibility = View.VISIBLE
             webPageStatus = 2
+        }else{
+            webView.visibility = View.INVISIBLE
+            errorText.text = Utils.getString(R.string.msg_web_network_error)
+            errorPage.visibility = View.VISIBLE
+            webPageStatus = 1
         }
     }
 

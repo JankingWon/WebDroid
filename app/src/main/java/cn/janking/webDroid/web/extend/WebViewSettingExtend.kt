@@ -1,14 +1,16 @@
 package cn.janking.webDroid.web.extend
 
 import android.os.Build
-import android.util.Log
 import android.view.View
 import android.webkit.WebSettings
 import android.webkit.WebView
+import android.widget.Toast
+import cn.janking.webDroid.R
 import cn.janking.webDroid.constant.PathConstants
 import cn.janking.webDroid.constant.WebConstants
 import cn.janking.webDroid.util.LogUtils
 import cn.janking.webDroid.util.ProcessUtils
+import cn.janking.webDroid.util.Utils
 import cn.janking.webDroid.util.WebUtils
 import cn.janking.webDroid.web.WebConfig
 
@@ -25,15 +27,23 @@ fun WebView.defaultSetting() {
         //解决 sysu.edu.cn 不能缩放的问题
         builtInZoomControls = true
         //隐藏原生的缩放按钮
-        displayZoomControls = false;
-        if (WebUtils.checkNetwork(this@defaultSetting.context)) { //根据cache-control获取数据。
+        displayZoomControls = false
+        //设置初始缩放，如果网页没有适配移动端，默认加载100%视图
+        setInitialScale(100)
+        if (WebUtils.networkAvailable()) { //根据cache-control获取数据。
             cacheMode = WebSettings.LOAD_DEFAULT
         } else { //没网，则从本地获取，即离线加载
             cacheMode = WebSettings.LOAD_CACHE_ELSE_NETWORK
+            Toast.makeText(
+                Utils.getApp(),
+                Utils.getString(R.string.msg_load_cache_web_page),
+                Toast.LENGTH_SHORT
+            ).show()
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { //适配5.0不允许http和https混合使用情况
-            setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW)
-            this@defaultSetting.setLayerType(View.LAYER_TYPE_HARDWARE, null)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            //适配5.0不允许http和https混合使用情况, 允许混合内容
+            mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+            setLayerType(View.LAYER_TYPE_HARDWARE, null)
         }
         textZoom = 100
         databaseEnabled = true
@@ -60,15 +70,15 @@ fun WebView.defaultSetting() {
         minimumFontSize = 12
         setGeolocationEnabled(true)
         val dir = PathConstants.dirWebCache
-        if(WebConfig.DEBUG){
+        if (WebConfig.DEBUG) {
             LogUtils.i(
                 "WebView.defaultSetting()",
                 "dir:" + dir + "   appcache:" + PathConstants.dirWebCache
             )
         }
         setAppCachePath(dir)
-        userAgentString +=  WebConstants.USERAGENT_UC
-        if(WebConfig.DEBUG){
+        userAgentString += WebConstants.USERAGENT_UC
+        if (WebConfig.DEBUG) {
             LogUtils.i(
                 "WebView.defaultSetting()",
                 "UserAgentString : $userAgentString"
