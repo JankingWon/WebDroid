@@ -9,14 +9,14 @@
   ],
   "tabStyle": 1,
   "tabTitles": [
-    "百度",
-    "微博",
-    "中大"
+    "首页",
+    "排行",
+    "我的"
   ],
   "tabUrls": [
-    "https://baidu.com",
-    "https://weibo.com",
-    "http://sysu.edu.cn"
+    "https://m.bilibili.com/index.html",
+    "https://m.bilibili.com/ranking.html",
+    "https://m.bilibili.com/space"
   ],
   "versionCode": 10,
   "versionName": "1.0"

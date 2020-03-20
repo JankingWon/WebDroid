@@ -314,12 +314,13 @@ class WebDroidActivity : BaseActivity() {
                     onNavigationItemReselectedListener
                 )
                 //如果是底部tab，则需要添加底部padding，防止内容遮挡
-                if (Config.instance.tabStyle == 1) {
+                //注意：这个padding是toolbar的高度，而不是底部tab的高度，因为协调布局会隐藏顶部toolbar
+                toolbar.post {
                     viewPager.setPadding(
                         viewPager.paddingLeft,
                         viewPager.paddingTop,
                         viewPager.paddingRight,
-                        bottomNavigation.measuredHeight
+                        toolbar.measuredHeight
                     )
                 }
                 //读取上次tab位置的配置
