@@ -192,7 +192,7 @@ public final class Utils {
         Utils.UTIL_HANDLER.postDelayed(runnable, delayMillis);
     }
 
-    static String getCurrentProcessName() {
+    public static String getCurrentProcessName() {
         String name = getCurrentProcessNameByFile();
         if (!TextUtils.isEmpty(name)) return name;
         name = getCurrentProcessNameByAms();

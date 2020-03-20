@@ -29,7 +29,8 @@
         <activity
             android:name="cn.janking.webDroid.activity.WebDroidActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:hardwareAccelerated="true">
+            android:hardwareAccelerated="true"
+            android:process=":webView">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.MAIN" />

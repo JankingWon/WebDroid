@@ -10,7 +10,7 @@ import android.view.WindowManager
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.widget.FrameLayout
-import java.util.HashSet
+import java.util.*
 
 /**
  * @author Janking
@@ -31,9 +31,6 @@ class WebVideoPlayer(private val activity: Activity, private val webViw: WebView
         view: View?,
         callback: WebChromeClient.CustomViewCallback?
     ) {
-        if (activity.isFinishing) {
-            return
-        }
         //表示正在显示自定义View
         if (videoView != null) {
             callback?.onCustomViewHidden()

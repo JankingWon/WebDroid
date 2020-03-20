@@ -4,22 +4,23 @@ import android.app.Activity
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.drawable.Drawable
+import android.os.Build
+import android.os.Bundle
 import android.view.*
+import android.webkit.WebView
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import cn.janking.webDroid.R
 import cn.janking.webDroid.adapter.BasicPagerAdapter
 import cn.janking.webDroid.model.Config
-import cn.janking.webDroid.util.FileUtils
-import cn.janking.webDroid.util.OpenUtils
-import cn.janking.webDroid.util.UriUtils
-import cn.janking.webDroid.util.Utils
+import cn.janking.webDroid.util.*
 import cn.janking.webDroid.web.WebBox
 import cn.janking.webDroid.web.WebConfig
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activity_webdroid.*
 import java.io.File
+import kotlin.system.exitProcess
 
 
 /**
@@ -53,6 +54,7 @@ class WebDroidActivity : BaseActivity() {
         override fun instantiateItem(container: ViewGroup, position: Int): Any {
             if (pageMap[position] == null) {
                 pageMap[position] = WebBox(
+                    Utils.getApp(),
                     this@WebDroidActivity,
                     Config.instance.tabUrls[position]
                 )
@@ -96,7 +98,7 @@ class WebDroidActivity : BaseActivity() {
                 System.currentTimeMillis().let {
                     if (it - clickTime < 500) {
                         //刷新
-                        getCurrentWebBox().reload()
+                        getCurrentWebBox()?.reload()
                         //下一次不算
                         clickTime = -1
                     } else {
@@ -118,7 +120,7 @@ class WebDroidActivity : BaseActivity() {
             System.currentTimeMillis().let {
                 if (it - clickTime < 500) {
                     //刷新
-                    getCurrentWebBox().reload()
+                    getCurrentWebBox()?.reload()
                     //下一次不算
                     clickTime = -1
                 } else {
@@ -184,7 +186,7 @@ class WebDroidActivity : BaseActivity() {
         when (viewId) {
             //调用浏览器
             R.id.action_menu_browser -> {
-                OpenUtils.openUrl(getCurrentWebBox().getUrl())
+                OpenUtils.openUrl(getCurrentWebBox()?.getUrl())
             }
             //分享
             R.id.action_menu_share -> {
@@ -200,7 +202,7 @@ class WebDroidActivity : BaseActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == WebConfig.SELECT_FILE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             data?.data?.let {
-                getCurrentWebBox().fileChooserCallback(arrayOf(it))
+                getCurrentWebBox()?.fileChooserCallback(arrayOf(it))
             }
         }
     }
@@ -209,7 +211,23 @@ class WebDroidActivity : BaseActivity() {
      * 处理按键事件
      */
     override fun handleKeyEvent(keyCode: Int, event: KeyEvent?): Boolean {
-        return keyCode == KeyEvent.KEYCODE_BACK && getCurrentWebBox().handleKeyEvent()
+        return keyCode == KeyEvent.KEYCODE_BACK && getCurrentWebBox()?.handleKeyEvent() ?: false
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            // 安卓9.0后不允许多进程使用同一个数据目录，需设置前缀来区分
+            val processName = Utils.getCurrentProcessName()
+            if (AppUtils.getAppPackageName() != processName) {
+                try {
+                    WebView.setDataDirectorySuffix(processName)
+                } catch (exception: IllegalStateException) {
+                    //忽略
+                    exception.printStackTrace()
+                }
+            }
+        }
     }
 
     /**
@@ -247,13 +265,15 @@ class WebDroidActivity : BaseActivity() {
             webDroidItem.webLifeCycle.onDestroy()
         }
         super.onDestroy()
+        //杀死当前进程
+        exitProcess(0)
     }
 
     /**
      * 获取当前tab的webBox
      */
-    private fun getCurrentWebBox(): WebBox {
-        return pageMap[viewPager.currentItem]!!
+    private fun getCurrentWebBox(): WebBox? {
+        return pageMap[viewPager.currentItem]
     }
 
     override fun initToolBarTitle() {

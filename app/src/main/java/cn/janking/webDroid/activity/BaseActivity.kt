@@ -23,6 +23,7 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
      * 布局ID
      */
     abstract val layoutId: Int
+
     /**
      * toolbar右边菜单id
      */

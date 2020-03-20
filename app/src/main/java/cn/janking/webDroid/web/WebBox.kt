@@ -1,6 +1,7 @@
 package cn.janking.webDroid.web
 
 import android.app.Activity
+import android.content.Context
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -23,7 +24,7 @@ import cn.janking.webDroid.web.view.NestedScrollWebView
 /**
  * 包含WebView的布局的封装类
  */
-class WebBox(activity: Activity, homeUrl: String) {
+class WebBox(context: Context, activity: Activity, homeUrl: String) {
     //Webview视频播放器
     val webVideoPlayer: WebVideoPlayer
 
@@ -31,7 +32,7 @@ class WebBox(activity: Activity, homeUrl: String) {
     var filePathChooserCallback: FilePathChooserCallback
 
     //WebView根布局
-    val webLayout: FrameLayout = LayoutInflater.from(activity).inflate(
+    val webLayout: FrameLayout = LayoutInflater.from(context).inflate(
         R.layout.layout_webview, null
     ) as FrameLayout
 
@@ -44,7 +45,7 @@ class WebBox(activity: Activity, homeUrl: String) {
     }
 
     //WebView控件
-    private val webView: WebView = NestedScrollWebView(activity).apply {
+    private val webView: WebView = NestedScrollWebView(context).apply {
         //添加布局属性
         layoutParams = FrameLayout.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,

@@ -9,7 +9,6 @@ import cn.janking.webDroid.R
 import cn.janking.webDroid.constant.PathConstants
 import cn.janking.webDroid.constant.WebConstants
 import cn.janking.webDroid.util.LogUtils
-import cn.janking.webDroid.util.ProcessUtils
 import cn.janking.webDroid.util.Utils
 import cn.janking.webDroid.util.WebUtils
 import cn.janking.webDroid.web.WebConfig
@@ -91,15 +90,6 @@ fun WebView.defaultSetting() {
                 "WebView.defaultSetting()",
                 "UserAgentString : $userAgentString"
             )
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            // 安卓9.0后不允许多进程使用同一个数据目录，需设置前缀来区分,
-            // 参阅 https://blog.csdn.net/lvshuchangyin/article/details/89446629
-            val context = this@defaultSetting.context
-            val processName = ProcessUtils.getCurrentProcessName()
-            if (context.applicationContext.packageName != processName) {
-                WebView.setDataDirectorySuffix(processName)
-            }
         }
     }
 
