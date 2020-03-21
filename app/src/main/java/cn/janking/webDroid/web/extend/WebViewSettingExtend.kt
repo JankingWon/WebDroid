@@ -50,8 +50,7 @@ fun WebView.defaultSetting() {
             mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
             setLayerType(View.LAYER_TYPE_HARDWARE, null)
         }
-        databaseEnabled = true
-        setAppCacheEnabled(true)
+        //自动加载图片
         loadsImagesAutomatically = true
         //禁止多窗口
         setSupportMultipleWindows(false)
@@ -69,12 +68,15 @@ fun WebView.defaultSetting() {
         //支持内容重新布局
         layoutAlgorithm = WebSettings.LayoutAlgorithm.SINGLE_COLUMN
         domStorageEnabled = true
+        //当webview调用requestFocus时为webview设置节点
         setNeedInitialFocus(true)
         //设置编码格式
         defaultTextEncodingName = "utf-8"
+        //默认字体大小
         defaultFontSize = 16
         //设置 WebView 支持的最小字体大小，默认为 8
         minimumFontSize = 12
+        //允许访问位置
         setGeolocationEnabled(true)
         val dir = PathConstants.dirWebCache
         if (WebConfig.DEBUG) {
@@ -83,7 +85,13 @@ fun WebView.defaultSetting() {
                 "dir:" + dir + "   appcache:" + PathConstants.dirWebCache
             )
         }
+        //允许使用数据库
+        databaseEnabled = true
+        //允许使用缓存
+        setAppCacheEnabled(true)
+        //设置缓存路径
         setAppCachePath(dir)
+        //设置用户标识
         userAgentString += WebConstants.USERAGENT_UC
         if (WebConfig.DEBUG) {
             LogUtils.i(

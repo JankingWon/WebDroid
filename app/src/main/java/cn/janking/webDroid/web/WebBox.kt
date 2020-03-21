@@ -52,6 +52,7 @@ class WebBox(context: Context, activity: Activity, homeUrl: String) {
             ViewGroup.LayoutParams.MATCH_PARENT
         )
         webLayout.addView(this)
+        requestFocus()
         //使用默认setting
         defaultSetting()
         //使用默认WebViewClient
