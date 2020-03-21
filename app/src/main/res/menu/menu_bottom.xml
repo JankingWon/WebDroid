@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/tab1"
+        android:title="tab1" />
+    <item
+        android:id="@+id/tab2"
+        android:title="tab2" />
+    <item
+        android:id="@+id/tab3"
+        android:title="tab3" />
+    <item
+        android:id="@+id/tab4"
+        android:title="tab4" />
+
+</menu>

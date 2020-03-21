@@ -59,10 +59,8 @@ class WebLifeCycleImpl internal constructor(private val mWebView: WebView?) :
                 webView.handler.removeCallbacksAndMessages(null)
             }
             webView.removeAllViews()
-            var mViewGroup: ViewGroup? = null
-            if ((webView.parent as ViewGroup).also { mViewGroup = it } != null) {
-                mViewGroup!!.removeView(webView)
-            }
+            val mViewGroup: ViewGroup = webView.parent as ViewGroup
+            mViewGroup.removeView(webView)
             webView.webChromeClient = null
             webView.webViewClient = null
             webView.tag = null

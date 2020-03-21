@@ -9,13 +9,13 @@ import android.os.Bundle
 import android.view.*
 import android.webkit.WebView
 import androidx.viewpager.widget.PagerAdapter
-import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import cn.janking.webDroid.R
 import cn.janking.webDroid.adapter.BasicPagerAdapter
 import cn.janking.webDroid.model.Config
 import cn.janking.webDroid.util.*
 import cn.janking.webDroid.web.WebBox
 import cn.janking.webDroid.web.WebConfig
+import cn.janking.webDroid.web.WebFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activity_webdroid.*
@@ -41,7 +41,7 @@ class WebDroidActivity : BaseActivity() {
     /**
      * 缓存页面
      */
-    private val pageMap: MutableMap<Int, WebBox> = HashMap()
+    private val webBoxMap: MutableMap<Int, WebBox> = HashMap()
 
     /**
      * 滑动页面的适配器
@@ -52,14 +52,14 @@ class WebDroidActivity : BaseActivity() {
         }
 
         override fun instantiateItem(container: ViewGroup, position: Int): Any {
-            if (pageMap[position] == null) {
-                pageMap[position] = WebBox(
+            if (webBoxMap[position] == null) {
+                webBoxMap[position] = WebBox(
                     Utils.getApp(),
                     this@WebDroidActivity,
                     Config.instance.tabUrls[position]
                 )
             }
-            val view = pageMap[position]!!.webLayout
+            val view = webBoxMap[position]!!.webLayout
             //如果已经被回收了，需要手动添加进去
             if (container.indexOfChild(view) == -1) {
                 container.addView(
@@ -83,11 +83,7 @@ class WebDroidActivity : BaseActivity() {
      */
     private val onNavigationItemSelectedListener =
         BottomNavigationView.OnNavigationItemSelectedListener { item ->
-            viewPager.currentItem = item.itemId
-            for (i in 0 until bottomNavigation.menu.size()) {
-                pageMap[i]?.webLifeCycle?.onPause()
-            }
-            pageMap[item.itemId]?.webLifeCycle?.onResume()
+            showFragment(item.order)
             return@OnNavigationItemSelectedListener true
         }
     private val onNavigationItemReselectedListener =
@@ -107,6 +103,23 @@ class WebDroidActivity : BaseActivity() {
                 }
             }
         }
+
+    /**
+     * 用于底部tab栏切换fragment
+     */
+    private fun showFragment(i: Int) {
+        supportFragmentManager.let {
+            it.beginTransaction().apply {
+                it.fragments.forEachIndexed { index, value ->
+                    if (index == i) {
+                        show(value)
+                    } else {
+                        hide(value)
+                    }
+                }
+            }.commitAllowingStateLoss()
+        }
+    }
 
     /**
      * 顶部导航栏的监听器
@@ -133,31 +146,11 @@ class WebDroidActivity : BaseActivity() {
         override fun onTabSelected(tab: TabLayout.Tab?) {
             clickTime = System.currentTimeMillis()
             //此处不能使用getCurrentWebView() 因为 viewPager.currentItem 还未更改
-            pageMap[tab?.position]?.webLifeCycle?.onResume()
+            webBoxMap.get(tab?.position)?.webLifeCycle?.onResume()
         }
 
         override fun onTabUnselected(tab: TabLayout.Tab?) {
-            pageMap[tab?.position]?.webLifeCycle?.onPause()
-        }
-    }
-
-    /**
-     * 适用于底部导航栏的对viewPager的监听器
-     */
-    private val onPageChangeListener: OnPageChangeListener = object : OnPageChangeListener {
-
-        override fun onPageSelected(position: Int) {
-            if (bottomNavigation.selectedItemId != position) {
-                bottomNavigation.selectedItemId = position
-            }
-        }
-
-        override fun onPageScrollStateChanged(state: Int) {}
-        override fun onPageScrolled(
-            position: Int,
-            positionOffset: Float,
-            positionOffsetPixels: Int
-        ) {
+            webBoxMap.get(tab?.position)?.webLifeCycle?.onPause()
         }
     }
 
@@ -224,7 +217,6 @@ class WebDroidActivity : BaseActivity() {
                     WebView.setDataDirectorySuffix(processName)
                 } catch (exception: IllegalStateException) {
                     //忽略
-                    exception.printStackTrace()
                 }
             }
         }
@@ -234,18 +226,26 @@ class WebDroidActivity : BaseActivity() {
      * 调用WebView的生命周期
      */
     override fun onResume() {
-        for (webDroidItem in pageMap.values) {
-            webDroidItem.webLifeCycle.onResume()
+        if(Config.instance.tabStyle == 0){
+            getCurrentWebBox()?.webLifeCycle?.onResume()
+        }else{
+            for (element in webBoxMap){
+                element.value.webLifeCycle.onResume()
+            }
         }
         super.onResume()
     }
 
     /**
-     * 调用WebView的生命周期
+     * 调用WebView的生命周期 @todo bottom tab实现点击tab其他tab onPause
      */
     override fun onPause() {
-        for (webDroidItem in pageMap.values) {
-            webDroidItem.webLifeCycle.onPause()
+        if(Config.instance.tabStyle == 0){
+            getCurrentWebBox()?.webLifeCycle?.onPause()
+        }else{
+            for (element in webBoxMap){
+                element.value.webLifeCycle.onPause()
+            }
         }
         super.onPause()
     }
@@ -261,8 +261,8 @@ class WebDroidActivity : BaseActivity() {
      * 销毁WebView
      */
     override fun onDestroy() {
-        for (webDroidItem in pageMap.values) {
-            webDroidItem.webLifeCycle.onDestroy()
+        for (webBox in webBoxMap.values) {
+            webBox.webLifeCycle.onDestroy()
         }
         super.onDestroy()
         //杀死当前进程
@@ -270,10 +270,27 @@ class WebDroidActivity : BaseActivity() {
     }
 
     /**
+     * 获取当前页面的index
+     */
+    private fun getCurrentIndex(): Int {
+        return when {
+            Config.instance.tabCount <= 1 -> {
+                0
+            }
+            Config.instance.tabStyle == 0 -> {
+                viewPager.currentItem
+            }
+            else -> {
+                bottomNavigation.selectedItemId
+            }
+        }
+    }
+
+    /**
      * 获取当前tab的webBox
      */
     private fun getCurrentWebBox(): WebBox? {
-        return pageMap[viewPager.currentItem]
+        return webBoxMap[getCurrentIndex()]
     }
 
     override fun initToolBarTitle() {
@@ -285,7 +302,7 @@ class WebDroidActivity : BaseActivity() {
      */
     override fun initViews() {
         super.initViews()
-        viewPager.adapter = pagerAdapter
+        //不显示tab栏
         if (Config.instance.tabCount <= 1) {
             topNavigation.visibility = View.GONE
             bottomNavigation.visibility = View.GONE
@@ -295,17 +312,22 @@ class WebDroidActivity : BaseActivity() {
             //如果是设置顶部tab
             if (Config.instance.tabStyle == 0) {
                 topNavigation.visibility = View.VISIBLE
+                viewPager.visibility = View.VISIBLE
                 bottomNavigation.visibility = View.GONE
+                fragmentContainer.visibility = View.GONE
+                viewPager.adapter = pagerAdapter
                 topNavigation.setupWithViewPager(viewPager)
                 topNavigation.addOnTabSelectedListener(onTabSelectedListener)
             } else {
                 //设置底部tab
                 topNavigation.visibility = View.GONE
+                viewPager.visibility = View.GONE
                 bottomNavigation.visibility = View.VISIBLE
-                viewPager.addOnPageChangeListener(onPageChangeListener)
+                fragmentContainer.visibility = View.VISIBLE
                 //添加Tab
                 for (i in 0 until Config.instance.tabCount) {
-                    bottomNavigation.menu.add(Menu.NONE, i, i, Config.instance.tabTitles[i])
+                    //添加menu Item，其id设置为自定义
+                    bottomNavigation.menu.add(Menu.NONE, 10000 + i, i, Config.instance.tabTitles[i])
                     //添加Icon
                     bottomNavigation.menu.getItem(i).icon = Utils.getApp().resources.run {
                         if (Config.instance.preview && FileUtils.isFileExists(Config.instance.tabIcons[i])) {
@@ -325,6 +347,17 @@ class WebDroidActivity : BaseActivity() {
                             )
                         }
                     }
+                    //添加视图
+                    supportFragmentManager.beginTransaction().run {
+                        webBoxMap[i] = WebBox(
+                            Utils.getApp(),
+                            this@WebDroidActivity,
+                            Config.instance.tabUrls[i]
+                        )
+                        supportFragmentManager.beginTransaction().apply {
+                            add(R.id.fragmentContainer, WebFragment(webBoxMap[i]!!))
+                        }.commitAllowingStateLoss()
+                    }
                 }
                 //添加监听器
                 bottomNavigation.setOnNavigationItemSelectedListener(
@@ -336,7 +369,7 @@ class WebDroidActivity : BaseActivity() {
                 //如果是底部tab，则需要添加底部padding，防止内容遮挡
                 //注意：这个padding是toolbar的高度，而不是底部tab的高度，因为协调布局会隐藏顶部toolbar
                 toolbar.post {
-                    viewPager.setPadding(
+                    fragmentContainer.setPadding(
                         viewPager.paddingLeft,
                         viewPager.paddingTop,
                         viewPager.paddingRight,
