@@ -7,8 +7,9 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.LinearLayout
+import android.widget.Spinner
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import cn.janking.webDroid.R
 import cn.janking.webDroid.model.Config
 import cn.janking.webDroid.util.*
@@ -28,7 +29,7 @@ class EditAppLayout(activity: Activity) : EditLayout() {
      * 视图
      */
     override val contentView = LayoutInflater.from(activity)
-        .inflate(R.layout.layout_edit_app, null) as LinearLayout
+        .inflate(R.layout.layout_edit_app, null) as ConstraintLayout
 
     /**
      * app包名
@@ -81,6 +82,11 @@ class EditAppLayout(activity: Activity) : EditLayout() {
         setText(AppUtils.getAppVersionCode().toString())
     }
 
+    /**
+     * 是否允许打开其他应用
+     */
+    val allowOpenApp = contentView.findViewById<Spinner>(R.id.allowOpenApp)
+
     init {
         loadLastConfig()
     }
@@ -117,6 +123,7 @@ class EditAppLayout(activity: Activity) : EditLayout() {
             it.appPackage = appPackage.text.toString()
             it.versionName = versionName.text.toString()
             it.versionCode = versionCode.text.toString().toInt()
+            it.allowOpenApp = allowOpenApp.selectedItemPosition
         }
     }
 

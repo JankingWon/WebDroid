@@ -39,7 +39,6 @@ object BuildUtils {
             val startTime = System.currentTimeMillis()
 
             override fun doInBackground() {
-                //设置超时
                 EventBus.getDefault().register(this)
                 ConsoleUtils.info(console, "正在写入配置...")
                 //写入配置

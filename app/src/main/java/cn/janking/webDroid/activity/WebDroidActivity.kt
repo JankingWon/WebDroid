@@ -20,7 +20,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.activity_webdroid.*
 import java.io.File
-import kotlin.system.exitProcess
 
 
 /**
@@ -209,6 +208,7 @@ class WebDroidActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        //设置数据目录
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             // 安卓9.0后不允许多进程使用同一个数据目录，需设置前缀来区分
             val processName = Utils.getCurrentProcessName()
@@ -220,6 +220,8 @@ class WebDroidActivity : BaseActivity() {
                 }
             }
         }
+        //设置WebConfig
+        WebConfig.handleOpenUrl = Config.instance.allowOpenApp
     }
 
     /**
@@ -265,8 +267,6 @@ class WebDroidActivity : BaseActivity() {
             webBox.webLifeCycle.onDestroy()
         }
         super.onDestroy()
-        //杀死当前进程
-        exitProcess(0)
     }
 
     /**

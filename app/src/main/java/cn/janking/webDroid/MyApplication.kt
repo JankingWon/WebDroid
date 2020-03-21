@@ -53,7 +53,7 @@ class MyApplication : Application() {
                 //复制资源
                 copyAssets("template")
                 copyAssets("key")
-                //解压apk，此项如果在debug模式有问题
+                //解压apk
                 ZipUtils.unzipFile(
                     File(Utils.getApp().packageResourcePath),
                     FileUtils.getExistDir(PathConstants.dirUnzippedApk)

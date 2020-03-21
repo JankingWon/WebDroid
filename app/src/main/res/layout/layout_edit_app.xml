@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/layoutProperty"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,16 +10,20 @@
     android:paddingEnd="10dp">
 
     <TextView
+        android:id="@+id/creatorGroup1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="基本配置"
-        android:textColor="?attr/colorPrimary" />
+        android:textColor="?attr/colorPrimary"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/appNameLayout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/creatorGroup1">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/appName"
@@ -31,10 +36,12 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/appPackageLayout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/appNameLayout">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/appPackage"
@@ -47,11 +54,13 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
+        android:id="@+id/creatorGroup2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="可选配置"
-        android:textColor="?attr/colorPrimary" />
+        android:textColor="?attr/colorPrimary"
+        app:layout_constraintTop_toBottomOf="@id/appPackageLayout" />
 
     <ImageView
         android:id="@+id/appIcon"
@@ -60,45 +69,93 @@
         android:layout_marginTop="10dp"
         android:background="?android:attr/selectableItemBackground"
         android:scaleType="fitXY"
-        android:src="@drawable/ic_launcher" />
+        android:src="@drawable/ic_launcher"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/creatorGroup2" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/versionNameHint"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:text="APP版本名："
+        android:textColor="@color/colorOnSecondary"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@id/versionCodeHint"
+        app:layout_constraintStart_toEndOf="@id/appIcon"
+        app:layout_constraintTop_toTopOf="@id/appIcon" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/versionName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="APP版本名"
-            android:maxLength="20"
-            android:maxLines="1"
-            android:singleLine="true" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
+    <EditText
+        android:id="@+id/versionName"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
+        android:gravity="center_horizontal"
+        android:hint="APP版本名："
+        android:maxLength="20"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/versionNameHint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/versionNameHint"
+        app:layout_constraintTop_toTopOf="@id/versionNameHint" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/versionCode"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="APP版本码"
-            android:inputType="number"
-            android:maxLength="5"
-            android:maxLines="1"
-            android:singleLine="true" />
-    </com.google.android.material.textfield.TextInputLayout>
+    <TextView
+        android:id="@+id/versionCodeHint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:text="APP版本码："
+        android:textColor="@color/colorOnSecondary"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/appIcon"
+        app:layout_constraintStart_toEndOf="@id/appIcon"
+        app:layout_constraintTop_toBottomOf="@id/versionNameHint" />
+
+    <EditText
+        android:id="@+id/versionCode"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:hint="APP版本码"
+        android:inputType="number"
+        android:maxLength="5"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/versionCodeHint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/versionCodeHint"
+        app:layout_constraintTop_toTopOf="@id/versionCodeHint" />
+
+    <TextView
+        android:id="@+id/allowOpenAppHint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="是否允许跳转应用"
+        android:textColor="@color/colorOnSecondary"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appIcon" />
+
+    <Spinner
+        android:id="@+id/allowOpenApp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:entries="@array/allow_open_app"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/allowOpenAppHint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/allowOpenAppHint" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="颜色配置"
-        android:textColor="?attr/colorPrimary" />
-</LinearLayout>
+        android:textColor="?attr/colorPrimary"
+        app:layout_constraintTop_toBottomOf="@id/allowOpenAppHint" />
+</androidx.constraintlayout.widget.ConstraintLayout>

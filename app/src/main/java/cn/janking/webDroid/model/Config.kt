@@ -2,11 +2,12 @@ package cn.janking.webDroid.model
 
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
+import java.io.Serializable
 
 /**
  * 用于webDroid的配置项
  */
-class Config private constructor() {
+class Config private constructor() : Serializable {
     /**
      * 是否是预览模式
      */
@@ -65,6 +66,14 @@ class Config private constructor() {
      * 1 : bottom
      */
     var tabStyle = 1
+
+    /**
+     * 是否允许打开第三方应用
+     * 0 : not allow
+     * 1 : ask user
+     * 2 : always allow
+     */
+    var allowOpenApp = 0
 
     companion object {
         private val gson = Gson()

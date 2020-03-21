@@ -6,7 +6,7 @@
     <color name="colorAccent">#FFC400</color>
     <color name="colorOnPrimary">#FFFFFF</color>
     <color name="colorSecondary">#FFFFFF</color>
-    <color name="colorOnSecondary">#FF000000</color>
+    <color name="colorOnSecondary">#dd000000</color>
     <color name="colorBackground">#FFFFFF</color>
     <color name="colorSurface">#FFFFFF</color>
 

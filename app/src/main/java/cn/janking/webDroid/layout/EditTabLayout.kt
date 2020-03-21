@@ -62,7 +62,7 @@ class EditTabLayout(activity: Activity) : EditLayout() {
                 Config.instance.tabStyle = 0
             } else if (checkedId == R.id.itemTabStyleBottom) {
                 for (i in 0 until tabList.childCount) {
-                    tabList[i].findViewById<ImageButton>(R.id.itemTabIcon).visibility = View.VISIBLE
+                    tabList[i].findViewById<ImageView>(R.id.itemTabIcon).visibility = View.VISIBLE
                 }
                 //即时更新config
                 Config.instance.tabStyle = 1
