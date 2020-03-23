@@ -8,4 +8,11 @@
     android:fitsSystemWindows="true"
     android:background="?attr/colorSecondary"
     app:headerLayout="@layout/layout_nav_header"
-    app:menu="@menu/drawer_main" />
+    app:menu="@menu/drawer_main" >
+    <TextView
+        android:id="@+id/drawerVersion"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</com.google.android.material.navigation.NavigationView>
