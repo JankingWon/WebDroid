@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.net.Uri
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import cn.janking.webDroid.R
@@ -114,11 +115,14 @@ object OpenUtils {
         } ?: false
     }
 
+    /**
+     * 弹出全屏显示图片的对话框
+     */
     fun showFullImageDialog(imageFile: File): Boolean {
         return if (FileUtils.isFileExists(imageFile)) {
             PermissionHelper.checkStorage(Runnable {
                 Dialog(ActivityUtils.getTopActivity(), R.style.DialogFullscreen).run {
-                    setContentView(R.layout.layout_dialog_fullscreen)
+                    setContentView(R.layout.layout_image_dialog_fullscreen)
                     val imageView: ImageView = findViewById(R.id.img_full_screen_dialog)
                     //使用Glide加载图片
                     Glide.with(ActivityUtils.getTopActivity()).load(imageFile).into(imageView)
@@ -127,6 +131,25 @@ object OpenUtils {
                     show()
                 }
             })
+            true
+        } else {
+            false
+        }
+    }
+
+    /**
+     * 弹出全屏显示文字
+     */
+    fun showFullTextDialog(text: String): Boolean {
+        return if (text.isNotBlank()) {
+            Dialog(ActivityUtils.getTopActivity(), R.style.DialogFullscreen).run {
+                setContentView(R.layout.layout_text_dialog_fullscreen)
+                val textView: TextView = findViewById(R.id.text_full_screen_dialog)
+                val toolBar: Toolbar = findViewById(R.id.toolbar_full_screen_dialog)
+                toolBar.setNavigationOnClickListener { dismiss() }
+                textView.text = text
+                show()
+            }
             true
         } else {
             false

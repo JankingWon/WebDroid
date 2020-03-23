@@ -152,10 +152,22 @@
         app:layout_constraintTop_toTopOf="@id/allowOpenAppHint" />
 
     <TextView
+        android:id="@+id/aboutHint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="颜色配置"
+        android:text="关于"
         android:textColor="?attr/colorPrimary"
         app:layout_constraintTop_toBottomOf="@id/allowOpenAppHint" />
+
+    <EditText
+        android:id="@+id/aboutText"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="10dp"
+        android:padding="10dp"
+        android:background="#eee"
+        android:gravity="start|top"
+        android:scrollbars="vertical"
+        app:layout_constraintTop_toBottomOf="@id/aboutHint" />
 </androidx.constraintlayout.widget.ConstraintLayout>

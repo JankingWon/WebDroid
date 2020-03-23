@@ -10,7 +10,8 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import cn.janking.webDroid.R
-import cn.janking.webDroid.util.AppUtils
+import cn.janking.webDroid.model.Config
+import cn.janking.webDroid.util.OpenUtils
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_creator.*
 import kotlinx.android.synthetic.main.layout_nav.*
@@ -105,7 +106,7 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
 
             }
             R.id.nav_about -> {
-
+                OpenUtils.showFullTextDialog(Config.instance.aboutText)
             }
         }
     }
@@ -114,7 +115,7 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
      * 对view初始化
      */
     protected open fun initViews() {
-        drawerVersion.text = "版本：${AppUtils.getAppVersionName()}"
+        drawerVersion.text = "版本：${Config.instance.versionName}"
     }
 
     /**

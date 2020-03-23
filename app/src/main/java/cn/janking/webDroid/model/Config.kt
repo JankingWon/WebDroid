@@ -75,6 +75,8 @@ class Config private constructor() : Serializable {
      */
     var allowOpenApp = 0
 
+    var aboutText = ""
+
     companion object {
         private val gson = Gson()
 

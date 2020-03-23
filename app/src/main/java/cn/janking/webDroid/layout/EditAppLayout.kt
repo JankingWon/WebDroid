@@ -87,6 +87,11 @@ class EditAppLayout(activity: Activity) : EditLayout() {
      */
     val allowOpenApp = contentView.findViewById<Spinner>(R.id.allowOpenApp)
 
+    /**
+     * 关于的文字
+     */
+    val aboutText = contentView.findViewById<EditText>(R.id.aboutText)
+
     init {
         loadLastConfig()
     }
@@ -124,6 +129,7 @@ class EditAppLayout(activity: Activity) : EditLayout() {
             it.versionName = versionName.text.toString()
             it.versionCode = versionCode.text.toString().toInt()
             it.allowOpenApp = allowOpenApp.selectedItemPosition
+            it.aboutText = aboutText.text.toString()
         }
     }
 
