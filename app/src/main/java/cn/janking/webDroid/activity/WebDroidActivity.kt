@@ -177,6 +177,10 @@ class WebDroidActivity : BaseActivity() {
     override fun onClickViewId(viewId: Int) {
         super.onClickViewId(viewId)
         when (viewId) {
+            //关于
+            R.id.nav_about -> {
+                OpenUtils.showFullTextDialog(Config.instance.aboutText)
+            }
             //调用浏览器
             R.id.action_menu_browser -> {
                 OpenUtils.openUrl(getCurrentWebBox()?.getUrl())

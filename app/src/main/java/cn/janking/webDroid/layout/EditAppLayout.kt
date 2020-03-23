@@ -105,6 +105,10 @@ class EditAppLayout(activity: Activity) : EditLayout() {
         //设置默认icon
         appIcon.setImageResource(R.drawable.ic_launcher)
         loadAppIcon()
+        versionCode.setText(Config.instance.versionCode.toString())
+        versionName.setText(Config.instance.versionName)
+        allowOpenApp.setSelection(Config.instance.allowOpenApp)
+        aboutText.setText(Config.instance.aboutText)
     }
 
     /**

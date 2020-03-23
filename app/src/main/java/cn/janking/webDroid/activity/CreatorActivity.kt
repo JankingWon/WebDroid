@@ -134,9 +134,13 @@ open class CreatorActivity : BaseActivity() {
     override fun onClickViewId(viewId: Int) {
         super.onClickViewId(viewId)
         when (viewId) {
-            //关于
+            //toolbar关于
             R.id.action_menu_about -> {
                 OpenUtils.openUrl("https://github.com/JankingWon/WebDroid")
+            }
+            //侧边关于
+            R.id.nav_about -> {
+                OpenUtils.showFullTextDialog("欢迎使用！")
             }
             //预览按钮
             R.id.preview -> {

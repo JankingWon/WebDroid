@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import cn.janking.webDroid.R
 import cn.janking.webDroid.model.Config
-import cn.janking.webDroid.util.OpenUtils
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_creator.*
 import kotlinx.android.synthetic.main.layout_nav.*
@@ -104,9 +103,6 @@ abstract class BaseActivity : AppCompatActivity(), NavigationView.OnNavigationIt
             /*侧边导航栏菜单*/
             R.id.nav_settings -> {
 
-            }
-            R.id.nav_about -> {
-                OpenUtils.showFullTextDialog(Config.instance.aboutText)
             }
         }
     }
