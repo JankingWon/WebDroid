@@ -2,6 +2,7 @@ package cn.janking.webDroid.web.extend
 
 import android.app.AlertDialog
 import android.webkit.WebView
+import cn.janking.webDroid.util.ActivityUtils
 import cn.janking.webDroid.util.LogUtils
 import cn.janking.webDroid.util.OpenUtils
 
@@ -22,7 +23,7 @@ fun WebView.defaultOnLongClickListener(){
                 // 获取图片的路径
                 val imageUrl = result.extra
                 // 使用Dialog弹出菜单
-                AlertDialog.Builder(getContext())
+                AlertDialog.Builder(ActivityUtils.getTopActivity())
                     .setTitle("图片选项")
                     .setItems(arrayOf("查看图片", "复制链接", "保存图片", "分享图片")) { _, which ->
                         when (which) {

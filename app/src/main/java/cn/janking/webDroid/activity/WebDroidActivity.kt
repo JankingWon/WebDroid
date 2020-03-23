@@ -82,7 +82,7 @@ class WebDroidActivity : BaseActivity() {
      */
     private val onNavigationItemSelectedListener =
         BottomNavigationView.OnNavigationItemSelectedListener { item ->
-            showFragment(item.order)
+            showFragment(bottomNavigation.childCount - item.order)
             return@OnNavigationItemSelectedListener true
         }
     private val onNavigationItemReselectedListener =
@@ -104,6 +104,7 @@ class WebDroidActivity : BaseActivity() {
         }
 
     /**
+     * @param i 从左往右第几个TAB
      * 用于底部tab栏切换fragment
      */
     private fun showFragment(i: Int) {
@@ -228,10 +229,10 @@ class WebDroidActivity : BaseActivity() {
      * 调用WebView的生命周期
      */
     override fun onResume() {
-        if(Config.instance.tabStyle == 0){
+        if (Config.instance.tabStyle == 0) {
             getCurrentWebBox()?.webLifeCycle?.onResume()
-        }else{
-            for (element in webBoxMap){
+        } else {
+            for (element in webBoxMap) {
                 element.value.webLifeCycle.onResume()
             }
         }
@@ -242,10 +243,10 @@ class WebDroidActivity : BaseActivity() {
      * 调用WebView的生命周期 @todo bottom tab实现点击tab其他tab onPause
      */
     override fun onPause() {
-        if(Config.instance.tabStyle == 0){
+        if (Config.instance.tabStyle == 0) {
             getCurrentWebBox()?.webLifeCycle?.onPause()
-        }else{
-            for (element in webBoxMap){
+        } else {
+            for (element in webBoxMap) {
                 element.value.webLifeCycle.onPause()
             }
         }
@@ -270,6 +271,7 @@ class WebDroidActivity : BaseActivity() {
     }
 
     /**
+     * @return 从左往右数第几个tab
      * 获取当前页面的index
      */
     private fun getCurrentIndex(): Int {
@@ -281,7 +283,7 @@ class WebDroidActivity : BaseActivity() {
                 viewPager.currentItem
             }
             else -> {
-                bottomNavigation.selectedItemId
+                bottomNavigation.selectedItemId % 10000
             }
         }
     }
@@ -347,18 +349,20 @@ class WebDroidActivity : BaseActivity() {
                             )
                         }
                     }
-                    //添加视图
-                    supportFragmentManager.beginTransaction().run {
+                }
+                //添加视图
+                supportFragmentManager.beginTransaction().apply {
+                    //逆序添加，使第一个页面首先显示
+                    for (i in Config.instance.tabCount - 1 downTo 0 ){
                         webBoxMap[i] = WebBox(
                             Utils.getApp(),
                             this@WebDroidActivity,
                             Config.instance.tabUrls[i]
                         )
-                        supportFragmentManager.beginTransaction().apply {
-                            add(R.id.fragmentContainer, WebFragment(webBoxMap[i]!!))
-                        }.commitAllowingStateLoss()
+                        add(R.id.fragmentContainer, WebFragment(webBoxMap[i]!!))
                     }
-                }
+                }.commitAllowingStateLoss()
+
                 //添加监听器
                 bottomNavigation.setOnNavigationItemSelectedListener(
                     onNavigationItemSelectedListener
@@ -376,12 +380,6 @@ class WebDroidActivity : BaseActivity() {
                         toolbar.measuredHeight
                     )
                 }
-                //读取上次tab位置的配置
-//                SPUtils.getInstance().getInt(Utils.getString(R.string.key_last_tab)).also {
-//                    if (it in 0 until Config.instance.tabCount) {
-//                        viewPager.currentItem = it
-//                    }
-//                }
             }
         }
     }
