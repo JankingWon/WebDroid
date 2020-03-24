@@ -91,15 +91,6 @@ class EditTabLayout(activity: Activity) : EditLayout() {
     }
 
     override fun generateConfig() {
-        Config.instance.let {
-            it.tabTitles = tabListAdapter.tabTitleItems.map { item ->
-                item.toString()
-            }
-            it.tabUrls = tabListAdapter.tabUrlItems.map { item ->
-                item.toString()
-            }
-            it.tabIcons = tabListAdapter.tabIconItems
-            it.tabCount = it.tabTitles.size.coerceAtMost(it.tabUrls.size)
-        }
+        tabListAdapter.generateConfig(tabList.layoutManager)
     }
 }

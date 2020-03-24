@@ -2,8 +2,6 @@ package cn.janking.webDroid.adapter
 
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +10,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import cn.janking.webDroid.R
+import cn.janking.webDroid.model.Config
 import cn.janking.webDroid.util.*
 import java.io.File
 import java.util.*
@@ -86,44 +85,8 @@ class TabListRVAdapter :
         if (holder is TabItemViewHolder) {
             //tab标题
             holder.tabItemTitle.setText(tabTitleItems[position])
-            holder.tabItemTitle.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {}
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    s?.let {
-                        if (tabTitleItems.size > position) {
-                            tabTitleItems[position] = it
-                        }
-                    }
-                }
-            })
             //tab URL
             holder.tabItemUrl.setText(tabUrlItems[position])
-            holder.tabItemUrl.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {}
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    s?.let {
-                        if (tabUrlItems.size > position) {
-                            tabUrlItems[position] = it
-                        }
-                    }
-                }
-            })
             //tab ICON
             //设置默认icon
             holder.tabItemIcon.setImageResource(R.drawable.ic_tab_0)
@@ -155,6 +118,35 @@ class TabListRVAdapter :
             holder.tabItemIcon.setOnLongClickListener {
                 return@setOnLongClickListener OpenUtils.showFullImageDialogWithFile(tabIconItems[position])
             }
+        }
+    }
+
+    /**
+     * 写入config
+     */
+    fun generateConfig(layoutManager: RecyclerView.LayoutManager?) {
+        if(layoutManager == null){
+            return
+        }
+        tabTitleItems.clear()
+        tabUrlItems.clear()
+        for (i in 0 until layoutManager.childCount) {
+            layoutManager.getChildAt(i)?.let {
+                TabItemViewHolder(it).apply {
+                    tabTitleItems.add(tabItemTitle.text)
+                    tabUrlItems.add(tabItemUrl.text)
+                }
+            }
+        }
+        Config.instance.let {
+            it.tabTitles = tabTitleItems.map { item ->
+                item.toString()
+            }
+            it.tabUrls = tabUrlItems.map { item ->
+                item.toString()
+            }
+            it.tabIcons = tabIconItems
+            it.tabCount = it.tabTitles.size.coerceAtMost(it.tabUrls.size)
         }
     }
 
