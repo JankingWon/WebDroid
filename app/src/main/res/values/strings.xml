@@ -12,7 +12,7 @@
     <!--Message-->
 
 
-    <string name="msg_share">来跟我一起使用吧！</string>
+    <string name="msg_share">我正在使用 %s（Created by https://github.com/JankingWon/WebDroid.）</string>
     <string name="msg_share_title">分享到</string>
     <string name="msg_note">提示</string>
     <string name="msg_open_app">您需要离开%s前往%s吗？</string>

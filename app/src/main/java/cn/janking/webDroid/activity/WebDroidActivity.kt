@@ -187,7 +187,7 @@ class WebDroidActivity : BaseActivity() {
             }
             //分享
             R.id.action_menu_share -> {
-                OpenUtils.shareMessage(Utils.getString(R.string.msg_share))
+                OpenUtils.shareMessage(Utils.getString(R.string.msg_share, Config.instance.appName))
             }
         }
     }
@@ -357,7 +357,7 @@ class WebDroidActivity : BaseActivity() {
                 //添加视图
                 supportFragmentManager.beginTransaction().apply {
                     //逆序添加，使第一个页面首先显示
-                    for (i in Config.instance.tabCount - 1 downTo 0 ){
+                    for (i in Config.instance.tabCount - 1 downTo 0) {
                         webBoxMap[i] = WebBox(
                             Utils.getApp(),
                             this@WebDroidActivity,
