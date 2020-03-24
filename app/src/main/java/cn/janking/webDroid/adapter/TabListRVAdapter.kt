@@ -1,5 +1,6 @@
 package cn.janking.webDroid.adapter
 
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.text.Editable
 import android.text.TextWatcher
@@ -38,7 +39,7 @@ class TabListRVAdapter :
     /**
      * icon列表，表示文件位置
      */
-    val tabIconItems: MutableList<String?> = ArrayList()
+    val tabIconItems: MutableList<String> = ArrayList()
 
     /**
      * 普通类型的item
@@ -46,10 +47,10 @@ class TabListRVAdapter :
     private val typeNormal = 1
 
     fun addTabItem() {
-        addTabItem("", "", null)
+        addTabItem("", "", "")
     }
 
-    fun addTabItem(title: String, url: String, icon: String?) {
+    fun addTabItem(title: String, url: String, icon: String) {
         val tabCount = tabTitleItems.size
         if (tabCount > 4) {
             Toast.makeText(Utils.getApp(), "最多只能添加5个tab", Toast.LENGTH_SHORT).show()
@@ -127,10 +128,22 @@ class TabListRVAdapter :
             //设置默认icon
             holder.tabItemIcon.setImageResource(R.drawable.ic_tab_0)
             //加载config的icon
-            tabIconItems[position]?.let {
+            tabIconItems[position].let {
                 File(it).run {
+                    //试试文件
                     if (FileUtils.isFileExists(this)) {
                         holder.tabItemIcon.setImageURI(UriUtils.file2Uri(this))
+                    } else {
+                        //试试assets
+                        try {
+                            holder.tabItemIcon.setImageBitmap(
+                                BitmapFactory.decodeStream(
+                                    Utils.getApp().assets.open("template/$it")
+                                )
+                            )
+                        } catch (ignore: Exception) {
+                            //ignore
+                        }
                     }
                 }
             }
@@ -183,7 +196,7 @@ class TabListRVAdapter :
                 return FileUtils.copyUriToTempFile(uri).toString()
             }
 
-            override fun onSuccess(result: String?) {
+            override fun onSuccess(result: String) {
                 tabIconItems[position] = result
                 Utils.runOnUiThread {
                     notifyItemChanged(position)

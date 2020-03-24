@@ -141,7 +141,20 @@ open class CreatorActivity : BaseActivity() {
             }
             //toolbar 示例
             R.id.action_menu_demo -> {
-                Config.readFromString(FileUtils.getFileContent(assets.open(PathConstants.CONFIG_FILE)))
+                //读取demo json
+                Config.readFromString(
+                    FileUtils.getFileContent(
+                        assets.open(
+                            PathConstants.CONFIG_DEMO
+                        )
+                    )
+                )
+                //加上icon路径前缀
+                Config.instance.appIcon = PathConstants.getSubTemplate(Config.instance.appIcon)
+                for (i in 0 until Config.instance.tabIcons.size) {
+                    Config.instance.tabIcons[i] =
+                        PathConstants.getSubTemplate(Config.instance.tabIcons[i])
+                }
                 editAppLayout?.loadConfig()
                 editTabLayout?.loadConfig()
             }

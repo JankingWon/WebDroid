@@ -52,7 +52,7 @@ class Config private constructor() : Serializable {
     /**
      * tab的icon集合，表示文件位置
      */
-    var tabIcons: List<String> = List(0) { "" }
+    var tabIcons: MutableList<String> = ArrayList(List(0) { "" })
 
     /**
      * tab的个数

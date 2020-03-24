@@ -387,7 +387,7 @@ object FileUtils {
             val buf = ByteArray(1024)
             var length = 0
             //循环读取文件内容，输入流中将最多buf.length个字节的数据读入一个buf数组中,返回类型是读取到的字节数。
-//当文件读取到结尾时返回 -1,循环结束。
+            //当文件读取到结尾时返回 -1,循环结束。
             while (inputStream.read(buf).also { length = it } != -1) {
                 stringBuilder.append(String(buf, 0, length))
             }

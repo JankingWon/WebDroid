@@ -1,6 +1,7 @@
 package cn.janking.webDroid.layout
 
 import android.app.Activity
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.text.Editable
 import android.text.TextWatcher
@@ -116,9 +117,20 @@ class EditAppLayout(activity: Activity) : EditLayout() {
      */
     fun loadAppIcon() {
         //加载config的icon
-        File(Config.instance.appIcon).run {
-            if (FileUtils.isFileExists(this)) {
-                appIcon.setImageURI(UriUtils.file2Uri(this))
+        val imageFile = File(Config.instance.appIcon)
+        if (FileUtils.isFileExists(imageFile)) {
+            //先试试文件
+            appIcon.setImageURI(UriUtils.file2Uri(imageFile))
+        } else {
+            //再试试asset
+            try {
+                appIcon.setImageBitmap(
+                    BitmapFactory.decodeStream(
+                        Utils.getApp().assets.open("template/" + Config.instance.appIcon)
+                    )
+                )
+            } catch (ignore: Exception) {
+                //ignore
             }
         }
     }

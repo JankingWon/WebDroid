@@ -98,9 +98,7 @@ class EditTabLayout(activity: Activity) : EditLayout() {
             it.tabUrls = tabListAdapter.tabUrlItems.map { item ->
                 item.toString()
             }
-            it.tabIcons = tabListAdapter.tabIconItems.map { item ->
-                item.toString()
-            }
+            it.tabIcons = tabListAdapter.tabIconItems
             it.tabCount = it.tabTitles.size.coerceAtMost(it.tabUrls.size)
         }
     }

@@ -1,14 +1,14 @@
 {
   "aboutText": "这是使用WebDroid创建出来的App\n欢迎使用！",
   "allowOpenApp": 2,
-  "appIcon": "",
+  "appIcon": "ic_demo_app.png",
   "appName": "Test",
   "appPackage": "cn.janking.test",
   "tabIcons": [
-    "null",
-    "null",
-    "null",
-    "null"
+    "ic_search.png",
+    "ic_news.png",
+    "ic_music.png",
+    "ic_picture.png"
   ],
   "tabStyle": 1,
   "tabTitles": [

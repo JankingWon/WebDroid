@@ -11,6 +11,7 @@ import java.io.File
  */
 object PathConstants {
     const val CONFIG_FILE = "config.json"
+    const val CONFIG_DEMO = "template/config.json"
     const val MANIFEST_FILE = "AndroidManifest.xml"
     const val AUTHOR_AVATAR = "img_author_avatar.jpg"
     const val APP_ICON = "ic_launcher.png"
