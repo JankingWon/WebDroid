@@ -312,6 +312,16 @@ class WebDroidActivity : BaseActivity() {
         if (Config.instance.tabCount <= 1) {
             topNavigation.visibility = View.GONE
             bottomNavigation.visibility = View.GONE
+            viewPager.visibility = View.GONE
+            fragmentContainer.visibility = View.VISIBLE
+            webBoxMap[0] = WebBox(
+                Utils.getApp(),
+                this@WebDroidActivity,
+                Config.instance.tabUrls[0]
+            )
+            supportFragmentManager.beginTransaction()
+                .add(R.id.fragmentContainer, WebFragment(webBoxMap[0]!!))
+                .commitAllowingStateLoss()
         } else {
             //防止频繁回收
             viewPager.offscreenPageLimit = Config.instance.tabCount - 1
