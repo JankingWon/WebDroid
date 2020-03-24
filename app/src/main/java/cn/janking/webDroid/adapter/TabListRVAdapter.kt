@@ -61,6 +61,14 @@ class TabListRVAdapter :
         notifyItemInserted(tabCount)
     }
 
+    fun clearAllTab() {
+        val count = tabTitleItems.size
+        tabTitleItems.clear()
+        tabUrlItems.clear()
+        tabIconItems.clear()
+        notifyItemRangeRemoved(0, count)
+    }
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -132,7 +140,7 @@ class TabListRVAdapter :
             }
             //长按预览icon
             holder.tabItemIcon.setOnLongClickListener {
-                return@setOnLongClickListener OpenUtils.showFullImageDialog(tabIconItems[position])
+                return@setOnLongClickListener OpenUtils.showFullImageDialogWithFile(tabIconItems[position])
             }
         }
     }

@@ -32,10 +32,10 @@ class Config private constructor() : Serializable {
     /**
      * 版本名称
      */
-    var versionName = ""
+    var versionName = "1.0.0"
 
     /**
-     * 版本名称
+     * 版本代码
      */
     var versionCode = 1
 

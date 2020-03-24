@@ -82,7 +82,7 @@ class WebDroidActivity : BaseActivity() {
      */
     private val onNavigationItemSelectedListener =
         BottomNavigationView.OnNavigationItemSelectedListener { item ->
-            showFragment(bottomNavigation.childCount - item.order)
+            showFragment(bottomNavigation.menu.size() - 1 - item.order)
             return@OnNavigationItemSelectedListener true
         }
     private val onNavigationItemReselectedListener =

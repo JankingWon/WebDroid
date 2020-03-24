@@ -3,6 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/action_menu_demo"
+        android:orderInCategory="3"
+        android:title="示例"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_menu_clear"
+        android:orderInCategory="3"
+        android:title="清除"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_menu_about"
         android:orderInCategory="3"
         android:title="关于"

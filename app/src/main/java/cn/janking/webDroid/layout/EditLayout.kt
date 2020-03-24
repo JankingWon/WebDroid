@@ -8,7 +8,7 @@ import android.view.View
 abstract class EditLayout {
     abstract val contentView : View
 
-    abstract fun loadLastConfig()
+    abstract fun loadConfig()
 
     abstract fun generateConfig()
 }

@@ -10,11 +10,13 @@ import java.io.File
  * 路径帮助类
  */
 object PathConstants {
-    const val DEFAULT_CONFIG_FILE = "config.json"
-    const val DEFAULT_MANIFEST_FILE = "AndroidManifest.xml"
-    const val DEFAULT_AUTHOR_AVATAR = "img_author_avatar.jpg"
-    const val DEFAULT_APP_ICON = "ic_launcher.png"
-    const val DEFAULT_TAB_ICON_PREFIX = "ic_tab_"
+    const val CONFIG_FILE = "config.json"
+    const val MANIFEST_FILE = "AndroidManifest.xml"
+    const val AUTHOR_AVATAR = "img_author_avatar.jpg"
+    const val APP_ICON = "ic_launcher.png"
+    const val APP_ICON_DEFAULT = "ic_launcher_default.png"
+    const val TAB_ICON_PREFIX = "ic_tab_"
+    const val TAB_ICON_DEFAULT = "ic_tab_default.png"
     /**
      * key
      */

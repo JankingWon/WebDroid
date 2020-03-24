@@ -64,7 +64,7 @@ class EditAppLayout(activity: Activity) : EditLayout() {
         }
         //长按预览
         setOnLongClickListener {
-            return@setOnLongClickListener OpenUtils.showFullImageDialog(Config.instance.appIcon)
+            return@setOnLongClickListener OpenUtils.showFullImageDialogWithFile(Config.instance.appIcon)
         }
     }
 
@@ -93,13 +93,13 @@ class EditAppLayout(activity: Activity) : EditLayout() {
     val aboutText = contentView.findViewById<EditText>(R.id.aboutText)
 
     init {
-        loadLastConfig()
+        loadConfig()
     }
 
     /**
      * 加载上次配置
      */
-    override fun loadLastConfig() {
+    override fun loadConfig() {
         appName.setText(Config.instance.appName)
         appPackage.setText(Config.instance.appPackage)
         //设置默认icon

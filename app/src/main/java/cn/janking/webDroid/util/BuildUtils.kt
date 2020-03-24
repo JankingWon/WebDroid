@@ -45,38 +45,54 @@ object BuildUtils {
                 FileUtils.writeToFile(
                     Config.toJsonString(),
                     PathConstants.getSubUnzippedApkAssets(
-                        PathConstants.DEFAULT_CONFIG_FILE
+                        PathConstants.CONFIG_FILE
                     )
                 )
                 //使用模板中的manifest
                 FileUtils.copyFileToDir(
                     PathConstants.getSubTemplate(
-                        PathConstants.DEFAULT_MANIFEST_FILE
+                        PathConstants.MANIFEST_FILE
                     ),
                     PathConstants.dirUnzippedApk
                 )
-                //复制 app icon
+                //写入默认 app icon
+                FileUtils.copyFileToFile(
+                    PathConstants.getSubUnzippedApkDrawable(
+                        PathConstants.APP_ICON_DEFAULT
+                    ),
+                    PathConstants.getSubUnzippedApkDrawable(
+                        PathConstants.APP_ICON
+                    )
+                )
+                //写入 app icon
                 FileUtils.copyFileToFile(
                     Config.instance.appIcon,
                     PathConstants.getSubUnzippedApkDrawable(
-                        PathConstants.DEFAULT_APP_ICON
+                        PathConstants.APP_ICON
                     )
                 )
-                //复制 tab icon
+                //写入 tab icon
                 for (i in Config.instance.tabIcons.indices) {
+                    //先写入默认tab icon
+                    FileUtils.copyFileToFile(
+                        PathConstants.TAB_ICON_DEFAULT,
+                        PathConstants.getSubUnzippedApkDrawable(
+                            "${PathConstants.TAB_ICON_PREFIX}${i}.png"
+                        )
+                    )
                     FileUtils.copyFileToFile(
                         Config.instance.tabIcons[i],
                         PathConstants.getSubUnzippedApkDrawable(
-                            "${PathConstants.DEFAULT_TAB_ICON_PREFIX}${i}.png"
+                            "${PathConstants.TAB_ICON_PREFIX}${i}.png"
                         )
                     )
                 }
                 //删除 author avatar
-                FileUtils.delete(PathConstants.getSubUnzippedApkDrawable(PathConstants.DEFAULT_AUTHOR_AVATAR))
+                FileUtils.delete(PathConstants.getSubUnzippedApkDrawable(PathConstants.AUTHOR_AVATAR))
                 //修改包名、APP名称、APP版本、FileProvider
                 ManifestUtils(
                     PathConstants.getSubUnzippedApk(
-                        PathConstants.DEFAULT_MANIFEST_FILE
+                        PathConstants.MANIFEST_FILE
                     ),
                     null
                 ).modifyUniqueStringAttribute(
@@ -136,7 +152,14 @@ object BuildUtils {
             }
 
             override fun onFail(t: Throwable?) {
-                ConsoleUtils.error(console, String.format("打包失败！(%s)", t?.message))
+                ConsoleUtils.error(
+                    console,
+                    "打包失败！(${t?.javaClass?.name}: ${t?.message})"
+                )
+                ConsoleUtils.infoAppend(
+                    console,
+                    ThrowableUtils.getFullStackTrace(t)
+                )
                 LogUtils.e(t)
             }
 

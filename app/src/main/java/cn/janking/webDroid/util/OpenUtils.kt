@@ -107,34 +107,49 @@ object OpenUtils {
     }
 
     /**
+     * @param imageUrl 图片url
      * 弹出全屏窗口显示图片
      */
-    fun showFullImageDialog(imageUrl: String?): Boolean {
+    fun showFullImageDialogWithUrl(imageUrl: String?): Boolean {
         return imageUrl?.let {
-            showFullImageDialog(File(it))
-        } ?: false
-    }
-
-    /**
-     * 弹出全屏显示图片的对话框
-     */
-    fun showFullImageDialog(imageFile: File): Boolean {
-        return if (FileUtils.isFileExists(imageFile)) {
             PermissionHelper.checkStorage(Runnable {
                 Dialog(ActivityUtils.getTopActivity(), R.style.DialogFullscreen).run {
                     setContentView(R.layout.layout_image_dialog_fullscreen)
                     val imageView: ImageView = findViewById(R.id.img_full_screen_dialog)
                     //使用Glide加载图片
-                    Glide.with(ActivityUtils.getTopActivity()).load(imageFile).into(imageView)
+                    Glide.with(ActivityUtils.getTopActivity()).load(imageUrl).into(imageView)
                     val toolBar: Toolbar = findViewById(R.id.toolbar_full_screen_dialog)
                     toolBar.setNavigationOnClickListener { dismiss() }
                     show()
                 }
             })
             true
-        } else {
-            false
-        }
+        } ?: false
+    }
+
+    /**
+     * @param imageFile 图片文件
+     * 弹出全屏显示图片的对话框
+     */
+    fun showFullImageDialogWithFile(imageFile: String?): Boolean {
+        return imageFile?.let {
+            if (FileUtils.isFileExists(imageFile)) {
+                PermissionHelper.checkStorage(Runnable {
+                    Dialog(ActivityUtils.getTopActivity(), R.style.DialogFullscreen).run {
+                        setContentView(R.layout.layout_image_dialog_fullscreen)
+                        val imageView: ImageView = findViewById(R.id.img_full_screen_dialog)
+                        //使用Glide加载图片
+                        Glide.with(ActivityUtils.getTopActivity()).load(imageFile).into(imageView)
+                        val toolBar: Toolbar = findViewById(R.id.toolbar_full_screen_dialog)
+                        toolBar.setNavigationOnClickListener { dismiss() }
+                        show()
+                    }
+                })
+                true
+            } else {
+                false
+            }
+        } ?: false
     }
 
     /**
@@ -190,7 +205,8 @@ object OpenUtils {
                             }
 
                             override fun onFail(t: Throwable?) {
-                                Toast.makeText(Utils.getApp(), "保存失败", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(Utils.getApp(), "保存失败", Toast.LENGTH_SHORT)
+                                    .show()
                                 LogUtils.w(t)
                             }
 

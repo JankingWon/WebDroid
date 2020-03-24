@@ -10,6 +10,7 @@ import androidx.viewpager.widget.PagerAdapter
 import cn.janking.webDroid.R
 import cn.janking.webDroid.adapter.BasicPagerAdapter
 import cn.janking.webDroid.adapter.TabListRVAdapter
+import cn.janking.webDroid.constant.PathConstants
 import cn.janking.webDroid.event.BuildFinishEvent
 import cn.janking.webDroid.event.InitFinishEvent
 import cn.janking.webDroid.helper.PermissionHelper
@@ -134,13 +135,25 @@ open class CreatorActivity : BaseActivity() {
     override fun onClickViewId(viewId: Int) {
         super.onClickViewId(viewId)
         when (viewId) {
-            //toolbar关于
+            //toolbar 关于
             R.id.action_menu_about -> {
                 OpenUtils.openUrl("https://github.com/JankingWon/WebDroid")
             }
-            //侧边关于
+            //toolbar 示例
+            R.id.action_menu_demo -> {
+                Config.readFromString(FileUtils.getFileContent(assets.open(PathConstants.CONFIG_FILE)))
+                editAppLayout?.loadConfig()
+                editTabLayout?.loadConfig()
+            }
+            //toolbar 清除
+            R.id.action_menu_clear -> {
+                Config.readFromString("")
+                editAppLayout?.loadConfig()
+                editTabLayout?.loadConfig()
+            }
+            //侧边 关于
             R.id.nav_about -> {
-                OpenUtils.showFullTextDialog("欢迎使用！")
+                OpenUtils.showFullTextDialog("欢迎使用WebDroid（https://github.com/JankingWon/WebDroid）！")
             }
             //预览按钮
             R.id.preview -> {

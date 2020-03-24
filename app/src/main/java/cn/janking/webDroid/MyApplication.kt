@@ -27,7 +27,7 @@ class MyApplication : Application() {
         } else {
             //读取配置
             Config.instance.preview = false
-            Config.readFromString(FileUtils.getFileContent(base.assets.open(PathConstants.DEFAULT_CONFIG_FILE)))
+            Config.readFromString(FileUtils.getFileContent(base.assets.open(PathConstants.CONFIG_FILE)))
         }
     }
 
@@ -72,7 +72,7 @@ class MyApplication : Application() {
                     PathConstants.dirUnzippedApkAssets,
                     FileFilter { pathname ->
                         pathname?.name.run {
-                            !equals(PathConstants.DEFAULT_CONFIG_FILE)
+                            !equals(PathConstants.CONFIG_FILE)
                         }
                     }
                 )

@@ -28,7 +28,7 @@ fun WebView.defaultOnLongClickListener(){
                     .setItems(arrayOf("查看图片", "复制链接", "保存图片", "分享图片")) { _, which ->
                         when (which) {
                             0 -> {
-                                OpenUtils.showFullImageDialog(imageUrl)
+                                OpenUtils.showFullImageDialogWithUrl(imageUrl)
                             }
                             1 -> {
                                 OpenUtils.copyUrl(imageUrl)

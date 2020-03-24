@@ -76,10 +76,11 @@ class EditTabLayout(activity: Activity) : EditLayout() {
         val mItemTouchHelper = ItemTouchHelper(callback)
         mItemTouchHelper.attachToRecyclerView(tabList)
         //load
-        loadLastConfig()
+        loadConfig()
     }
 
-    override fun loadLastConfig() {
+    override fun loadConfig() {
+        tabListAdapter.clearAllTab()
         for (i in 0 until Config.instance.tabCount) {
             tabListAdapter.addTabItem(
                 Config.instance.tabTitles[i],

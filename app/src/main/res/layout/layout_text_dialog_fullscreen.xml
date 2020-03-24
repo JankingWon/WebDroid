@@ -13,7 +13,7 @@
         android:layout_gravity="top"
         android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
         app:navigationIcon="@drawable/ic_close_white_24dp"
-        app:title="查看图片" />
+        app:title="关于" />
 
     <TextView
         android:id="@+id/text_full_screen_dialog"

@@ -1,23 +1,28 @@
 {
-  "appIcon": "/storage/emulated/0/Android/data/cn.janking.webDroid/files/temp/76ef0",
-  "appName": "宝宝",
-  "appPackage": "cn.janking.baby",
+  "aboutText": "这是使用WebDroid创建出来的App\n欢迎使用！",
+  "allowOpenApp": 2,
+  "appIcon": "",
+  "appName": "Test",
+  "appPackage": "cn.janking.test",
   "tabIcons": [
+    "null",
     "null",
     "null",
     "null"
   ],
-  "tabStyle": 0,
+  "tabStyle": 1,
   "tabTitles": [
-    "首页",
-    "排行",
-    "我的"
+    "搜索",
+    "新闻",
+    "音乐",
+    "图片"
   ],
   "tabUrls": [
-    "https://m.bilibili.com/index.html",
-    "https://m.bilibili.com/ranking.html",
-    "https://m.bilibili.com/space"
+    "https://cn.bing.com/",
+    "https://m.chinanews.com/",
+    "https://music.mtnhao.com/#/music/playlist",
+    "https://www.colorhub.me/"
   ],
-  "versionCode": 10,
-  "versionName": "1.0"
+  "versionCode": 1,
+  "versionName": "0.0.1"
 }
