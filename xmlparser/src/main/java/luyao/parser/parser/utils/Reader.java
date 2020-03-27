@@ -15,7 +15,7 @@ public class Reader {
 
     private volatile InputStream in;
     private byte[] buffer = new byte[8];
-    private static boolean showLog = true;
+    private static boolean showLog = false;
     private boolean isLittleEndian = true;
 
     public Reader(InputStream in) {

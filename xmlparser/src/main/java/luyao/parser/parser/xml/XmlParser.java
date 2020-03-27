@@ -61,7 +61,7 @@ public class XmlParser {
         parseStringChunk();
         parseResourceIdChunk();
         parseXmlContentChunk();
-        generateXml();
+        //generateXml();
     }
 
     private void parseHeader() {

@@ -2,9 +2,9 @@ package luyao.parser.parser.xml.bean.chunk;
 
 import java.util.List;
 
+import luyao.parser.parser.xml.XmlParser;
 import luyao.parser.parser.xml.bean.Attribute;
 import luyao.parser.parser.xml.bean.Xml;
-import luyao.parser.parser.xml.XmlParser;
 
 import static luyao.parser.parser.xml.bean.Xml.blank;
 
@@ -53,7 +53,6 @@ public class StartTagChunk extends Chunk {
     @Override
     public String toXmlString() {
         StringBuilder builder = new StringBuilder();
-        System.out.println("test " + name + name.length());
         if (name.replace(" ", "").equals("manifest")) {
             builder.append("<manifest");
             for (String key : Xml.nameSpaceMap.keySet()) {

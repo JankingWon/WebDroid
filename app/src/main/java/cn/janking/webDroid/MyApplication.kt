@@ -14,7 +14,6 @@ import java.io.FileFilter
 
 /**
  * 自定义应用
- * @todo 部分内容改为安装时进行
  */
 class MyApplication : Application() {
 
