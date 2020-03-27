@@ -374,8 +374,8 @@ public class AVA implements DerEncoder {
 
         // encode as PrintableString unless value contains
         // non-PrintableString chars
-        if (this.oid.equals((Object)PKCS9Attribute.EMAIL_ADDRESS_OID) ||
-            (this.oid.equals((Object)X500Name.DOMAIN_COMPONENT_OID) &&
+        if (this.oid.equals((Object) PKCS9Attribute.EMAIL_ADDRESS_OID) ||
+            (this.oid.equals((Object) X500Name.DOMAIN_COMPONENT_OID) &&
                 PRESERVE_OLD_DC_ENCODING == false)) {
             // EmailAddress and DomainComponent must be IA5String
             return new DerValue(DerValue.tag_IA5String,
@@ -505,8 +505,8 @@ public class AVA implements DerEncoder {
 
         // encode as PrintableString unless value contains
         // non-PrintableString chars
-        if (this.oid.equals((Object)PKCS9Attribute.EMAIL_ADDRESS_OID) ||
-            (this.oid.equals((Object)X500Name.DOMAIN_COMPONENT_OID) &&
+        if (this.oid.equals((Object) PKCS9Attribute.EMAIL_ADDRESS_OID) ||
+            (this.oid.equals((Object) X500Name.DOMAIN_COMPONENT_OID) &&
                 PRESERVE_OLD_DC_ENCODING == false)) {
             // EmailAddress and DomainComponent must be IA5String
             return new DerValue(DerValue.tag_IA5String, temp.toString());
@@ -1178,8 +1178,8 @@ public class AVA implements DerEncoder {
  */
 class AVAKeyword {
 
-    private static final Map<ObjectIdentifier,AVAKeyword> oidMap;
-    private static final Map<String,AVAKeyword> keywordMap;
+    private static final Map<ObjectIdentifier, AVAKeyword> oidMap;
+    private static final Map<String, AVAKeyword> keywordMap;
 
     private String keyword;
     private ObjectIdentifier oid;
@@ -1333,8 +1333,8 @@ class AVAKeyword {
     }
 
     static {
-        oidMap = new HashMap<ObjectIdentifier,AVAKeyword>();
-        keywordMap = new HashMap<String,AVAKeyword>();
+        oidMap = new HashMap<ObjectIdentifier, AVAKeyword>();
+        keywordMap = new HashMap<String, AVAKeyword>();
 
         // NOTE if multiple keywords are available for one OID, order
         // is significant!! Preferred *LAST*.

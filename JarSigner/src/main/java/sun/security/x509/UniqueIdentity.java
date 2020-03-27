@@ -39,7 +39,7 @@ import sun.security.util.DerValue;
  */
 public class UniqueIdentity {
     // Private data members
-    private BitArray    id;
+    private BitArray id;
 
     /**
      * The default constructor for this class.

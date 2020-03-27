@@ -36,7 +36,6 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -48,11 +47,12 @@ import java.util.jar.JarException;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
+import compact.java.util.Base64;
 import sun.security.jca.Providers;
 import sun.security.pkcs.PKCS7_1;
 import sun.security.pkcs.SignerInfo;
 
-public class SignatureFileVerifier {
+public class CompactSignatureFileVerifier {
 
     /* Are we debugging ? */
     private static final Debug debug = Debug.getInstance("jar");
@@ -94,10 +94,10 @@ public class SignatureFileVerifier {
      *
      * @param rawBytes the raw bytes of the signature block file
      */
-    public SignatureFileVerifier(ArrayList<CodeSigner[]> signerCache,
-                                 ManifestDigester md,
-                                 String name,
-                                 byte rawBytes[])
+    public CompactSignatureFileVerifier(ArrayList<CodeSigner[]> signerCache,
+                                        ManifestDigester md,
+                                        String name,
+                                        byte rawBytes[])
         throws IOException, CertificateException
     {
         // new PKCS7() calls CertificateFactory.getInstance()

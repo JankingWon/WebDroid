@@ -75,7 +75,7 @@ public class SignerInfo implements DerEncoder {
     PKCS9Attributes authenticatedAttributes;
     PKCS9Attributes unauthenticatedAttributes;
 
-    public SignerInfo(X500Name  issuerName,
+    public SignerInfo(X500Name issuerName,
                       BigInteger serial,
                       AlgorithmId digestAlgorithmId,
                       AlgorithmId digestEncryptionAlgorithmId,
@@ -88,7 +88,7 @@ public class SignerInfo implements DerEncoder {
         this.encryptedDigest = encryptedDigest;
     }
 
-    public SignerInfo(X500Name  issuerName,
+    public SignerInfo(X500Name issuerName,
                       BigInteger serial,
                       AlgorithmId digestAlgorithmId,
                       PKCS9Attributes authenticatedAttributes,

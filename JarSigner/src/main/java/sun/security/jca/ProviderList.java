@@ -100,7 +100,7 @@ public final class ProviderList {
     }
 
     public static ProviderList insertAt(ProviderList providerList, Provider p,
-            int position) {
+                                        int position) {
         if (providerList.getProvider(p.getName()) != null) {
             return providerList;
         }

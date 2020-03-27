@@ -548,40 +548,6 @@ public class ZoneInfo extends TimeZone {
             "]";
     }
 
-    /**
-     * Gets all available IDs supported in the Java run-time.
-     *
-     * @return an array of time zone IDs.
-     */
-    public static String[] getAvailableIDs() {
-        return ZoneInfoFile.getZoneIds();
-    }
-
-    /**
-     * Gets all available IDs that have the same value as the
-     * specified raw GMT offset.
-     *
-     * @param rawOffset the GMT offset in milliseconds. This
-     * value should not include any daylight saving time.
-     *
-     * @return an array of time zone IDs.
-     */
-    public static String[] getAvailableIDs(int rawOffset) {
-        return ZoneInfoFile.getZoneIds(rawOffset);
-    }
-
-    /**
-     * Gets the ZoneInfo for the given ID.
-     *
-     * @param ID the ID for a ZoneInfo. See TimeZone for detail.
-     *
-     * @return the specified ZoneInfo object, or null if there is no
-     * time zone of the ID.
-     */
-    public static TimeZone getTimeZone(String ID) {
-        return ZoneInfoFile.getZoneInfo(ID);
-    }
-
     private transient SimpleTimeZone lastRule;
 
     /**

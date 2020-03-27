@@ -1127,8 +1127,8 @@ public class X500Name implements GeneralNameInterface, Principal {
         return oid;
     }
 
-    private static final Map<ObjectIdentifier,ObjectIdentifier> internedOIDs
-                        = new HashMap<ObjectIdentifier,ObjectIdentifier>();
+    private static final Map<ObjectIdentifier, ObjectIdentifier> internedOIDs
+                        = new HashMap<ObjectIdentifier, ObjectIdentifier>();
 
     /*
      * Selected OIDs from X.520
@@ -1411,7 +1411,7 @@ public class X500Name implements GeneralNameInterface, Principal {
             principalConstructor = constr;
             principalField = (Field)result[1];
         } catch (Exception e) {
-            throw new InternalError("Could not obtain X500Principal access", e);
+            throw new compact.java.lang.InternalError("Could not obtain X500Principal access", e);
         }
     }
 

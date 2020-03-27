@@ -64,7 +64,7 @@ public class DerInputStream {
      * awkward to deal with.  That's where BER is useful, since BER
      * handles streaming data relatively well.
      */
-    DerInputBuffer      buffer;
+    DerInputBuffer buffer;
 
     /** The DER tag of the value; one of the tag_ constants. */
     public byte         tag;
@@ -131,7 +131,7 @@ public class DerInputStream {
      */
     public DerInputStream subStream(int len, boolean do_skip)
     throws IOException {
-        DerInputBuffer  newbuf = buffer.dup();
+        DerInputBuffer newbuf = buffer.dup();
 
         newbuf.truncate(len);
         if (do_skip) {
@@ -343,7 +343,7 @@ public class DerInputStream {
      * this same helper routine.
      */
     protected DerValue[] readVector(int startLen) throws IOException {
-        DerInputStream  newstr;
+        DerInputStream newstr;
 
         byte lenByte = (byte)buffer.read();
         int len = getLength((lenByte & 0xff), buffer);

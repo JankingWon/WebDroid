@@ -135,8 +135,8 @@ public class CRLDistributionPointsExtension extends Extension
      * Creates the extension (also called by the subclass).
      */
     protected CRLDistributionPointsExtension(ObjectIdentifier extensionId,
-        boolean isCritical, List<DistributionPoint> distributionPoints,
-            String extensionName) throws IOException {
+                                             boolean isCritical, List<DistributionPoint> distributionPoints,
+                                             String extensionName) throws IOException {
 
         this.extensionId = extensionId;
         this.critical = isCritical;
@@ -161,7 +161,7 @@ public class CRLDistributionPointsExtension extends Extension
      * Creates the extension (also called by the subclass).
      */
     protected CRLDistributionPointsExtension(ObjectIdentifier extensionId,
-        Boolean critical, Object value, String extensionName)
+                                             Boolean critical, Object value, String extensionName)
             throws IOException {
 
         this.extensionId = extensionId;

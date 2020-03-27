@@ -165,7 +165,7 @@ public class X509Key implements PublicKey {
      */
     public static PublicKey parse(DerValue in) throws IOException
     {
-        AlgorithmId     algorithm;
+        AlgorithmId algorithm;
         PublicKey       subjectKey;
 
         if (in.tag != DerValue.tag_Sequence)
@@ -262,7 +262,7 @@ public class X509Key implements PublicKey {
             }
 
             Object      inst = null;
-            X509Key     result;
+            X509Key result;
 
             if (keyClass != null)
                 inst = keyClass.newInstance();
@@ -294,7 +294,7 @@ public class X509Key implements PublicKey {
     /**
      * Returns the algorithm ID to be used with this key.
      */
-    public AlgorithmId  getAlgorithmId() { return algid; }
+    public AlgorithmId getAlgorithmId() { return algid; }
 
     /**
      * Encode SubjectPublicKeyInfo sequence on the DER output stream.
@@ -355,7 +355,7 @@ public class X509Key implements PublicKey {
      */
     public String toString()
     {
-        HexDumpEncoder  encoder = new HexDumpEncoder();
+        HexDumpEncoder encoder = new HexDumpEncoder();
 
         return "algorithm = " + algid.toString()
             + ", unparsed keybits = \n" + encoder.encodeBuffer(key);
@@ -385,7 +385,7 @@ public class X509Key implements PublicKey {
     public void decode(InputStream in)
     throws InvalidKeyException
     {
-        DerValue        val;
+        DerValue val;
 
         try {
             val = new DerValue(in);

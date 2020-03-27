@@ -99,8 +99,8 @@ implements CertAttrSet<String> {
      * Creates the extension (also called by the subclass).
      */
     protected CRLNumberExtension(ObjectIdentifier extensionId,
-        boolean isCritical, BigInteger crlNum, String extensionName,
-        String extensionLabel) throws IOException {
+                                 boolean isCritical, BigInteger crlNum, String extensionName,
+                                 String extensionLabel) throws IOException {
 
         this.extensionId = extensionId;
         this.critical = isCritical;
@@ -127,8 +127,8 @@ implements CertAttrSet<String> {
      * Creates the extension (also called by the subclass).
      */
     protected CRLNumberExtension(ObjectIdentifier extensionId,
-        Boolean critical, Object value, String extensionName,
-        String extensionLabel) throws IOException {
+                                 Boolean critical, Object value, String extensionName,
+                                 String extensionLabel) throws IOException {
 
         this.extensionId = extensionId;
         this.critical = critical.booleanValue();
@@ -198,7 +198,7 @@ implements CertAttrSet<String> {
      * @exception IOException on encoding errors.
      */
     public void encode(OutputStream out) throws IOException {
-       DerOutputStream  tmp = new DerOutputStream();
+       DerOutputStream tmp = new DerOutputStream();
         encode(out, PKIXExtensions.CRLNumber_Id, true);
     }
 
@@ -209,7 +209,7 @@ implements CertAttrSet<String> {
     protected void encode(OutputStream out, ObjectIdentifier extensionId,
         boolean isCritical) throws IOException {
 
-       DerOutputStream  tmp = new DerOutputStream();
+       DerOutputStream tmp = new DerOutputStream();
 
        if (this.extensionValue == null) {
            this.extensionId = extensionId;

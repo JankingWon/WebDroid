@@ -67,7 +67,7 @@ public class DerValue {
     /** The DER tag of the value; one of the tag_ constants. */
     public byte                 tag;
 
-    protected DerInputBuffer    buffer;
+    protected DerInputBuffer buffer;
 
     /**
      * The DER-encoded data of the value, never null

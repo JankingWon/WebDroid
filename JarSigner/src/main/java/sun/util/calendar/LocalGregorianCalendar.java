@@ -122,7 +122,7 @@ public class LocalGregorianCalendar extends BaseCalendar {
         try {
             calendarProps = CalendarSystem.getCalendarProperties();
         } catch (IOException | IllegalArgumentException e) {
-            throw new InternalError(e);
+            throw new compact.java.lang.InternalError(e);
         }
         // Parse calendar.*.eras
         String props = calendarProps.getProperty("calendar." + name + ".eras");

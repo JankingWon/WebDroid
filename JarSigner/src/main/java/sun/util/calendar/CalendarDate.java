@@ -434,7 +434,7 @@ public abstract class CalendarDate implements Cloneable {
             return super.clone();
         } catch (CloneNotSupportedException e) {
             // this shouldn't happen
-            throw new InternalError(e);
+            throw new compact.java.lang.InternalError(e);
         }
     }
 

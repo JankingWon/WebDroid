@@ -478,7 +478,7 @@ public abstract class BaseCalendar extends AbstractCalendar {
         if (fixedDate >= 0) {
             return (int)(fixedDate % 7) + SUNDAY;
         }
-        return (int)CalendarUtils.mod(fixedDate, 7) + SUNDAY;
+        return (int) CalendarUtils.mod(fixedDate, 7) + SUNDAY;
     }
 
     public int getYearFromFixedDate(long fixedDate) {
@@ -506,8 +506,8 @@ public abstract class BaseCalendar extends AbstractCalendar {
             d4 = (d3 % 365) + 1;
         } else {
             d0 = fixedDate - 1;
-            n400 = (int)CalendarUtils.floorDivide(d0, 146097L);
-            d1 = (int)CalendarUtils.mod(d0, 146097L);
+            n400 = (int) CalendarUtils.floorDivide(d0, 146097L);
+            d1 = (int) CalendarUtils.mod(d0, 146097L);
             n100 = CalendarUtils.floorDivide(d1, 36524);
             d2 = CalendarUtils.mod(d1, 36524);
             n4 = CalendarUtils.floorDivide(d2, 1461);

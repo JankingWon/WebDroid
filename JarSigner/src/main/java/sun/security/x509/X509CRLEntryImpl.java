@@ -31,12 +31,9 @@ import java.security.cert.CRLException;
 import java.security.cert.CRLReason;
 import java.security.cert.X509CRLEntry;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 import javax.security.auth.x500.X500Principal;
@@ -507,22 +504,6 @@ public class X509CRLEntryImpl extends X509CRLEntry
     CertificateIssuerExtension getCertificateIssuerExtension() {
         return (CertificateIssuerExtension)
             getExtension(PKIXExtensions.CertificateIssuer_Id);
-    }
-
-    /**
-     * Returns all extensions for this entry in a map
-     * @return the extension map, can be empty, but not null
-     */
-    public Map<String, java.security.cert.Extension> getExtensions() {
-        if (extensions == null) {
-            return Collections.emptyMap();
-        }
-        Collection<Extension> exts = extensions.getAllExtensions();
-        Map<String, java.security.cert.Extension> map = new TreeMap<>();
-        for (Extension ext : exts) {
-            map.put(ext.getId(), ext);
-        }
-        return map;
     }
 
     @Override

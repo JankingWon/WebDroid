@@ -62,9 +62,9 @@ import sun.security.util.ObjectIdentifier;
  * @author Amit Kapoor
  * @author Hemma Prafullchandra
  */
-public class Extension implements java.security.cert.Extension {
+public class Extension implements compact.java.security.cert.Extension {
 
-    protected ObjectIdentifier  extensionId = null;
+    protected ObjectIdentifier extensionId = null;
     protected boolean           critical = false;
     protected byte[]            extensionValue = null;
 
@@ -137,7 +137,7 @@ public class Extension implements java.security.cert.Extension {
      * is not the encoded OctetString).
      */
     public static Extension newExtension(ObjectIdentifier extensionId,
-        boolean critical, byte[] rawExtensionValue) throws IOException {
+                                         boolean critical, byte[] rawExtensionValue) throws IOException {
         Extension ext = new Extension();
         ext.extensionId = extensionId;
         ext.critical = critical;

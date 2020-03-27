@@ -40,11 +40,11 @@ import java.security.cert.X509CRL;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import compact.java.util.Base64;
 import sun.security.pkcs.PKCS7_1;
 import sun.security.pkcs.ParsingException;
 import sun.security.provider.certpath.X509CertPath;

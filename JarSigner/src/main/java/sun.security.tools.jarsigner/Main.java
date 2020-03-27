@@ -74,7 +74,6 @@ import java.text.Collator;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -98,17 +97,20 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
+import compact.java.util.Base64;
 import sun.security.tools.KeyStoreUtil;
 import sun.security.tools.PathList;
+import sun.security.util.CompactSignatureFileVerifier;
 import sun.security.util.DerInputStream;
 import sun.security.util.DerValue;
 import sun.security.util.ManifestDigester;
 import sun.security.util.Password;
-import sun.security.util.SignatureFileVerifier;
 import sun.security.x509.AlgorithmId;
 import sun.security.x509.NetscapeCertTypeExtension;
 import sun.security.x509.X500Name;
 import sun.security.x509.X509CertInfo;
+
+//用来兼容API26以下
 
 
 /**
@@ -1185,7 +1187,7 @@ public class Main {
                     // out first
                     mfFiles.addElement(ze);
 
-                    if (SignatureFileVerifier.isBlockOrSF(
+                    if (CompactSignatureFileVerifier.isBlockOrSF(
                             ze.getName().toUpperCase(Locale.ENGLISH))) {
                         wasSigned = true;
                     }
@@ -1384,9 +1386,9 @@ public class Main {
                 zipFile = null;
             }
 
-            if (zos != null) {
-                zos.close();
-            }
+//            if (zos != null) {
+//                zos.close();
+//            }
         }
 
         // no IOException thrown in the follow try clause, so disable
@@ -1524,7 +1526,7 @@ public class Main {
      * . META-INF/*.EC
      */
     private boolean signatureRelated(String name) {
-        return SignatureFileVerifier.isSigningRelated(name);
+        return CompactSignatureFileVerifier.isSigningRelated(name);
     }
 
     Map<CodeSigner,String> cacheForSignerInfo = new IdentityHashMap<>();
@@ -2113,7 +2115,7 @@ public class Main {
      * The URL class loader is used.
      */
     private ContentSigner loadSigningMechanism(String signerClassName,
-        String signerClassPath) throws Exception {
+                                               String signerClassPath) throws Exception {
 
         // construct class loader
         String cpString = null;   // make sure env.class.path defaults to dot
@@ -2277,9 +2279,9 @@ class SignatureFile {
          * Construct a new signature block.
          */
         Block(SignatureFile sfg, PrivateKey privateKey, String sigalg,
-            X509Certificate[] certChain, boolean externalSF, String tsaUrl,
-            X509Certificate tsaCert, String tSAPolicyID, ContentSigner signingMechanism,
-            String[] args, ZipFile zipFile)
+              X509Certificate[] certChain, boolean externalSF, String tsaUrl,
+              X509Certificate tsaCert, String tSAPolicyID, ContentSigner signingMechanism,
+              String[] args, ZipFile zipFile)
             throws NoSuchAlgorithmException, InvalidKeyException, IOException,
             SignatureException, CertificateException {
 

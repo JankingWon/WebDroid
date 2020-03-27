@@ -64,7 +64,7 @@ public abstract class ContentSigner {
      *         null.
      */
     public abstract byte[] generateSignedData(
-        ContentSignerParameters parameters, boolean omitContent,
-        boolean applyTimestamp)
+            ContentSignerParameters parameters, boolean omitContent,
+            boolean applyTimestamp)
             throws NoSuchAlgorithmException, CertificateException, IOException;
 }

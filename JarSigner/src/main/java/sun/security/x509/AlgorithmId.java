@@ -86,7 +86,7 @@ public class AlgorithmId implements Serializable, DerEncoder {
      * DER-encoded form; subclasses can be made to automaticaly parse
      * them so there is fast access to these parameters.
      */
-    protected DerValue          params;
+    protected DerValue params;
 
 
     /**
@@ -361,9 +361,9 @@ public class AlgorithmId implements Serializable, DerEncoder {
         /*
          * Get the algorithm ID and any parameters.
          */
-        ObjectIdentifier        algid;
-        DerValue                params;
-        DerInputStream          in = val.toDerInputStream();
+        ObjectIdentifier algid;
+        DerValue params;
+        DerInputStream in = val.toDerInputStream();
 
         algid = in.getOID();
         if (in.available() == 0) {
@@ -583,7 +583,7 @@ public class AlgorithmId implements Serializable, DerEncoder {
                             break;
                         }
                         if (oidTable == null) {
-                            oidTable = new HashMap<String,ObjectIdentifier>();
+                            oidTable = new HashMap<String, ObjectIdentifier>();
                         }
                         oidString = alias.substring(index);
                         String stdAlgName = provs[i].getProperty(alias);
@@ -600,7 +600,7 @@ public class AlgorithmId implements Serializable, DerEncoder {
             }
 
             if (oidTable == null) {
-                oidTable = new HashMap<String,ObjectIdentifier>(1);
+                oidTable = new HashMap<String, ObjectIdentifier>(1);
             }
             initOidTable = true;
         }
@@ -613,7 +613,7 @@ public class AlgorithmId implements Serializable, DerEncoder {
     }
 
     private static boolean initOidTable = false;
-    private static Map<String,ObjectIdentifier> oidTable;
+    private static Map<String, ObjectIdentifier> oidTable;
     private static final Map<ObjectIdentifier,String> nameTable;
 
     /*****************************************************************/

@@ -88,19 +88,19 @@ public class X509CertInfo implements CertAttrSet<String> {
 
     // X509.v1 data
     protected CertificateVersion version = new CertificateVersion();
-    protected CertificateSerialNumber   serialNum = null;
-    protected CertificateAlgorithmId    algId = null;
-    protected X500Name                  issuer = null;
-    protected X500Name                  subject = null;
-    protected CertificateValidity       interval = null;
-    protected CertificateX509Key        pubKey = null;
+    protected CertificateSerialNumber serialNum = null;
+    protected CertificateAlgorithmId algId = null;
+    protected X500Name issuer = null;
+    protected X500Name subject = null;
+    protected CertificateValidity interval = null;
+    protected CertificateX509Key pubKey = null;
 
     // X509.v2 & v3 extensions
-    protected UniqueIdentity   issuerUniqueId = null;
-    protected UniqueIdentity  subjectUniqueId = null;
+    protected UniqueIdentity issuerUniqueId = null;
+    protected UniqueIdentity subjectUniqueId = null;
 
     // X509.v3 extensions
-    protected CertificateExtensions     extensions = null;
+    protected CertificateExtensions extensions = null;
 
     // Attribute numbers for internal manipulation
     private static final int ATTR_VERSION = 1;
@@ -152,7 +152,7 @@ public class X509CertInfo implements CertAttrSet<String> {
      */
     public X509CertInfo(byte[] cert) throws CertificateParsingException {
         try {
-            DerValue    in = new DerValue(cert);
+            DerValue in = new DerValue(cert);
 
             parse(in);
         } catch (IOException e) {
@@ -345,7 +345,7 @@ public class X509CertInfo implements CertAttrSet<String> {
                     sb.append(", Error parsing this extension");
                 }
             }
-            Map<String,Extension> invalid = extensions.getUnparseableExtensions();
+            Map<String, Extension> invalid = extensions.getUnparseableExtensions();
             if (invalid.isEmpty() == false) {
                 sb.append("\nUnparseable certificate extensions: " + invalid.size());
                 int i = 1;
@@ -628,8 +628,8 @@ public class X509CertInfo implements CertAttrSet<String> {
      */
     private void parse(DerValue val)
     throws CertificateParsingException, IOException {
-        DerInputStream  in;
-        DerValue        tmp;
+        DerInputStream in;
+        DerValue tmp;
 
         if (val.tag != DerValue.tag_Sequence) {
             throw new CertificateParsingException("signed fields invalid");
@@ -717,7 +717,7 @@ public class X509CertInfo implements CertAttrSet<String> {
      * Verify if X.509 V3 Certificate is compliant with RFC 3280.
      */
     private void verifyCert(X500Name subject,
-        CertificateExtensions extensions)
+                            CertificateExtensions extensions)
         throws CertificateParsingException, IOException {
 
         // if SubjectName is empty, check for SubjectAlternativeNameExtension

@@ -112,13 +112,13 @@ public class X509CRLImpl extends X509CRL implements DerEncoder {
     // crl information
     private int              version;
     private AlgorithmId      infoSigAlgId; // sig alg in "to-be-signed" crl
-    private X500Name         issuer = null;
+    private X500Name issuer = null;
     private X500Principal    issuerPrincipal = null;
     private Date             thisUpdate = null;
     private Date             nextUpdate = null;
     private Map<X509IssuerSerial,X509CRLEntry> revokedMap = new TreeMap<>();
     private List<X509CRLEntry> revokedList = new LinkedList<>();
-    private CRLExtensions    extensions = null;
+    private CRLExtensions extensions = null;
     private final static boolean isExplicit = true;
     private static final long YR_2050 = 2524636800000L;
 
@@ -257,7 +257,7 @@ public class X509CRLImpl extends X509CRL implements DerEncoder {
      * @exception CRLException on parsing/construction errors.
      */
     public X509CRLImpl(X500Name issuer, Date thisDate, Date nextDate,
-               X509CRLEntry[] badCerts, CRLExtensions crlExts)
+                       X509CRLEntry[] badCerts, CRLExtensions crlExts)
         throws CRLException
     {
         this(issuer, thisDate, nextDate, badCerts);
@@ -1105,7 +1105,7 @@ public class X509CRLImpl extends X509CRL implements DerEncoder {
 
         // parse the information
         DerInputStream derStrm = seq[0].data;
-        DerValue       tmp;
+        DerValue tmp;
         byte           nextByte;
 
         // version (optional if v1)
@@ -1255,7 +1255,7 @@ public class X509CRLImpl extends X509CRL implements DerEncoder {
      *   prevCertIssuer if it does not exist
      */
     private X500Principal getCertIssuer(X509CRLEntryImpl entry,
-        X500Principal prevCertIssuer) throws IOException {
+                                        X500Principal prevCertIssuer) throws IOException {
 
         CertificateIssuerExtension ciExt =
             entry.getCertificateIssuerExtension();
