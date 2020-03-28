@@ -51,7 +51,6 @@ import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -63,6 +62,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.security.auth.x500.X500Principal;
 
+import compact.java.util.Base64;
 import sun.misc.HexDumpEncoder;
 import sun.security.provider.X509Factory;
 import sun.security.util.DerEncoder;
