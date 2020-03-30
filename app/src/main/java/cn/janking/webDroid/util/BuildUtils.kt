@@ -36,10 +36,11 @@ object BuildUtils {
             /**
              * 记录打包开始的时间
              */
-            val startTime = System.currentTimeMillis()
+            var startTime = 0L
 
             override fun doInBackground() {
                 EventBus.getDefault().register(this)
+                startTime = System.currentTimeMillis()
                 ConsoleUtils.info(console, "正在写入配置...")
                 //写入配置
                 FileUtils.writeToFile(
@@ -131,7 +132,7 @@ object BuildUtils {
                 if (isCanceled) {
                     return
                 }
-                //v1签名  @todo 5.0签名会出现No Entry异常
+                //v1签名
                 Main.main(
                     arrayOf(
                         "-keystore", PathConstants.jks,
