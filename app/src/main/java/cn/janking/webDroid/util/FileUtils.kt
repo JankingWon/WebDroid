@@ -39,6 +39,17 @@ object FileUtils {
     }
 
     /**
+     * 仅仅判断路径，不判断uri
+     */
+    fun isFilePathExists(filePath: String?): Boolean {
+        return isFileExists(
+            getFileByPath(
+                filePath
+            )
+        )
+    }
+
+    /**
      * Return whether the file exists.
      *
      * @param file The file.

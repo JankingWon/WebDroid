@@ -122,9 +122,9 @@ object BuildUtils {
                     FileUtils.getExistFile(PathConstants.fileApkUnsigned)
                 )
                 ConsoleUtils.info(console, "正在签名...")
-                if (!FileUtils.isFileExists(PathConstants.jks)
+                if (!FileUtils.isFilePathExists(PathConstants.jks)
                 ) {
-                    throw RuntimeException("key is null")
+                    throw RuntimeException("签名秘钥不存在")
                 }
                 /**
                  * 尽量拦截签名过程

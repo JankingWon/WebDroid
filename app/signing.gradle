@@ -1,5 +1,5 @@
 ext.signing = [
-        storeFilePath : 'C:\\Users\\janki\\Desktop\\WebDroid\\janking.jks',
+        storeFilePath : '../janking.jks',
         storePassword : '123456',
         keyAlias : 'janking',
         keyPassword :'123456',
