@@ -1,7 +1,7 @@
 package cn.janking.webDroid.adapter
 
 /**
- * Created by zhang on 2016.08.21.
+ * 拖动和滑动删除的监听器
  */
 interface OnMoveAndSwipedListener {
     fun onItemMove(fromPosition: Int, toPosition: Int): Boolean
